@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="职场意识,">
+  <meta name="keywords" content="Kafka,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="该文讲的是百度在数年前要求每个入职的工程师必须被灌输的六个职场意识，个人认为非常有价值，不管对技术leader还是职场小白都应该非常具有指导意义。在这里分享给大家，与同在职场中奋斗的童鞋们共同参考。">
-<meta name="keywords" content="职场意识">
+<meta name="description" content="此异常是我在公司测试环境下调试消费kafka数据存入Elasticsearch时发生的，发生此异常的原因和该异常的解决方案都非常简单，此处做下记录，以便日后查看。">
+<meta name="keywords" content="Kafka">
 <meta property="og:type" content="article">
-<meta property="og:title" content="你必须知道的职场意识">
-<meta property="og:url" content="http://yoursite.com/2019/05/13/consciousness/index.html">
+<meta property="og:title" content="Kafka的CommitFailedException">
+<meta property="og:url" content="http://yoursite.com/2019/08/21/kafka-CommitFailedException/index.html">
 <meta property="og:site_name" content="Mxsenn">
-<meta property="og:description" content="该文讲的是百度在数年前要求每个入职的工程师必须被灌输的六个职场意识，个人认为非常有价值，不管对技术leader还是职场小白都应该非常具有指导意义。在这里分享给大家，与同在职场中奋斗的童鞋们共同参考。">
+<meta property="og:description" content="此异常是我在公司测试环境下调试消费kafka数据存入Elasticsearch时发生的，发生此异常的原因和该异常的解决方案都非常简单，此处做下记录，以便日后查看。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-13T15:11:53.170Z">
+<meta property="og:updated_time" content="2019-08-21T13:47:53.718Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="你必须知道的职场意识">
-<meta name="twitter:description" content="该文讲的是百度在数年前要求每个入职的工程师必须被灌输的六个职场意识，个人认为非常有价值，不管对技术leader还是职场小白都应该非常具有指导意义。在这里分享给大家，与同在职场中奋斗的童鞋们共同参考。">
+<meta name="twitter:title" content="Kafka的CommitFailedException">
+<meta name="twitter:description" content="此异常是我在公司测试环境下调试消费kafka数据存入Elasticsearch时发生的，发生此异常的原因和该异常的解决方案都非常简单，此处做下记录，以便日后查看。">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/13/consciousness/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/21/kafka-CommitFailedException/">
 
 
 
 
 
-  <title>你必须知道的职场意识 | Mxsenn</title>
+  <title>Kafka的CommitFailedException | Mxsenn</title>
   
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/consciousness/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/21/kafka-CommitFailedException/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XYa">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">你必须知道的职场意识</h1>
+          <h1 class="post-title" itemprop="name headline">Kafka的CommitFailedException</h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-13T22:38:31+08:00">
-                2019-05-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-21T21:10:33+08:00">
+                2019-08-21
               </time>
             
 
@@ -315,8 +315,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/职业素养/" itemprop="url" rel="index">
-                    <span itemprop="name">职业素养</span>
+                  <a href="/categories/Kafka/" itemprop="url" rel="index">
+                    <span itemprop="name">Kafka</span>
                   </a>
                 </span>
 
@@ -333,8 +333,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/05/13/consciousness/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/13/consciousness/" itemprop="commentCount"></span>
+                <a href="/2019/08/21/kafka-CommitFailedException/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/21/kafka-CommitFailedException/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -362,155 +362,33 @@
       
 
       
-        <p>该文讲的是百度在数年前要求每个入职的工程师必须被灌输的六个职场意识，个人认为非常有价值，不管对技术leader还是职场小白都应该非常具有指导意义。在这里分享给大家，与同在职场中奋斗的童鞋们共同参考。</p>
+        <p>此异常是我在公司测试环境下调试消费kafka数据存入Elasticsearch时发生的，发生此异常的原因和该异常的解决方案都非常简单，此处做下记录，以便日后查看。</p>
 <a id="more"></a>
-<h3 id="内容简要"><a href="#内容简要" class="headerlink" title="内容简要"></a>内容简要</h3><blockquote>
-<ol>
-<li>质量意识</li>
-<li>时间意识</li>
-<li>沟通意识</li>
-<li>团队意识</li>
-<li>求实意识</li>
-<li>进取意识</li>
-</ol>
+<h4 id="1-异常含义"><a href="#1-异常含义" class="headerlink" title="1. 异常含义"></a>1. 异常含义</h4><blockquote>
+<p>异常名称：CommitFailedException</p>
+<p>异常含义：位移 (offset) 提交失败时候抛出的异常。通常该异常被抛出时还会携带这样的一段话：</p>
+<p>Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member. This means that the time between subsequent calls to poll() was longer than the configured max.poll.interval.ms, which typically implies that the poll loop is spending too much time message processing. You can address this either by increasing the session timeout or by reducing the maximum size of batches returned in poll() with max.poll.records.</p>
 </blockquote>
-<h4 id="1-质量意识"><a href="#1-质量意识" class="headerlink" title="1. 质量意识"></a>1. 质量意识</h4><p><strong>1.1 流程意识</strong></p>
+<h4 id="2-导致异常的原因"><a href="#2-导致异常的原因" class="headerlink" title="2. 导致异常的原因"></a>2. 导致异常的原因</h4><blockquote>
+<p>消费者组开启了rebalance且已然分配对应分区给其他消费者。这表明poll调用间隔超过了max.poll.interval.ms的值，这通常表示poll循环中的消息处理花费了太长的时间。</p>
+<p>花费太长时间处理的原因有二：</p>
+<p>A 确实是程序时间复杂度太高   B kafka有积压(这个是导致我司抛出这个异常的原因)</p>
+</blockquote>
+<h4 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3. 解决方案"></a>3. 解决方案</h4><blockquote>
+<p>A. 增加session.timeout.ms值 （该参数在0.10.0.0版本之后进行了解耦，推出了max.poll.interval.ms参数）</p>
+<p>B. 减少max.poll.records值</p>
+</blockquote>
+<p>如上的两个解决方法实际上依然是0.10.0.0或之前版本时的解决之道，因为在那些版本中尚未提供max.poll.interval.ms参数，因此session.timeout.ms<strong>既用于失败检测，也用于控制消息处理时间，同时还承担着rebalance过程的超时控制</strong>。在0.10.1.0版本时社区对该参数的含义进行了解耦，推出了max.poll.interval.ms参数。实际上，在0.10.1.0.0或之后的版本中，社区推荐用户将session.timeout.ms设置一个很小的值，比如5s，但需要<strong>把max.poll.interval.ms设置成平均的消息处理时间</strong>。比如，假设你一次poll调用返回的消息数是N，你处理每条消息的平均时间是T，那么你需要设置max.poll.interval.ms稍稍大于N * T以保证poll调用间隔不会超过该阈值。</p>
+<p>如此来看，如上的A解决办法应该修改成：增加max.poll.interval.ms值，而非session.timeout.ms.</p>
+<h4 id="4-异常抛出时机"><a href="#4-异常抛出时机" class="headerlink" title="4. 异常抛出时机"></a>4. 异常抛出时机</h4><p>从源代码方面说，CommitFailedException异常通常发生在手动提交位移时，即用户显式调用KafkaConsumer.commitSync()方法。从使用场景来说，有两种场景可以抛出该异常：</p>
 <blockquote>
-<ol>
-<li>world class procedure：用流程解决具有共性的、重复性问题，提高效率</li>
-<li>既有的流程应严格遵守；没有流程的应创建流程</li>
-</ol>
+<p>A 消息处理时间 &gt; max.poll.interval.ms时： 如前所述，这是该异常最“正宗”的出现场景。复现也比较容易，用户只需写一个consumer程序，订阅topic(即使用consumer.subscribe)，设置max.poll.interval.ms=N，然后在consumer.poll循环中Thread.sleep(&gt;N)，之后手动提交位移即可复现，比如：</p>
 </blockquote>
-<p><strong>1.2 要对自己的工作质量负责，不要期待别人来发现自己的问题</strong></p>
-<p><strong>1.3 “稳定” 压倒一切，线上服务最重要</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">props.put(<span class="string">"max.poll.interval.ms"</span>, <span class="number">5000</span>);</span><br><span class="line">consumer.subscribe(Arrays.asList(<span class="string">"topic1"</span>, <span class="string">"topic2"</span>, ...));</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line"> ConsumerRecords&lt;String, String&gt; records = consumer.poll(<span class="number">100</span>);</span><br><span class="line"> <span class="comment">// 处理消息</span></span><br><span class="line"> Thread.sleep(<span class="number">6000L</span>);</span><br><span class="line"> consumer.commitSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<ol>
-<li>用户体验最重要</li>
-<li>工作安排：二八原则</li>
-<li>优先解决线上服务稳定性问题</li>
-</ol>
+<p>B standalone consumer与consumer group冲突时：这里所说的standalone consumer指的是使用KafkaConsumer.assign()而非subscribe()的消费者。当用户系统中同时出现了standalone consumer和consumer group，<strong>并且它们的group id相同时</strong>，此时standalone consumer手动提交位移时就会立刻抛出此异常。这是因为group coordinator无法识别这个具有相同group id的consumer，从而向它返回“你不是一个合法的组成员”错误。目前Kafka consumer提交位移的代码中一旦碰到这个错误会立即抛出CommitFailedException。</p>
 </blockquote>
-<p><strong>1.4 不要“想当然”</strong></p>
-<blockquote>
-<ol>
-<li>不要默认“没问题”，而是缺省认为“有问题”；“肯定没问题”一定有问题</li>
-<li>反复核实(double check)十分重要</li>
-<li>“我以为他们已经开始做，但我也没有跟他们确认一下” —— 导致项目延期</li>
-<li>“我以为这个接口是这样定义，但谁想到是那样的” —— 导致程序崩溃</li>
-<li>“我以为发出邮件，Ta肯定就知道了” —— 实际上，Ta根本不在相应的邮件列表中</li>
-</ol>
-</blockquote>
-<h4 id="2-时间意识"><a href="#2-时间意识" class="headerlink" title="2. 时间意识"></a>2. 时间意识</h4><p><strong>2.1 目标管理，结果导向</strong></p>
-<blockquote>
-<ol>
-<li>弹性工作制：上下班时间自由支配</li>
-<li>关键是要按时保质完成工作</li>
-</ol>
-</blockquote>
-<p><strong>2.2 只争朝夕，争分夺秒</strong></p>
-<blockquote>
-<ol>
-<li>激烈的产业竞争环境</li>
-<li>不要拖到最后才开始工作，因为总可能会有意外</li>
-<li>能今天做完的绝不拖到明天</li>
-<li>安排工作计划至少要多排原工期的三分之一</li>
-</ol>
-</blockquote>
-<p><strong>2.3 自我管理，自我推动</strong></p>
-<blockquote>
-<ol>
-<li>每件事情都有完成时间表，给自己一个约束，给别人一个承诺</li>
-<li>每件事情有始有终，设立一些里程碑，在里程碑上检查进度，主动向其他人通报进度</li>
-<li>建立个人品牌，树立别人对自己的信心</li>
-</ol>
-</blockquote>
-<h4 id="3-沟通意识"><a href="#3-沟通意识" class="headerlink" title="3. 沟通意识"></a>3. 沟通意识</h4><p><strong>3.1 平等沟通</strong></p>
-<blockquote>
-<ol>
-<li>在沟通上没有级别概念</li>
-<li>不要碍于面子，不要怕犯错误：报喜亦报忧</li>
-<li>CC文化</li>
-</ol>
-</blockquote>
-<p><strong>3.2 及时沟通</strong></p>
-<blockquote>
-<ol>
-<li>邮件是最主要的沟通形式，但有时不是最有效的</li>
-<li>当面沟通，电话沟通，召集会议都是有效的形式，但要留下文字</li>
-</ol>
-</blockquote>
-<p><strong>3.3 有效沟通</strong></p>
-<blockquote>
-<ol>
-<li>沟通要达到效果</li>
-<li>如果没有效果，应让更多人知道，尤其是你的leader和对方的leader</li>
-</ol>
-</blockquote>
-<h4 id="4-团队意识"><a href="#4-团队意识" class="headerlink" title="4. 团队意识"></a>4. 团队意识</h4><p><strong>4.1 集体荣誉感</strong></p>
-<blockquote>
-<ol>
-<li>用你的成绩为你的团队带来光荣</li>
-</ol>
-</blockquote>
-<p><strong>4.2 互相帮助，互相学习</strong></p>
-<blockquote>
-<ol>
-<li>乐于给别人提供帮助</li>
-<li>也勇于向别人学习：有问题不要憋在肚子里</li>
-<li>互相理解</li>
-<li>把周围同事当作你的资源，包括你的经理</li>
-</ol>
-</blockquote>
-<p><strong>4.3 对事不对人，尊敬身边每一个人</strong></p>
-<h4 id="5-求实意识"><a href="#5-求实意识" class="headerlink" title="5. 求实意识"></a>5. 求实意识</h4><p><strong>5.1 科学求实是技术发展的基础</strong></p>
-<p><strong>5.2 用数字说话，用事实证明，不要有“想当然”的思想</strong></p>
-<blockquote>
-<ol>
-<li>大胆假设，小心求证，不放过每一个细节和疑点</li>
-<li>客观公正</li>
-<li>杜绝“可能”，“大概”，“应该” 这样模棱两可的用词，而是用准确的数字和事实来论证</li>
-</ol>
-</blockquote>
-<p><strong>5.3 每个工作能用量化的指标来进行衡量</strong></p>
-<blockquote>
-<ol>
-<li>性能、容量、准确性、召回率、死链率，etc.</li>
-<li>没有量化，就没有绩效</li>
-<li>通过这些指标衡量自己的成长和进步</li>
-<li>通过这些指标知道工作的方向和重点</li>
-</ol>
-</blockquote>
-<h4 id="6-进取意识"><a href="#6-进取意识" class="headerlink" title="6. 进取意识"></a>6. 进取意识</h4><p><strong>6.1 永葆激情，积极主动</strong></p>
-<blockquote>
-<ol>
-<li>热爱你所从事的工作</li>
-<li>不要等别人为你分配任务，你就是自己的老板</li>
-</ol>
-</blockquote>
-<p><strong>6.2 与时俱进，不断学习</strong></p>
-<blockquote>
-<ol>
-<li>在高速成长的公司，你才会有高速成长的可能</li>
-<li>要有和公司、团队的同步成长的意识</li>
-</ol>
-</blockquote>
-<p><strong>6.3 对技术、对质量的追求永无止境</strong></p>
-<blockquote>
-<ol>
-<li>没有最好，只有更好</li>
-<li>目标远大，不固步自封，自我满足</li>
-</ol>
-</blockquote>
-<p><strong>6.4 忧患意识</strong></p>
-<p><strong>6.5 Case study 和自我总结，自我学习和提高</strong></p>
-<blockquote>
-<ol>
-<li>Case study是一种文化，从事故中吸取经验教训</li>
-<li>容忍失败，但不容忍重复失败</li>
-<li>经常反思一下自己</li>
-<li>不放过任何一次问题，勇敢地剖析自己</li>
-</ol>
-</blockquote>
+<h4 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h4><p>针对异常抛出时机的第二种场景，我个人认为初始的抛出异常时的英文描述中完全没有提及，这实际上是该异常表述不清晰的一个表现。因为在提交位移的源代码中broker端返回“无效组成员”后，coordinator有可能认为这是一个新的成员，需要批准它加入组。这对于正常的组rebalance流程来说并没有什么问题，但对于standalone consumer而言该逻辑就显得有点不适用了。纵然不修改这个逻辑，至少也要完善CommitFailedException的异常表述，把这种情况加到异常说明里面。这样用户就能明确知晓诱发这种异常的所有场景，而不是像现在这样：只能尝试修改max.poll.records或max.poll.interval.ms。要知道对于第二种情况，无论用户如何设置max.poll.interval.ms或max.poll.records都无法规避。</p>
 
       
     </div>
@@ -557,7 +435,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/职场意识/" rel="tag"># 职场意识</a>
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
           
         </div>
       
@@ -570,15 +448,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/05/14/bitmap/" rel="next" title="经典算法系列之 - BitMap">
+                <i class="fa fa-chevron-left"></i> 经典算法系列之 - BitMap
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/13/doris-compile/" rel="prev" title="使用Docker镜像进行Doris源码编译">
-                使用Docker镜像进行Doris源码编译 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -738,7 +616,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内容简要"><span class="nav-number">1.</span> <span class="nav-text">内容简要</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-质量意识"><span class="nav-number">1.1.</span> <span class="nav-text">1. 质量意识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-时间意识"><span class="nav-number">1.2.</span> <span class="nav-text">2. 时间意识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-沟通意识"><span class="nav-number">1.3.</span> <span class="nav-text">3. 沟通意识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-团队意识"><span class="nav-number">1.4.</span> <span class="nav-text">4. 团队意识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-求实意识"><span class="nav-number">1.5.</span> <span class="nav-text">5. 求实意识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-进取意识"><span class="nav-number">1.6.</span> <span class="nav-text">6. 进取意识</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-异常含义"><span class="nav-number">1.</span> <span class="nav-text">1. 异常含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-导致异常的原因"><span class="nav-number">2.</span> <span class="nav-text">2. 导致异常的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-解决方案"><span class="nav-number">3.</span> <span class="nav-text">3. 解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-异常抛出时机"><span class="nav-number">4.</span> <span class="nav-text">4. 异常抛出时机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-总结"><span class="nav-number">5.</span> <span class="nav-text">5. 总结</span></a></li></ol></div>
             
 
           </div>
