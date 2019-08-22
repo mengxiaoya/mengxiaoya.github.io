@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文总结一些在开发中常用到的Linux命令。">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux常用命令">
+<meta property="og:url" content="http://yoursite.com/2019/08/21/linux-command/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文总结一些在开发中常用到的Linux命令。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-22T16:01:24.342Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux常用命令">
+<meta name="twitter:description" content="本文总结一些在开发中常用到的Linux命令。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/21/linux-command/">
+
+
+
+
+
+  <title>Linux常用命令 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/21/linux-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux常用命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-21T22:08:13+08:00">
+                2019-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/21/linux-command/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/21/linux-command/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文总结一些在开发中常用到的Linux命令。</p>
+<a id="more"></a>
+<h4 id="1-vim"><a href="#1-vim" class="headerlink" title="1. vim"></a>1. vim</h4><p>vim命令用于编辑文件。</p>
+<p>普通模式（命令行模式）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> number/<span class="built_in">set</span> nu：vim时显示行号 或通过修改vim的配置文件使得每次vim时都显示行号</span><br><span class="line">HOME：快速移动到当前行首部</span><br><span class="line">END：快速移动到当前行尾部</span><br><span class="line">w：移动到下一个单词</span><br><span class="line">b：移动到上一个单词</span><br><span class="line">:+行号+回车：快速移动到某一行</span><br><span class="line">:+$+回车：快速移动到最后一行</span><br><span class="line">dd：删除当前行</span><br><span class="line">dj：删除当前行和下一行</span><br></pre></td></tr></table></figure>
+<p>由普通模式进入插入模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i：在当前光标处进行编辑</span><br><span class="line">I：在行首插入</span><br><span class="line">A：在行尾插入</span><br><span class="line">o：在当前行后插入一个新行</span><br><span class="line">O：在当前行前插入一个新行</span><br></pre></td></tr></table></figure>
+<p>由插入模式进入普通模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ESC</span><br></pre></td></tr></table></figure>
+<h4 id="2-grep"><a href="#2-grep" class="headerlink" title="2. grep"></a>2. grep</h4><p>grep命令用于查找文件里符合条件的字符串。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">以nba.txt文件为例：</span><br><span class="line">cat nba.txt | grep "curry"：查找nba.txt中包含curry字符串的所有行并返回</span><br><span class="line">cat nba.txt | grep "curry" -v：查找nba.txt中不包含curry字符串的所有行并返回（第一条的取反）</span><br><span class="line">cat nba.txt | grep "CuRry" -i：忽略大小写</span><br><span class="line">cat nba.txt | grep "curry" -n：显示匹配到的行号</span><br><span class="line">cat nba.txt | grep "curry" -c：统计匹配到的结果行数，不显示搜索结果</span><br><span class="line">cat nba.txt | grep "curry" -o：仅显示匹配到的字符串</span><br><span class="line">cat nba.txt | grep "curry" -A n：显示搜索行及其向下相邻的n行</span><br><span class="line">cat nba.txt | grep "curry" -B n：显示搜索行及其向上相邻的n行</span><br><span class="line">cat nba.txt | grep "curry" -C n：显示搜索行及其向上和向下相邻的n行</span><br><span class="line">cat nba.txt | grep "curry" -w：匹配整个单词，区分大小写</span><br></pre></td></tr></table></figure>
+<h4 id="3-awk"><a href="#3-awk" class="headerlink" title="3. awk"></a>3. awk</h4><p>awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。awk语言的最基本功能是在文件或者字符串中<strong>基于指定规则浏览和抽取信息</strong>。通常，awk是以文件的一行为处理单位的。</p>
+<h4 id="3-1-调用awk"><a href="#3-1-调用awk" class="headerlink" title="3.1 调用awk"></a>3.1 调用awk</h4><p>有三种方式可以调用awk：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">A.命令行方式</span><br><span class="line">awk [-F field-separator]  'commands'  input-file(s)</span><br><span class="line">其中，commands 是真正awk命令，[-F域分隔符]是可选的。 input-file(s)是待处理的文件。</span><br><span class="line">在awk中，文件的每一行中，由域分隔符分开的每一项称为一个域。通常，在不指名-F域分隔符的情况下，默认的域分隔符是空格。</span><br><span class="line"></span><br><span class="line">B.shell脚本方式</span><br><span class="line">将所有的awk命令插入一个文件，并使awk程序可执行，然后awk命令解释器作为脚本的首行，通过键入脚本名称来调用。</span><br><span class="line">相当于shell脚本首行的：#!/bin/sh</span><br><span class="line">可以换成：#!/bin/awk</span><br><span class="line"></span><br><span class="line">C.将所有的awk命令插入一个单独文件，然后调用：</span><br><span class="line">awk -f awk-script-file input-file(s)</span><br><span class="line">其中，-f选项加载awk-script-file中的awk脚本，input-file(s)是待处理的文件。</span><br></pre></td></tr></table></figure>
+<h4 id="3-2-awk命令"><a href="#3-2-awk命令" class="headerlink" title="3.2 awk命令"></a>3.2 awk命令</h4><p>awk工作流程：读入有’\n’换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，$0则表示所有域,$1表示第一个域,$n表示第n个域。默认域分隔符是”空白键” 或 “[tab]键”。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">以awk.txt文件为例，文件内容如下：</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 11:21   still logged in</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 00:46 - 02:28  (01:41)</span><br><span class="line">root     pts/1   192.168.1.100  Mon Feb  9 11:41 - 18:30  (06:48)</span><br><span class="line">dmtsai   pts/1   192.168.1.100  Mon Feb  9 11:41 - 11:41  (00:00)</span><br><span class="line">root     tty1                   Fri Sep  5 14:09 - 14:10  (00:01)</span><br><span class="line"></span><br><span class="line">[root@slave1 data]# cat awk.txt | awk '&#123;print $1&#125;'</span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">dmtsai</span><br><span class="line">root</span><br></pre></td></tr></table></figure>
+<p>下面以/etc/passwd文件为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">-F是指定分隔符，head -5只查看前五行</span><br><span class="line">[root@slave1 data]# cat /etc/passwd | awk -F ':' '&#123;print $1&#125;' | head -5：</span><br><span class="line">root</span><br><span class="line">bin</span><br><span class="line">daemon</span><br><span class="line">adm</span><br><span class="line">lp</span><br><span class="line"></span><br><span class="line">在所有行添加列名name,shell,在最后一行添加"blue,/bin/nosh"，tail -5只查看后五行</span><br><span class="line">[root@slave1 data]# cat /etc/passwd | awk -F ':' 'BEGIN &#123;print "name,shell"&#125; &#123;print $1","$7&#125; END &#123;print "blue,/bin/nosh"&#125;' | tail -5</span><br><span class="line">name,shell</span><br><span class="line">root,/bin/bash</span><br><span class="line">daemon,/bin/sh</span><br><span class="line">bin,/bin/sh</span><br><span class="line">sys,/bin/sh</span><br><span class="line">root,/bin/sh</span><br><span class="line">blue,/bin/nosh</span><br><span class="line"></span><br><span class="line">搜索/etc/passwd有root关键字的所有行</span><br><span class="line">[root@slave1 data]# awk -F: '/root/' /etc/passwd</span><br><span class="line">等价于：awk -F ':' '/root/' /etc/passwd</span><br><span class="line">等价于：cat /etc/passwd | awk -F ':' '/root/'</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">operator:x:11:0:operator:/root:/sbin/nologin</span><br><span class="line"></span><br><span class="line">搜索/etc/passwd有root关键字的所有行，并显示对应的shell</span><br><span class="line">[root@slave1 data]# awk -F: '/root/&#123;print $7&#125;' /etc/passwd </span><br><span class="line">/bin/bash</span><br><span class="line">/sbin/nologin</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-awk内置变量"><a href="#3-3-awk内置变量" class="headerlink" title="3.3 awk内置变量"></a>3.3 awk内置变量</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ARGC               命令行参数个数</span><br><span class="line">ARGV               命令行参数排列</span><br><span class="line">ENVIRON            支持队列中系统环境变量的使用</span><br><span class="line">FILENAME           awk浏览的文件名</span><br><span class="line">FNR                浏览文件的记录数</span><br><span class="line">FS                 设置输入域分隔符，等价于命令行 -F选项</span><br><span class="line">NF                 浏览记录的域的个数</span><br><span class="line">NR                 已读的记录数</span><br><span class="line">OFS                输出域分隔符</span><br><span class="line">ORS                输出记录分隔符</span><br><span class="line">RS                 控制记录分隔符</span><br><span class="line"><span class="variable">$0</span>变量是指整条记录</span><br><span class="line"><span class="variable">$1</span>表示当前行的第一个域</span><br><span class="line"><span class="variable">$2</span>表示当前行的第二个域，以此类推</span><br><span class="line"></span><br><span class="line">统计/etc/passwd:文件名，每行的行号，每行的列数，对应的第三个域的内容</span><br><span class="line">[root@slave1 data]<span class="comment"># awk -F ':' '&#123;print "filename:" FILENAME ",linenumber:" NR ",columns:" NF ",linecontent:"$3&#125;' /etc/passwd | head -5</span></span><br><span class="line">filename:/etc/passwd,linenumber:1,columns:7,linecontent:0</span><br><span class="line">filename:/etc/passwd,linenumber:2,columns:7,linecontent:1</span><br><span class="line">filename:/etc/passwd,linenumber:3,columns:7,linecontent:2</span><br><span class="line">filename:/etc/passwd,linenumber:4,columns:7,linecontent:3</span><br><span class="line">filename:/etc/passwd,linenumber:5,columns:7,linecontent:4</span><br><span class="line"></span><br><span class="line">可以用<span class="built_in">printf</span>替代<span class="built_in">print</span>,可以让代码更加简洁，易读：</span><br><span class="line">[root@slave1 data]<span class="comment"># awk -F ':' '&#123;printf("filename:%s,linenumber:%s,columns:%s,linecontent:%s\n",FILENAME,NR,NF,$0)&#125;' /etc/passwd | head -5</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-4-awk编程"><a href="#3-4-awk编程" class="headerlink" title="3.4 awk编程"></a>3.4 awk编程</h4><p>除了awk的内置变量，awk还可以自定义变量。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">统计/etc/passwd的账户人数：</span><br><span class="line">[root@slave1 data]# awk '&#123;count++;print $0;&#125; END &#123;print "user count is", count&#125;' /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">bin:x:1:1:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:2:2:daemon:/sbin:/sbin/nologin</span><br><span class="line">adm:x:3:4:adm:/var/adm:/sbin/nologin</span><br><span class="line">lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin</span><br><span class="line">sync:x:5:0:sync:/sbin:/bin/sync</span><br><span class="line">shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown</span><br><span class="line">halt:x:7:0:halt:/sbin:/sbin/halt</span><br><span class="line">mail:x:8:12:mail:/var/spool/mail:/sbin/nologin</span><br><span class="line">operator:x:11:0:operator:/root:/sbin/nologin</span><br><span class="line">games:x:12:100:games:/usr/games:/sbin/nologin</span><br><span class="line">ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin</span><br><span class="line">nobody:x:99:99:Nobody:/:/sbin/nologin</span><br><span class="line">systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin</span><br><span class="line">dbus:x:81:81:System message bus:/:/sbin/nologin</span><br><span class="line">polkitd:x:999:998:User for polkitd:/:/sbin/nologin</span><br><span class="line">sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin</span><br><span class="line">postfix:x:89:89::/var/spool/postfix:/sbin/nologin</span><br><span class="line">ntp:x:38:38::/etc/ntp:/sbin/nologin</span><br><span class="line">mysql:x:998:1000::/home/mysql:/bin/bash</span><br><span class="line">es:x:1000:1001::/home/es:/bin/bash</span><br><span class="line">user count is 21</span><br><span class="line"></span><br><span class="line">统计当前文件夹下的文件占用的字节数: (注意，统计不包括文件夹的子目录)</span><br><span class="line">[root@slave1 data]# ls -l |awk 'BEGIN &#123;size=0;&#125; &#123;size=size+$5;&#125; END &#123;print "[end] size is", size&#125;'</span><br><span class="line">[end] size is 36</span><br></pre></td></tr></table></figure>
+<h4 id="4-sed"><a href="#4-sed" class="headerlink" title="4. sed"></a>4. sed</h4><p>sed的作用就是实现对文件的 “ 增删改查 ” 。</p>
+<p>sed遵循简单的工作流：</p>
+<blockquote>
+<ol>
+<li>读取（从输入中读取某一行）</li>
+<li>执行（在某一行上执行sed命令）</li>
+<li>显示（把结果显示在输出中）</li>
+</ol>
+<p>默认是显示修改后内容，不会修改原文件，除非使用<strong>-i</strong> 参数</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sed [-nefri] 'command' test.txt </span><br><span class="line">-e：可以指定多个命令</span><br><span class="line">-f：指定命令文件</span><br><span class="line">-n：取消默认控制台输出，与p一起使用可打印指定内容</span><br><span class="line">-i：输出到原文件，静默执行（修改原文件的意思）</span><br><span class="line">-r：Sed使用扩展正则</span><br><span class="line">command:</span><br><span class="line">a 新增</span><br><span class="line">c 替换</span><br><span class="line">d 删除</span><br><span class="line">i 插入</span><br><span class="line">p 打印，要与-n参数一起使用</span><br><span class="line">s 替换(局部匹配替换)</span><br></pre></td></tr></table></figure>
+<p>新增 a</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed '2a testContent' test.txt：在第 2 行后面新增一行内容</span><br><span class="line">sed '1,3a testContent' test.txt：在原文的第 1~3 行后面各新增一行内容</span><br></pre></td></tr></table></figure>
+<p>替换 c</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed '2c testContent' test.txt：将第 2 行内容整行替换</span><br><span class="line">sed '1,3c testContent' test.txt：将第 1~3 行内容替换成一行指定内容</span><br></pre></td></tr></table></figure>
+<p>删除 d</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed '2d' test.txt：删除第 2 行</span><br><span class="line">sed '1,3d' test.txt：删除第 1~3 行</span><br></pre></td></tr></table></figure>
+<p>插入 i</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed '2i testContent' test.txt：在第 2 行前面插入一行内容</span><br><span class="line">sed '1,3i testContent' test.txt：在原文的第 1~3 行前面各插入一行内容</span><br></pre></td></tr></table></figure>
+<p>打印 p</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sed '2p' test.txt：重复打印第 2 行</span><br><span class="line">sed '1,3p' test.txt：重复打印第 1~3 行</span><br><span class="line">sed -n '2p' test.txt：只打印第 2 行</span><br><span class="line">sed -n '1,3p' test.txt：只打印第 1~3 行</span><br><span class="line">sed -n '/user/p' test.txt：打印匹配到user的行，类似grep</span><br><span class="line">sed -n '/user/!p' test.txt：!反选，打印没有匹配到user的行</span><br><span class="line">sed -n 's/old/new/gp' test：只打印匹配替换的行</span><br></pre></td></tr></table></figure>
+<p>替换 s</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed 's/old/new/' test.txt：匹配每一行的第一个old替换为new</span><br><span class="line">sed 's/old/new/gi' test.txt：匹配所有old替换为new，g 代表一行多个，i 代表匹配忽略大小写</span><br><span class="line">sed '3,9s/old/new/gi' test.txt：匹配第 3~9 行所有old替换为new</span><br></pre></td></tr></table></figure>
+<p>参数 -e</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -e 's/aaa/bbb/g' -e '2d' test.txt：执行多个指令</span><br></pre></td></tr></table></figure>
+<p>参数 -f</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -f ab.log test.txt：多个命令写进ab.log文件里，一行一条命令，效果同-e，文件的内容就是多行sed命令</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/21/kafka-CommitFailedException/" rel="next" title="Kafka的CommitFailedException">
+                <i class="fa fa-chevron-left"></i> Kafka的CommitFailedException
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-vim"><span class="nav-number">1.</span> <span class="nav-text">1. vim</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-grep"><span class="nav-number">2.</span> <span class="nav-text">2. grep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-awk"><span class="nav-number">3.</span> <span class="nav-text">3. awk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-调用awk"><span class="nav-number">4.</span> <span class="nav-text">3.1 调用awk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-awk命令"><span class="nav-number">5.</span> <span class="nav-text">3.2 awk命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-awk内置变量"><span class="nav-number">6.</span> <span class="nav-text">3.3 awk内置变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-awk编程"><span class="nav-number">7.</span> <span class="nav-text">3.4 awk编程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-sed"><span class="nav-number">8.</span> <span class="nav-text">4. sed</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
