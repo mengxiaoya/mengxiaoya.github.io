@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Doris,">
+  <meta name="keywords" content="volatile,">
 
 
 
@@ -79,18 +79,22 @@
 
 
 
-<meta name="description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
-<meta name="keywords" content="Doris">
+<meta name="description" content="在java领域，并发编程一直是一个具有挑战性的技术，本文将给大家介绍一下volatile的原理。">
+<meta name="keywords" content="volatile">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Docker镜像进行Doris源码编译">
-<meta property="og:url" content="http://yoursite.com/2019/05/13/doris-compile/index.html">
+<meta property="og:title" content="你真的理解volatile吗">
+<meta property="og:url" content="http://yoursite.com/2019/08/24/java-volatile/index.html">
 <meta property="og:site_name" content="Mxsenn">
-<meta property="og:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta property="og:description" content="在java领域，并发编程一直是一个具有挑战性的技术，本文将给大家介绍一下volatile的原理。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-21T13:17:58.983Z">
+<meta property="og:image" content="http://yoursite.com/2019/08/24/java-volatile/VariableTest.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/24/java-volatile/Cache.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/24/java-volatile/WorkingMemory.png">
+<meta property="og:updated_time" content="2019-08-24T03:11:27.279Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Docker镜像进行Doris源码编译">
-<meta name="twitter:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta name="twitter:title" content="你真的理解volatile吗">
+<meta name="twitter:description" content="在java领域，并发编程一直是一个具有挑战性的技术，本文将给大家介绍一下volatile的原理。">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/24/java-volatile/VariableTest.png">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/13/doris-compile/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/24/java-volatile/">
 
 
 
 
 
-  <title>使用Docker镜像进行Doris源码编译 | Mxsenn</title>
+  <title>你真的理解volatile吗 | Mxsenn</title>
   
 
 
@@ -263,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/doris-compile/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/24/java-volatile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XYa">
@@ -280,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用Docker镜像进行Doris源码编译</h1>
+          <h1 class="post-title" itemprop="name headline">你真的理解volatile吗</h1>
         
 
         <div class="post-meta">
@@ -292,8 +296,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-13T22:43:15+08:00">
-                2019-05-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-24T10:31:29+08:00">
+                2019-08-24
               </time>
             
 
@@ -315,8 +319,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Doris/" itemprop="url" rel="index">
-                    <span itemprop="name">Doris</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -333,8 +337,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/05/13/doris-compile/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/13/doris-compile/" itemprop="commentCount"></span>
+                <a href="/2019/08/24/java-volatile/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/08/24/java-volatile/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -362,51 +366,44 @@
       
 
       
-        <p>由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。</p>
+        <p>在java领域，并发编程一直是一个具有挑战性的技术，本文将给大家介绍一下volatile的原理。</p>
 <a id="more"></a>
-<p>在进行源码编译前，先简单介绍一下Doris，Doris原名Palo，是百度自研发的一款MPP的OLAP系统，主要整合了<strong>Google Mesa</strong>（数据模型），<strong>Apache Impala</strong>（MPP Query Engine)和<strong>Apache ORCFile</strong> (存储格式，编码和压缩) 的技术。有想进一步了解Doris的小伙伴可<a href="https://cloud.baidu.com/doc/PALO/QuickStart.html" target="_blank" rel="noopener">点击这里</a>。</p>
-<p>下面开始进行Doris源码的编译。</p>
-<h4 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. 环境准备</h4><blockquote>
-<ol>
-<li>一台可以运行Docker的宿主机，并且可以访问外网</li>
-<li>最低配置：内存4G，CPU 4核，磁盘空间10G</li>
-<li>在root账户下操作</li>
-</ol>
+<h4 id="1-理清几个概念"><a href="#1-理清几个概念" class="headerlink" title="1. 理清几个概念"></a>1. 理清几个概念</h4><blockquote>
+<p>A . 共享变量：共享变量是指可以同时被多个线程访问的变量，共享变量是被存放在堆里面，所有的方法内临时变量都不是共享变量。</p>
+<p>B . 重排序：重排序是指为了提高指令运行的性能，在编译时或者运行时对指令执行顺序进行调整的机制。重排序分为编译重排序和运行时重排序。编译重排序是指编译器在编译源代码的时候就对代码执行顺序进行分析，在遵循as-if-serial的原则前提下对源码的执行顺序进行调整。as-if-serial原则是指在单线程环境下，无论怎么重排序，代码的执行结果都是确定的。运行时重排序是指为了提高执行的运行速度，系统对机器的执行指令的执行顺序进行调整。</p>
+<p>C . 可见性：内存的可见性是指线程之间的可见性，一个线程的修改状态对另外一个线程是可见的，用通俗的话说，就是假如一个线程A修改一个共享变量flag之后，则线程B去读取，一定能读取到最新修改的flag。</p>
 </blockquote>
-<h4 id="2-确保宿主机已经安装Docker并启动服务"><a href="#2-确保宿主机已经安装Docker并启动服务" class="headerlink" title="2. 确保宿主机已经安装Docker并启动服务"></a>2. 确保宿主机已经安装Docker并启动服务</h4><p>centos 用户可以通过以下命令安装和启动 docker：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install docker-io</span><br><span class="line"></span><br><span class="line">service docker start</span><br></pre></td></tr></table></figure>
-<h4 id="3-创建Docker镜像"><a href="#3-创建Docker镜像" class="headerlink" title="3. 创建Docker镜像"></a>3. 创建Docker镜像</h4><p><strong>3.1 假设工作目录为 /use/local/dockerfile</strong></p>
-<p>下载 Dockerfile 到工作目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/apache/incubator-doris/blob/master/docker/Dockerfile -O /use/<span class="built_in">local</span>/dockerfile/</span><br></pre></td></tr></table></figure>
-<p><strong>3.2 构建镜像</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /use/<span class="built_in">local</span>/dockerfile &amp;&amp; docker build -t doris-dev:v1.0 .</span><br></pre></td></tr></table></figure>
-<p>doris-dev:v1.0 为镜像名称和版本，可自定义</p>
-<p><strong>说明：</strong>根据宿主机性能，镜像构建时间可能在几十分钟到1小时不等。推荐使用nohup命令进行镜像的构建，以防止终端退出而构建失败。构建完成后，可通过 <strong>docker images</strong> 命令查看镜像，大小约为3.5G。</p>
-<p><strong>注：</strong>如果你不想自己创建Docker镜像或者环境不允许，可以通过如下命令下载Baidu提供的镜像：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull apachedoris/doris-dev:build-env</span><br></pre></td></tr></table></figure>
-<h4 id="4-进行源码编译"><a href="#4-进行源码编译" class="headerlink" title="4. 进行源码编译"></a>4. 进行源码编译</h4><p><strong>4.1 下载Doris源码</strong></p>
-<p>如果宿主机安装了git，可使用如下命令进行下载：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/incubator-doris.git /usr/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>如果宿主机未安装git，可以去<a href="http://doris.apache.org/downloads.html" target="_blank" rel="noopener">Doris官网下载地址</a>进行下载。</p>
-<p><strong>4.2 启动并进入docker容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name doris-dev-test -v /usr/<span class="built_in">local</span>/incubator-doris/:/var/<span class="built_in">local</span>/incubator-doris/ doris-dev:v1.0</span><br></pre></td></tr></table></figure>
-<p><strong>说明：</strong>该命令启动并进入了一个名为 doris-dev-test 的容器，通过 <strong>-v</strong> 参数将宿主机/usr/local/incubator-doris/ 映射到容器内路径 /var/local/incubator-doris/。</p>
-<p><strong>4.3 现在你应该位于docker容器内了，进入到build.sh目录执行命令进行源码编译</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>通过以下命令编译Doris FE 和 BE：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh build.sh --fe --be --clean</span><br></pre></td></tr></table></figure>
-<p><strong>注：</strong>如果你的宿主机配置较低，建议将 build.sh 中的 PARALLEL 参数调整为 4 或更低，防止编译过程中内存不足导致编译失败。编译完成后，最终的部署文件将产出到 output 目录下。</p>
-<p>通过以下命令编译fs_broker （可选）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> fs_brokers/apache_hdfs_broker/ &amp;&amp; sh build.sh</span><br></pre></td></tr></table></figure>
-<p><strong>4.4 退出容器</strong></p>
-<p>退出并保持容器继续运行：ctrl + pq</p>
-<p>退出并终止容器：ctrl + d</p>
-<p><strong>4.5 拷贝容器中的文件到宿主机</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp containerID:/var/<span class="built_in">local</span>/incubator-doris/output/ /path/to/your/host/</span><br></pre></td></tr></table></figure>
-<p>containerID为容器的ID，可以通过 <strong>docker ps -l</strong> 查看，/var/local/incubator-doris/output/为容器内目录，/path/to/your/host/ 为宿主机目录。</p>
-<p>至此Doris源码编译完成。</p>
-<p><strong>附录：</strong>Docker常用命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">docker ps ：列出所有运行中容器</span><br><span class="line">docker ps -a ：列出所有容器，包含沉睡镜像</span><br><span class="line">docker ps -l ：仅列出最新创建的一个容器</span><br><span class="line">docker <span class="built_in">kill</span> containerID ：杀死某个容器</span><br><span class="line">docker rm containerID ：删除某个容器</span><br><span class="line">docker rmi docker images -q ：删除所有镜像</span><br><span class="line">docker stop $(docker ps -q) ：停用全部运行中的容器</span><br><span class="line">docker rm $(docker ps -aq) ：删除全部容器</span><br><span class="line">一条命令实现停用并删除容器：</span><br><span class="line">docker stop $(docker ps -q) &amp; docker rm $(docker ps -aq) </span><br><span class="line">按条件删除镜像：</span><br><span class="line">1.没有打标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">2.指定标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">3.镜像名包含关键字doss-api</span><br><span class="line">docker rmi --force docker images | grep doss-api | awk <span class="string">'&#123;print $3&#125;'</span></span><br><span class="line">4.组合</span><br><span class="line">docker rmi $(docker images | grep v1.11.2 | awk ‘&#123; <span class="built_in">print</span> <span class="variable">$2</span>, <span class="variable">$3</span> &#125;’)</span><br></pre></td></tr></table></figure>
+<p>说到这里，有些同学可能会觉得上述C说的这不是废话么，线程A修改变量flag后，线程B肯定是可以拿到最新的值。假如你真的这么认为，那就大错特错了，运行下面一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VariableTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        ThreadA threadA = <span class="keyword">new</span> ThreadA();</span><br><span class="line">        ThreadB threadB = <span class="keyword">new</span> ThreadB();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(threadA, <span class="string">"threadA"</span>).start();</span><br><span class="line">        Thread.sleep(<span class="number">6000L</span>);   <span class="comment">//为了保证threadA比threadB先启动，sleep一下</span></span><br><span class="line">        <span class="keyword">new</span> Thread(threadB, <span class="string">"threadB"</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">                    System.out.println(Thread.currentThread().getName() + <span class="string">" : flag is "</span> + flag);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            flag = <span class="keyword">true</span>;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">" : flag is "</span> + flag);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><img src="/2019/08/24/java-volatile/../java-volatile\VariableTest.png" alt="avatar"></p>
+<p>以上运行结果证明：线程B修改变量flag之后，线程A读取不到最新的值，A线程一直在运行，无法停止。</p>
+<h4 id="2-分析上述现象的原因"><a href="#2-分析上述现象的原因" class="headerlink" title="2. 分析上述现象的原因"></a>2. 分析上述现象的原因</h4><p>造成上述现象的根本原因就是A和B两个线程的内存相互之间是不可见的，造成不可见的原因有二：</p>
+<blockquote>
+<p>A . cache机制导致内存不可见</p>
+<p>CPU的运行速度是远远高于内存的读写速度的，为了不让cpu为了等待读写内存数据，现代cpu和内存之间都存在一个高速缓存cache（实际上是一个多级寄存器），如下图：</p>
+</blockquote>
+<p><img src="/2019/08/24/java-volatile/../java-volatile\Cache.png" alt="avatar"></p>
+<p>线程在运行的过程中会把主内存的数据拷贝一份到线程内部cache中，也就是working memory。这个时候多个线程访问同一个变量，其实就是访问自己的内部cache。</p>
+<p><img src="/2019/08/24/java-volatile/../java-volatile\WorkingMemory.png" alt="avatar"></p>
+<p>所以说，上面例子出现问题的原因在于：线程A把变量flag加载到自己的内部缓存cache中，线程B修改变量flag后，即使重新写入主内存，但是线程A不会重新从主内存加载变量flag，看到的还是自己cache中的变量flag。所以线程A是读取不到线程B更新后的值。</p>
+<p>除了cache的原因，还有一个因素会导致内存不可见：</p>
+<blockquote>
+<p>B . 重排序后的指令在多线程执行时也有可能导致内存不可见，由于指令顺序的调整，线程A读取某个变量的时候线程B可能还没有进行写入操作，虽然代码顺序上写操作是在前面的。</p>
+</blockquote>
+<h4 id="3-volatile原理"><a href="#3-volatile原理" class="headerlink" title="3. volatile原理"></a>3. volatile原理</h4><p>volatile修饰的变量<strong>不允许线程内部cache缓存和重排序</strong>，线程读取数据的时候直接读写内存，同时volatile不会对变量加锁，因此性能会比synchronized好。另外还有一个说法是使用volatile的变量依然会被读到各自的cache中，只不过当B线程修改了flag之后，会将flag写回主内存，同时会通过信号机制通知到A线程去同步内存中flag的值。我个人更倾向于后者的解释，还望大神指导一下正确的答案。</p>
+<p>但是，volatile不保证操作的原子性，请勿使用volatile来进行原子性操作。</p>
+<h4 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h4><p>在 Java 中 volatile、synchronized 和 final 实现可见性。</p>
+<p>在 Java 中 synchronized 和 lock、unlock 操作保证原子性。</p>
+<p>volatile的性能：</p>
+<blockquote>
+<p>volatile 的读性能消耗与普通变量几乎相同，但是写操作稍慢，因为它需要在本地代码中插入许多内存屏障指令来保证处理器不发生乱序执行。</p>
+</blockquote>
+<p>一个被volatile声明的变量主要有以下两种特性保证保证线程安全：</p>
+<ol>
+<li>可见性。</li>
+<li>有序性。</li>
+</ol>
+<p>volatile 真的能够保证一个变量在多线程环境下都能被正确的使用吗？<br>答案是否定的。原因是因为Java里面的运算并非都是<strong>原子操作</strong>。</p>
 
       
     </div>
@@ -453,7 +450,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Doris/" rel="tag"># Doris</a>
+            <a href="/tags/volatile/" rel="tag"># volatile</a>
           
         </div>
       
@@ -466,8 +463,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/13/consciousness/" rel="next" title="你必须知道的职场意识">
-                <i class="fa fa-chevron-left"></i> 你必须知道的职场意识
+              <a href="/2019/08/23/design-pattern-singleton/" rel="next" title="设计模式 - 创建型模式分类之单例模式">
+                <i class="fa fa-chevron-left"></i> 设计模式 - 创建型模式分类之单例模式
               </a>
             
           </div>
@@ -475,10 +472,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/14/bitmap/" rel="prev" title="经典算法系列之 - BitMap">
-                经典算法系列之 - BitMap <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -638,7 +631,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-环境准备"><span class="nav-number">1.</span> <span class="nav-text">1. 环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-确保宿主机已经安装Docker并启动服务"><span class="nav-number">2.</span> <span class="nav-text">2. 确保宿主机已经安装Docker并启动服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-创建Docker镜像"><span class="nav-number">3.</span> <span class="nav-text">3. 创建Docker镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-进行源码编译"><span class="nav-number">4.</span> <span class="nav-text">4. 进行源码编译</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-理清几个概念"><span class="nav-number">1.</span> <span class="nav-text">1. 理清几个概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-分析上述现象的原因"><span class="nav-number">2.</span> <span class="nav-text">2. 分析上述现象的原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-volatile原理"><span class="nav-number">3.</span> <span class="nav-text">3. volatile原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-总结"><span class="nav-number">4.</span> <span class="nav-text">4. 总结</span></a></li></ol></div>
             
 
           </div>
