@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Doris,">
+  <meta name="keywords" content="Linux,">
 
 
 
@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
-<meta name="keywords" content="Doris">
+<meta name="description" content="netstat是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括tcp,udp以及Unix套接字；另外它还能列出路由表，接口状态和多播成员等信息。关于netstat命令的选项有很多，本文只介绍常见选项。">
+<meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Docker镜像进行Doris源码编译">
-<meta property="og:url" content="http://yoursite.com/2019/05/13/doris-compile/index.html">
+<meta property="og:title" content="Linux中的netstat命令详解">
+<meta property="og:url" content="http://yoursite.com/2019/09/18/linux-netstat/index.html">
 <meta property="og:site_name" content="Mxsenn">
-<meta property="og:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta property="og:description" content="netstat是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括tcp,udp以及Unix套接字；另外它还能列出路由表，接口状态和多播成员等信息。关于netstat命令的选项有很多，本文只介绍常见选项。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-21T13:17:58.983Z">
+<meta property="og:image" content="http://yoursite.com/2019/09/18/linux-netstat/netstat.png">
+<meta property="og:updated_time" content="2019-09-18T13:43:39.550Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Docker镜像进行Doris源码编译">
-<meta name="twitter:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta name="twitter:title" content="Linux中的netstat命令详解">
+<meta name="twitter:description" content="netstat是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括tcp,udp以及Unix套接字；另外它还能列出路由表，接口状态和多播成员等信息。关于netstat命令的选项有很多，本文只介绍常见选项。">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/18/linux-netstat/netstat.png">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/13/doris-compile/">
+  <link rel="canonical" href="http://yoursite.com/2019/09/18/linux-netstat/">
 
 
 
 
 
-  <title>使用Docker镜像进行Doris源码编译 | Mxsenn</title>
+  <title>Linux中的netstat命令详解 | Mxsenn</title>
   
 
 
@@ -263,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/doris-compile/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/18/linux-netstat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XYa">
@@ -280,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用Docker镜像进行Doris源码编译</h1>
+          <h1 class="post-title" itemprop="name headline">Linux中的netstat命令详解</h1>
         
 
         <div class="post-meta">
@@ -292,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-13T22:43:15+08:00">
-                2019-05-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-18T21:14:35+08:00">
+                2019-09-18
               </time>
             
 
@@ -315,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Doris/" itemprop="url" rel="index">
-                    <span itemprop="name">Doris</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -333,8 +335,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/05/13/doris-compile/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/13/doris-compile/" itemprop="commentCount"></span>
+                <a href="/2019/09/18/linux-netstat/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/09/18/linux-netstat/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -362,51 +364,28 @@
       
 
       
-        <p>由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。</p>
+        <p>netstat是基于Netstat这个命令行工具的指令，它可以用来查询系统上的网络套接字连接情况，包括tcp,udp以及Unix套接字；另外它还能列出路由表，接口状态和多播成员等信息。关于netstat命令的选项有很多，本文只介绍常见选项。</p>
 <a id="more"></a>
-<p>在进行源码编译前，先简单介绍一下Doris，Doris原名Palo，是百度自研发的一款MPP的OLAP系统，主要整合了<strong>Google Mesa</strong>（数据模型），<strong>Apache Impala</strong>（MPP Query Engine)和<strong>Apache ORCFile</strong> (存储格式，编码和压缩) 的技术。有想进一步了解Doris的小伙伴可<a href="https://cloud.baidu.com/doc/PALO/QuickStart.html" target="_blank" rel="noopener">点击这里</a>。</p>
-<p>下面开始进行Doris源码的编译。</p>
-<h4 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. 环境准备</h4><blockquote>
-<ol>
-<li>一台可以运行Docker的宿主机，并且可以访问外网</li>
-<li>最低配置：内存4G，CPU 4核，磁盘空间10G</li>
-<li>在root账户下操作</li>
-</ol>
-</blockquote>
-<h4 id="2-确保宿主机已经安装Docker并启动服务"><a href="#2-确保宿主机已经安装Docker并启动服务" class="headerlink" title="2. 确保宿主机已经安装Docker并启动服务"></a>2. 确保宿主机已经安装Docker并启动服务</h4><p>centos 用户可以通过以下命令安装和启动 docker：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install docker-io</span><br><span class="line"></span><br><span class="line">service docker start</span><br></pre></td></tr></table></figure>
-<h4 id="3-创建Docker镜像"><a href="#3-创建Docker镜像" class="headerlink" title="3. 创建Docker镜像"></a>3. 创建Docker镜像</h4><p><strong>3.1 假设工作目录为 /use/local/dockerfile</strong></p>
-<p>下载 Dockerfile 到工作目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/apache/incubator-doris/blob/master/docker/Dockerfile -O /use/<span class="built_in">local</span>/dockerfile/</span><br></pre></td></tr></table></figure>
-<p><strong>3.2 构建镜像</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /use/<span class="built_in">local</span>/dockerfile &amp;&amp; docker build -t doris-dev:v1.0 .</span><br></pre></td></tr></table></figure>
-<p>doris-dev:v1.0 为镜像名称和版本，可自定义</p>
-<p><strong>说明：</strong>根据宿主机性能，镜像构建时间可能在几十分钟到1小时不等。推荐使用nohup命令进行镜像的构建，以防止终端退出而构建失败。构建完成后，可通过 <strong>docker images</strong> 命令查看镜像，大小约为3.5G。</p>
-<p><strong>注：</strong>如果你不想自己创建Docker镜像或者环境不允许，可以通过如下命令下载Baidu提供的镜像：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull apachedoris/doris-dev:build-env</span><br></pre></td></tr></table></figure>
-<h4 id="4-进行源码编译"><a href="#4-进行源码编译" class="headerlink" title="4. 进行源码编译"></a>4. 进行源码编译</h4><p><strong>4.1 下载Doris源码</strong></p>
-<p>如果宿主机安装了git，可使用如下命令进行下载：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/incubator-doris.git /usr/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>如果宿主机未安装git，可以去<a href="http://doris.apache.org/downloads.html" target="_blank" rel="noopener">Doris官网下载地址</a>进行下载。</p>
-<p><strong>4.2 启动并进入docker容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name doris-dev-test -v /usr/<span class="built_in">local</span>/incubator-doris/:/var/<span class="built_in">local</span>/incubator-doris/ doris-dev:v1.0</span><br></pre></td></tr></table></figure>
-<p><strong>说明：</strong>该命令启动并进入了一个名为 doris-dev-test 的容器，通过 <strong>-v</strong> 参数将宿主机/usr/local/incubator-doris/ 映射到容器内路径 /var/local/incubator-doris/。</p>
-<p><strong>4.3 现在你应该位于docker容器内了，进入到build.sh目录执行命令进行源码编译</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>通过以下命令编译Doris FE 和 BE：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh build.sh --fe --be --clean</span><br></pre></td></tr></table></figure>
-<p><strong>注：</strong>如果你的宿主机配置较低，建议将 build.sh 中的 PARALLEL 参数调整为 4 或更低，防止编译过程中内存不足导致编译失败。编译完成后，最终的部署文件将产出到 output 目录下。</p>
-<p>通过以下命令编译fs_broker （可选）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> fs_brokers/apache_hdfs_broker/ &amp;&amp; sh build.sh</span><br></pre></td></tr></table></figure>
-<p><strong>4.4 退出容器</strong></p>
-<p>退出并保持容器继续运行：ctrl + pq</p>
-<p>退出并终止容器：ctrl + d</p>
-<p><strong>4.5 拷贝容器中的文件到宿主机</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp containerID:/var/<span class="built_in">local</span>/incubator-doris/output/ /path/to/your/host/</span><br></pre></td></tr></table></figure>
-<p>containerID为容器的ID，可以通过 <strong>docker ps -l</strong> 查看，/var/local/incubator-doris/output/为容器内目录，/path/to/your/host/ 为宿主机目录。</p>
-<p>至此Doris源码编译完成。</p>
-<p><strong>附录：</strong>Docker常用命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">docker ps ：列出所有运行中容器</span><br><span class="line">docker ps -a ：列出所有容器，包含沉睡镜像</span><br><span class="line">docker ps -l ：仅列出最新创建的一个容器</span><br><span class="line">docker <span class="built_in">kill</span> containerID ：杀死某个容器</span><br><span class="line">docker rm containerID ：删除某个容器</span><br><span class="line">docker rmi docker images -q ：删除所有镜像</span><br><span class="line">docker stop $(docker ps -q) ：停用全部运行中的容器</span><br><span class="line">docker rm $(docker ps -aq) ：删除全部容器</span><br><span class="line">一条命令实现停用并删除容器：</span><br><span class="line">docker stop $(docker ps -q) &amp; docker rm $(docker ps -aq) </span><br><span class="line">按条件删除镜像：</span><br><span class="line">1.没有打标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">2.指定标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">3.镜像名包含关键字doss-api</span><br><span class="line">docker rmi --force docker images | grep doss-api | awk <span class="string">'&#123;print $3&#125;'</span></span><br><span class="line">4.组合</span><br><span class="line">docker rmi $(docker images | grep v1.11.2 | awk ‘&#123; <span class="built_in">print</span> <span class="variable">$2</span>, <span class="variable">$3</span> &#125;’)</span><br></pre></td></tr></table></figure>
+<h4 id="主要选项"><a href="#主要选项" class="headerlink" title="主要选项"></a>主要选项</h4><p>netstat命令的常见选项如图所示：</p>
+<p><img src="/2019/09/18/linux-netstat/../linux-netstat\netstat.png" alt="avatar"></p>
+<h4 id="实例演示"><a href="#实例演示" class="headerlink" title="实例演示"></a>实例演示</h4><h4 id="1-netstat-a"><a href="#1-netstat-a" class="headerlink" title="1. netstat -a"></a>1. netstat -a</h4><p>列出所有的端口，包括监听的和未监听的。</p>
+<h4 id="2-netstat-at"><a href="#2-netstat-at" class="headerlink" title="2. netstat -at"></a>2. netstat -at</h4><p>列出所有的tcp协议的端口，包括监听的和未监听的。结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -at </span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">tcp        0      0 0.0.0.0:ssh             0.0.0.0:*               LISTEN     </span><br><span class="line">tcp        0     52 renxiaoxiao:ssh         192.168.17.1:10231      ESTABLISHED</span><br><span class="line">tcp6       0      0 [::]:mysql              [::]:*                  LISTEN     </span><br><span class="line">tcp6       0      0 [::]:ssh                [::]:*                  LISTEN</span><br></pre></td></tr></table></figure>
+<h4 id="3-netstat-au"><a href="#3-netstat-au" class="headerlink" title="3. netstat -au"></a>3. netstat -au</h4><p>列出所有的UDP协议的端口，包括监听的和未监听的。结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -au</span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State      </span><br><span class="line">udp        0      0 localhost:323           0.0.0.0:*                          </span><br><span class="line">udp6       0      0 localhost:323           [::]:*</span><br></pre></td></tr></table></figure>
+<h4 id="4-netstat-ap-grep-‘程序名’"><a href="#4-netstat-ap-grep-‘程序名’" class="headerlink" title="4. netstat -ap | grep ‘程序名’"></a>4. netstat -ap | grep ‘程序名’</h4><p>找出程序运行的端口。</p>
+<h4 id="5-netstat-ap-grep-‘端口号’"><a href="#5-netstat-ap-grep-‘端口号’" class="headerlink" title="5. netstat -ap | grep ‘端口号’"></a>5. netstat -ap | grep ‘端口号’</h4><p>找出端口的程序名。</p>
+<h4 id="6-netstat-nltp"><a href="#6-netstat-nltp" class="headerlink" title="6. netstat -nltp"></a>6. netstat -nltp</h4><p>查看所有tcp服务的所有程序名和进程PID。<br>禁止域名解析，这个主要netstat中的-n选项有关，先看不带n时所输出的结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -ltp</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address    Foreign Address    State   PID/Program name   </span><br><span class="line">tcp        0      0 localhost:1024        *:*          LISTEN      6130/./server       </span><br><span class="line">tcp        0      0 *:ssh                 *:*          LISTEN      1800/sshd           </span><br><span class="line">tcp        0      0 localhost:ipp         *:*          LISTEN      1690/cupsd          </span><br><span class="line">tcp        0      0 localhost:smtp        *:*          LISTEN      1925/master         </span><br><span class="line">tcp        0      0 *:ssh                 *:*          LISTEN      1800/sshd           </span><br><span class="line">tcp        0      0 localhost:ipp         *:*          LISTEN      1690/cupsd          </span><br><span class="line">tcp        0      0 localhost:smtp        *:*          LISTEN      1925/master</span><br></pre></td></tr></table></figure>
+<p>再来看看加上n 选项后的输入结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -nltp</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address    Foreign Address    State   PID/Program name   </span><br><span class="line">tcp        0      0 127.0.0.1:1024       0.0.0.0:*      LISTEN      6130/./server       </span><br><span class="line">tcp        0      0 0.0.0.0:22           0.0.0.0:*      LISTEN      1800/sshd           </span><br><span class="line">tcp        0      0 127.0.0.1:631        0.0.0.0:*      LISTEN      1690/cupsd          </span><br><span class="line">tcp        0      0 127.0.0.1:25         0.0.0.0:*      LISTEN      1925/master         </span><br><span class="line">tcp        0      0 :::22                :::*           LISTEN      1800/sshd           </span><br><span class="line">tcp        0      0 ::1:631              :::*           LISTEN      1690/cupsd          </span><br><span class="line">tcp        0      0 ::1:25               :::*           LISTEN      1925/master</span><br></pre></td></tr></table></figure>
+<p>可以发现在local address 即主机地址这一栏中，如果没有带n选项，会将套接字所对应的域名解析出来，如果加上n选项，那么就不会显示，即禁止域名解析的功能，这样做有助于提高查询速度，因为减少了对主机域名的查询。</p>
+<h4 id="7-netstat-c"><a href="#7-netstat-c" class="headerlink" title="7. netstat -c"></a>7. netstat -c</h4><p>动态查看netstat信息，每隔一段时间自动刷新。</p>
+<h4 id="8-netstat-r"><a href="#8-netstat-r" class="headerlink" title="8. netstat -r"></a>8. netstat -r</h4><p>显示路由表的信息。加n选项会禁用域名解析。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -nr </span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface</span><br><span class="line">0.0.0.0         192.168.17.2    0.0.0.0         UG        0 0          0 ens33</span><br><span class="line">192.168.17.0    0.0.0.0         255.255.255.0   U         0 0          0 ens33</span><br></pre></td></tr></table></figure>
+<h4 id="9-netstat-i"><a href="#9-netstat-i" class="headerlink" title="9. netstat -i"></a>9. netstat -i</h4><p>查看接口信息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@renxiaoxiao ~]# netstat -i</span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">ens33     1500     1850      0      0 0           736      0      0      0 BMRU</span><br><span class="line">lo       65536        0      0      0 0             0      0      0      0 LRU</span><br></pre></td></tr></table></figure>
+<h4 id="10-netstat-sa"><a href="#10-netstat-sa" class="headerlink" title="10. netstat -sa"></a>10. netstat -sa</h4><p>分类统计各个协议的相关信息。</p>
 
       
     </div>
@@ -453,7 +432,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Doris/" rel="tag"># Doris</a>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
         </div>
       
@@ -466,8 +445,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/13/consciousness/" rel="next" title="你必须知道的职场意识">
-                <i class="fa fa-chevron-left"></i> 你必须知道的职场意识
+              <a href="/2019/09/18/programmer/" rel="next" title="程序员 - 活的是本事">
+                <i class="fa fa-chevron-left"></i> 程序员 - 活的是本事
               </a>
             
           </div>
@@ -475,10 +454,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/14/bitmap/" rel="prev" title="经典算法系列之 - BitMap">
-                经典算法系列之 - BitMap <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -638,7 +613,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-环境准备"><span class="nav-number">1.</span> <span class="nav-text">1. 环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-确保宿主机已经安装Docker并启动服务"><span class="nav-number">2.</span> <span class="nav-text">2. 确保宿主机已经安装Docker并启动服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-创建Docker镜像"><span class="nav-number">3.</span> <span class="nav-text">3. 创建Docker镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-进行源码编译"><span class="nav-number">4.</span> <span class="nav-text">4. 进行源码编译</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#主要选项"><span class="nav-number">1.</span> <span class="nav-text">主要选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例演示"><span class="nav-number">2.</span> <span class="nav-text">实例演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-netstat-a"><span class="nav-number">3.</span> <span class="nav-text">1. netstat -a</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-netstat-at"><span class="nav-number">4.</span> <span class="nav-text">2. netstat -at</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-netstat-au"><span class="nav-number">5.</span> <span class="nav-text">3. netstat -au</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-netstat-ap-grep-‘程序名’"><span class="nav-number">6.</span> <span class="nav-text">4. netstat -ap | grep ‘程序名’</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-netstat-ap-grep-‘端口号’"><span class="nav-number">7.</span> <span class="nav-text">5. netstat -ap | grep ‘端口号’</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-netstat-nltp"><span class="nav-number">8.</span> <span class="nav-text">6. netstat -nltp</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-netstat-c"><span class="nav-number">9.</span> <span class="nav-text">7. netstat -c</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-netstat-r"><span class="nav-number">10.</span> <span class="nav-text">8. netstat -r</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-netstat-i"><span class="nav-number">11.</span> <span class="nav-text">9. netstat -i</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-netstat-sa"><span class="nav-number">12.</span> <span class="nav-text">10. netstat -sa</span></a></li></ol></div>
             
 
           </div>
