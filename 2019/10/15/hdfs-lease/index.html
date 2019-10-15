@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Java,">
+  <meta name="keywords" content="HDFS,">
 
 
 
@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="本文讲述如何编写易读的代码。">
-<meta name="keywords" content="Java">
+<meta name="description" content="本文讲述HDFS的lease机制，写此博客的目的是想记录下之前在公司测试环境下保存原始数据到HDFS时，发生的一个异常。">
+<meta name="keywords" content="HDFS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何编写易读的代码">
-<meta property="og:url" content="http://yoursite.com/2019/10/12/如何编写易读的代码/index.html">
+<meta property="og:title" content="Lease机制导致的追加写入文件异常分析">
+<meta property="og:url" content="http://yoursite.com/2019/10/15/hdfs-lease/index.html">
 <meta property="og:site_name" content="Mxsenn">
-<meta property="og:description" content="本文讲述如何编写易读的代码。">
+<meta property="og:description" content="本文讲述HDFS的lease机制，写此博客的目的是想记录下之前在公司测试环境下保存原始数据到HDFS时，发生的一个异常。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-12T13:16:21.612Z">
+<meta property="og:image" content="http://yoursite.com/2019/10/15/hdfs-lease/1.png">
+<meta property="og:updated_time" content="2019-10-15T15:32:41.409Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何编写易读的代码">
-<meta name="twitter:description" content="本文讲述如何编写易读的代码。">
+<meta name="twitter:title" content="Lease机制导致的追加写入文件异常分析">
+<meta name="twitter:description" content="本文讲述HDFS的lease机制，写此博客的目的是想记录下之前在公司测试环境下保存原始数据到HDFS时，发生的一个异常。">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/15/hdfs-lease/1.png">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/12/如何编写易读的代码/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/15/hdfs-lease/">
 
 
 
 
 
-  <title>如何编写易读的代码 | Mxsenn</title>
+  <title>Lease机制导致的追加写入文件异常分析 | Mxsenn</title>
   
 
 
@@ -263,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/12/如何编写易读的代码/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/15/hdfs-lease/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XYa">
@@ -280,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">如何编写易读的代码</h1>
+          <h1 class="post-title" itemprop="name headline">Lease机制导致的追加写入文件异常分析</h1>
         
 
         <div class="post-meta">
@@ -292,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-12T21:09:33+08:00">
-                2019-10-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-15T22:05:05+08:00">
+                2019-10-15
               </time>
             
 
@@ -315,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
+                  <a href="/categories/HDFS/" itemprop="url" rel="index">
+                    <span itemprop="name">HDFS</span>
                   </a>
                 </span>
 
@@ -333,8 +335,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/10/12/如何编写易读的代码/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/12/如何编写易读的代码/" itemprop="commentCount"></span>
+                <a href="/2019/10/15/hdfs-lease/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/15/hdfs-lease/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -362,130 +364,52 @@
       
 
       
-        <p>本文讲述如何编写易读的代码。</p>
+        <p>本文讲述HDFS的lease机制，写此博客的目的是想记录下之前在公司测试环境下保存原始数据到HDFS时，发生的一个异常。</p>
 <a id="more"></a>
-<p><strong>提升编程水平最有效的方法就是反反复复地修改和推敲代码。</strong></p>
-<p><strong>写出的代码能让人快速理解、轻松维护、容易扩展的程序员才是专业的程序员。</strong></p>
-<p><strong>代码的写法应当使别人理解它所需的时间最小化。</strong></p>
-<p>如果有人真的完全理解了你的代码，他就应该能改动它、找出缺陷并且明白它是如何与你代码的其他部分交互的。</p>
-<h4 id="一、易读的变量命名"><a href="#一、易读的变量命名" class="headerlink" title="一、易读的变量命名"></a>一、易读的变量命名</h4><ul>
-<li>把信息装进变量名中，为名字附带更多信息</li>
-<li>使用专业，信息含量更多的词</li>
-<li>使用更有表现力的词，英语中同义词很多，要准确使用</li>
-<li>避免空洞，泛泛的命名：<code>tmp</code>，<code>foo</code>，命名应当描述变量的目的或者它所承载的值</li>
-<li><code>tmp</code>适用于短期存在且临时性的变量</li>
-<li>用具体的名称代替抽象的名称</li>
-<li>如果你的变量是一个度量的话（如时间长度或者字节数），那么最好把名字带上它的单位。</li>
-<li>在小的作用域里可以使用短的名字</li>
-<li>利用名字的格式来传递含义，参考团队的编码规范</li>
-<li><strong>确保变量的命名不被误解</strong></li>
-<li>推荐用min和max来表示（包含）极限</li>
-<li>推荐用first和last来表示包含的范围</li>
-<li>推荐用begin和end来表示包含/排除范围</li>
-</ul>
-<h4 id="二、易读的代码布局"><a href="#二、易读的代码布局" class="headerlink" title="二、易读的代码布局"></a>二、易读的代码布局</h4><ul>
-<li>使用一致的布局。</li>
-<li>用方法来整理不规则的东西。</li>
-<li>让相似的代码看上去相似。</li>
-<li>把相关的代码行分组，形成代码块。</li>
-<li>选一个有意义的顺序，始终一致地使用它。</li>
-<li>一致的风格比“正确”的风格更重要。</li>
-</ul>
-<h4 id="三、易读的注释"><a href="#三、易读的注释" class="headerlink" title="三、易读的注释"></a>三、易读的注释</h4><ul>
-<li><strong>注释的目的是尽量帮助读者了解得和作者一样多</strong>。</li>
-<li>不要为那些从代码本身就能快速推断的事实写注释。</li>
-<li>不要给不好的名字加注释——应该把名字改好。</li>
-<li><strong>用注释来记录你对代码有价值的见解</strong>。</li>
-<li>为代码中的瑕疵写注释：TODO，FIXME等。</li>
-<li>把代码将来应该如何改动的想法用注释记录下来。</li>
-<li>给常量加注释。</li>
-<li>站在读者的角度用注释解释what? why?</li>
-<li>用注释公开可能的陷阱。</li>
-<li><strong>“全局观”注释</strong>：类之间如何交互，数据如何在整个系统中流动，以及入口点在哪里。</li>
-<li>总结性注释。</li>
-<li><strong>可以做任何能帮助读者更容易理解代码的事</strong>。</li>
-<li>注释要言简意赅。</li>
-<li>注释应该紧凑。</li>
-<li>避免使用不明确的代词。</li>
-<li>润色粗糙的句子。</li>
-<li>精确地描述函数的行为。</li>
-<li>用输入/输出例子来说明特别的情况。</li>
-<li>声明代码的意图。</li>
-<li>采用信息含量高的词，用住专业的词来描述普遍的问题或解决方案。</li>
-</ul>
-<p>如何养成写注释的习惯？</p>
+<h4 id="一、异常原因及分析"><a href="#一、异常原因及分析" class="headerlink" title="一、异常原因及分析"></a>一、异常原因及分析</h4><p><strong>异常描述</strong></p>
+<p>此异常发生在消费kafka数据并追加写入到HDFS中的程序中，异常发生的具体场景为：程序第一次启动时，创建并追加写入HDFS数据没问题，一直运行也正常。但是当程序停止，第二次启动时，程序抛出了如下异常：</p>
+<p><img src="/2019/10/15/hdfs-lease/../hdfs-lease\1.png" alt="avatar"></p>
+<p><strong>原因分析</strong></p>
 <blockquote>
-<p>1.不管你心里想什么，先把它写下来。</p>
-<p>2.读一下这段注释，看看有没有什么地方可以改进。</p>
-<p>3.不断改进。</p>
+<p>写入HDFS数据所使用的的API的类主要是FileSystem和FSDataOutputStream，一般是通过FileSystem.create 或 FileSystem.append方法获取FSDataOutputStream，然后调用FSDataOutputStream的write(byte[])方法写数据。</p>
 </blockquote>
-<h4 id="四、易读的控制流"><a href="#四、易读的控制流" class="headerlink" title="四、易读的控制流"></a>四、易读的控制流</h4><p>把条件、循环以及其他对控制流的改变做得越“自然”越好。运用一种方式使读者不用停下来重读你的代码。</p>
-<p><strong>相对于追求最小化代码行数，一个更好的度量方法是最小化人们理解它所需的时间。</strong></p>
-<p><strong>当你对代码做改动时，从全新的角度审视它，把它作为一个整体来看待。</strong></p>
-<ul>
-<li>条件语句中参数的顺序</li>
-<li>先处理掉简单的情况；先处理有趣的或者是可疑的情况。</li>
-<li>避免do/while循环。</li>
-<li>最小化嵌套。</li>
-</ul>
-<h4 id="五、易读的表达式"><a href="#五、易读的表达式" class="headerlink" title="五、易读的表达式"></a>五、易读的表达式</h4><p><strong>把你的超长表达式拆分成更容易理解的小块</strong>。</p>
-<p><strong>要小心“智能”的小代码段——它们往往在以后会让别人读起来感到困惑。</strong></p>
-<ul>
-<li>拆分表达式最简单的方法就是引入一个额外的变量。</li>
-<li>不要滥用短路逻辑。</li>
-<li>简化复杂的逻辑。</li>
-<li>拆分巨大的表达式。</li>
-</ul>
-<h4 id="六、易读的变量使用"><a href="#六、易读的变量使用" class="headerlink" title="六、易读的变量使用"></a>六、易读的变量使用</h4><ul>
-<li><strong>减少变量</strong>。变量越多，就越难全部跟踪它们的动向。</li>
-<li><strong>缩小变量的作用域</strong>。 变量的作用域越大，就需要跟踪它的动向越久。</li>
-<li><strong>避免频繁改版变量</strong>。 变量改变得越频繁，就越难以跟踪它的当前值。</li>
-<li>不要使用没有价值的临时变量。</li>
-<li>减少中间结果。</li>
-<li>减少控制流变量。</li>
-<li>把变量的定义移到对它的使用之前。</li>
-<li><strong>只写一次的变量更好</strong>。那些只设置一次值的变量（或者const、final、常量）使得代码更容易理解。</li>
-</ul>
-<h4 id="七、抽取不相关的子问题"><a href="#七、抽取不相关的子问题" class="headerlink" title="七、抽取不相关的子问题"></a>七、抽取不相关的子问题</h4><p><strong>所谓工程学就是关于把大问题拆分成小问题再把这些问题的解决方案放回一起。</strong></p>
-<p>积极地发现并抽取出不相关的子逻辑：</p>
+<p><strong>Lease机制</strong></p>
 <blockquote>
-<p>1.看看某个函数或代码块，问问你自己：这段代码高层次的目标是什么？</p>
-<p>2.对于每一行代码，问一下：它是直接为了目标而工作吗？这段代码高层次的目标是什么呢？</p>
-<p>3.如果足够的行数在解决不相关的子问题，抽取代码到独立的函数中。</p>
+<p>hdfs支持write-once-read-many，也就是说不支持并行写，那么对读写的互斥同步就是靠Lease实现的。Lease说白了就是一个<strong>有时间约束的锁</strong>。客户端写文件时需要先申请一个Lease，对应到namenode中的LeaseManager，客户端的client name就作为一个lease的holder，即租约持有者。LeaseManager维护了文件的path与lease的对应关系，还有clientname-&gt;lease的对应关系。LeaseManager中有两个时间限制：softLimit 和 hardLimit。<br>softLimit的默认值为hdfs.regionserver.lease.period=60000默认值 60000ms，即一分钟。</p>
+<p>hardLimit的默认值为1h。</p>
 </blockquote>
-<ul>
-<li>抽取纯工具的代码。</li>
-<li>抽取多用途的代码。</li>
-<li>抽取较通用的代码。</li>
-<li>简化已有的接口。</li>
-<li>按需重塑接口。</li>
-</ul>
-<h4 id="八、单一原则：一句代码只做并做好一件事"><a href="#八、单一原则：一句代码只做并做好一件事" class="headerlink" title="八、单一原则：一句代码只做并做好一件事"></a>八、单一原则：一句代码只做并做好一件事</h4><h4 id="九、用自然语言将想法变成代码"><a href="#九、用自然语言将想法变成代码" class="headerlink" title="九、用自然语言将想法变成代码"></a>九、用自然语言将想法变成代码</h4><p><strong>如果你不能把一件事解释给你祖母听的话说明你还没有真正理解它。</strong>  – 阿尔伯特·爱因斯坦</p>
+<p><strong>关于softLimit和hardLimit</strong></p>
 <blockquote>
-<p>1.像对着一个同事一样用自然语言描述代码要做什么。</p>
-<p>2.注意描述中所用的关键词和短语。</p>
-<p>3.写出与描述所匹配的代码。</p>
+<p>软限制就是写文件时规定的租约超时时间。</p>
+<p>硬限制则是考虑到文件close时未来得及释放lease的情况强制回收租约。</p>
+<p>LeaseManager中还有一个Monitor线程来检测Lease是否超过hardLimit。而软租约的超时检测则在DFSClient的LeaseChecker中进行。</p>
 </blockquote>
-<p><strong>如果你不能把问题说明白或者用词语来做设计，估计是缺少了什么东西或者什么东西缺少定义。把一个问题（或想法）变成语言真的可以让它更具体。</strong></p>
-<h4 id="十、少写代码"><a href="#十、少写代码" class="headerlink" title="十、少写代码"></a>十、少写代码</h4><blockquote>
-<p>知道什么时候不写代码可能对于一个程序员来讲是他所要学习的最重要的技巧。</p>
-<p>你所写的每一行代码都是要测试和维护的。</p>
-<p>通过重用库或者减少功能，你可以节省时间并且让你的代码库保持精简节约。</p>
+<p><strong>create和append方法</strong></p>
+<blockquote>
+<ol>
+<li><p>当客户端（DFSClient）create一个文件的时候，会通过RPC 调用 namenode 的createFile方法来创建文件。进而又调用FSNameSystem的startFile方法，然后调用 LeaseManager 的addLease方法为新创建的文件添加一个lease。如果lease已存在，则更新该lease的lastUpdate （最近更新时间）值，并将该文件的path对应应该lease上。之后DFSClient 将该文件的path 添加 LeaseChecker中。文件创建成功后，守护线程LeaseChecker会每隔一定时间间隔renew该DFSClient所拥有的lease。</p>
+</li>
+<li><p>当客户端调用append方法时，也会维护一个该文件的path对应的lease。</p>
+</li>
+</ol>
 </blockquote>
-<p><strong>最好读的代码就是没有代码。</strong></p>
-<ul>
-<li>明确需求并尽可能减少需求。</li>
-<li>删除没用的代码。</li>
-<li>熟悉API和经典的第三方库。</li>
-</ul>
-<h4 id="十一、易读的测试"><a href="#十一、易读的测试" class="headerlink" title="十一、易读的测试"></a>十一、易读的测试</h4><p><strong>大多数测试的基本内容都能精练成“对于这样的输入/情形，期望有这样的行为/输出”。并且很多时候这个目的可以用一行代码来表达。</strong></p>
-<ul>
-<li>让错误消息具有可读性。</li>
-<li>选择好的测试输入。好的输入应该能彻底地测试代码，但是它们也应该很简单易读。</li>
-<li>又简单又能完成工作的测试值更好。</li>
-<li>为测试函数命名。</li>
-<li>写出易于测试的代码：避免使用全局变量；避免写对外部组件有大量依赖的代码；避免代码有不确定的行为。</li>
-</ul>
+<p>查看我当时写的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (cache == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 缓存中不存在，直接查询文件并加载到缓存</span></span><br><span class="line">    Path path = <span class="keyword">new</span> Path(pathStr);</span><br><span class="line">    <span class="keyword">if</span> (!fileSystem.exists(path)) &#123;</span><br><span class="line">        fileSystem.create(path).close();</span><br><span class="line">        LOG.info(<span class="string">"Create file success, path:&#123;&#125;"</span>, pathStr);</span><br><span class="line">    &#125;</span><br><span class="line">    cache = <span class="keyword">new</span> TransferCache(pathStr);</span><br><span class="line">    cache.setTime(System.currentTimeMillis());</span><br><span class="line">    cache.setFlushBatchSize(<span class="number">0</span>);</span><br><span class="line">    FSDataOutputStream dataOutputStream = fileSystem.append(path);</span><br><span class="line">    cache.setDataOutputStream(dataOutputStream);</span><br><span class="line">    put(pathStr, cache);</span><br><span class="line">    LOG.info(<span class="string">"Create new transfer cache, path: &#123;&#125;"</span>, pathStr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>释放Lease的时机</strong></p>
+<blockquote>
+<ol>
+<li>手动调用FSDataOutputStream的close方法。</li>
+<li>等待softLimit时长过后。</li>
+<li>等待hardLimit时长过后。</li>
+</ol>
+</blockquote>
+<p>结合代码和Lease释放的时机，此时可以得出结论，代码中创建目录时及时的将FSDataOutputStream资源close了，但是append方法的FSDataOutputStream在第一次程序退出时并未close，因为当时的逻辑是按日期进行存储原始数据到HDFS，而从kafka拉取一次的数据中每条的时间不确定，因此我在缓存中维护了path和FSDataOutputStream的关系，如果缓存中有对应path的FSDataOutputStream资源则直接使用，否则根据path重新创建一个，但是程序退出时并未进行任何close操作，导致了该path的Lease一直被占用，第二次程序启动的时候必须等过去softLimit时长，也就是一分钟后才可以继续写数据。所以说假如在第一次程序退出时一分钟之内再启动程序，就会抛出如上的异常！</p>
+<h4 id="二、异常解决方式"><a href="#二、异常解决方式" class="headerlink" title="二、异常解决方式"></a>二、异常解决方式</h4><h4 id="1-减小softLimit参数值"><a href="#1-减小softLimit参数值" class="headerlink" title="1. 减小softLimit参数值"></a>1. 减小softLimit参数值</h4><p>理论上来讲，减小softLimit参数值是可以解决这个问题的，比如设置成1s，则第二次启动程序时各path的对应lease应该均处于close状态了，但是考虑到各种原因，当时我并未对这个参数做调整，生怕再有其它问题出现。</p>
+<h4 id="2-在程序退出时关闭缓存中的所有FSDataOutputStream"><a href="#2-在程序退出时关闭缓存中的所有FSDataOutputStream" class="headerlink" title="2. 在程序退出时关闭缓存中的所有FSDataOutputStream"></a>2. 在程序退出时关闭缓存中的所有FSDataOutputStream</h4><p>采用Java中的hook技术，在main函数中加入如下代码，以保证JVM退出时执行close操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    LOG.info(<span class="string">"Shutdown hook execute!"</span>);</span><br><span class="line">                    TransferCacheFactory.instance.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>注意：此处的JVM退出，两种方式终止程序时会执行hook代码，一个是kill pid，还有一个是有异常抛出的时候终止时也会调用hook代码。但是还有两种方式JVM退出时不执行hook代码，导致资源还是未close掉，一个是IDEA的小红方块，还一个是kill -9 pid强制杀死程序，这两种方式都不会执行hook代码。</p>
+<p>附带一个kill和kill -9的区别：<a href="https://www.cnblogs.com/flashfish/p/10930974.html" target="_blank" rel="noopener">https://www.cnblogs.com/flashfish/p/10930974.html</a></p>
+<h4 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h4><p>发生此异常的根本原因还是自己的程序不够严谨，考虑的不够周到，大家以后在编码时一定要做到严谨，避免这样的低级错误。</p>
 
       
     </div>
@@ -532,7 +456,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
+            <a href="/tags/HDFS/" rel="tag"># HDFS</a>
           
         </div>
       
@@ -545,8 +469,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/09/21/elasticsearch-cache/" rel="next" title="Elasticsearch2.x 三种缓存介绍">
-                <i class="fa fa-chevron-left"></i> Elasticsearch2.x 三种缓存介绍
+              <a href="/2019/10/12/消灭Java代码的坏味道/" rel="next" title="消灭Java代码的坏味道">
+                <i class="fa fa-chevron-left"></i> 消灭Java代码的坏味道
               </a>
             
           </div>
@@ -554,10 +478,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/12/消灭Java代码的坏味道/" rel="prev" title="消灭Java代码的坏味道">
-                消灭Java代码的坏味道 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -717,7 +637,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、易读的变量命名"><span class="nav-number">1.</span> <span class="nav-text">一、易读的变量命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、易读的代码布局"><span class="nav-number">2.</span> <span class="nav-text">二、易读的代码布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、易读的注释"><span class="nav-number">3.</span> <span class="nav-text">三、易读的注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、易读的控制流"><span class="nav-number">4.</span> <span class="nav-text">四、易读的控制流</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、易读的表达式"><span class="nav-number">5.</span> <span class="nav-text">五、易读的表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#六、易读的变量使用"><span class="nav-number">6.</span> <span class="nav-text">六、易读的变量使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#七、抽取不相关的子问题"><span class="nav-number">7.</span> <span class="nav-text">七、抽取不相关的子问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#八、单一原则：一句代码只做并做好一件事"><span class="nav-number">8.</span> <span class="nav-text">八、单一原则：一句代码只做并做好一件事</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#九、用自然语言将想法变成代码"><span class="nav-number">9.</span> <span class="nav-text">九、用自然语言将想法变成代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#十、少写代码"><span class="nav-number">10.</span> <span class="nav-text">十、少写代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#十一、易读的测试"><span class="nav-number">11.</span> <span class="nav-text">十一、易读的测试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、异常原因及分析"><span class="nav-number">1.</span> <span class="nav-text">一、异常原因及分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、异常解决方式"><span class="nav-number">2.</span> <span class="nav-text">二、异常解决方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-减小softLimit参数值"><span class="nav-number">3.</span> <span class="nav-text">1. 减小softLimit参数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-在程序退出时关闭缓存中的所有FSDataOutputStream"><span class="nav-number">4.</span> <span class="nav-text">2. 在程序退出时关闭缓存中的所有FSDataOutputStream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、总结"><span class="nav-number">5.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
             
 
           </div>
