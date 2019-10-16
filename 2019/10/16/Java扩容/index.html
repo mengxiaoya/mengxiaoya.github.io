@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-16T15:11:26.266Z">
+<meta property="og:updated_time" content="2019-10-16T15:14:21.142Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中几种容器的扩容机制总结">
 <meta name="twitter:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
@@ -389,7 +389,7 @@
 <h4 id="1-2-HashSet"><a href="#1-2-HashSet" class="headerlink" title="1.2 HashSet"></a>1.2 HashSet</h4><p>初始容量定义：16。因为构造一个HashSet，其实相当于新建一个HashMap，然后取HashMap的Key。</p>
 <p>扩容机制和HashMap一样。</p>
 <h4 id="1-3-Hashtable"><a href="#1-3-Hashtable" class="headerlink" title="1.3 Hashtable"></a>1.3 <strong>Hashtable</strong></h4><p>初始容量定义：capacity (11)。</p>
-<p>扩容加载因子(0.75)，当超出默认长度（int）（11 <em> 0.75）=8时，扩容为old</em>2+1。</p>
+<p>扩容加载因子(0.75)，当超出默认长度（int）（11 × 0.75）=8时，扩容为old×2+1。</p>
 <p>扩容核心源码rehash()：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">rehash</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldCapacity = table.length;</span><br><span class="line">        Entry&lt;?,?&gt;[] oldMap = table;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// overflow-conscious code</span></span><br><span class="line">        <span class="keyword">int</span> newCapacity = (oldCapacity &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldCapacity == MAX_ARRAY_SIZE)</span><br><span class="line">                <span class="comment">// Keep running with MAX_ARRAY_SIZE buckets</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            newCapacity = MAX_ARRAY_SIZE;</span><br><span class="line">        &#125;</span><br><span class="line">        Entry&lt;?,?&gt;[] newMap = <span class="keyword">new</span> Entry&lt;?,?&gt;[newCapacity];</span><br><span class="line"></span><br><span class="line">        modCount++;</span><br><span class="line">        threshold = (<span class="keyword">int</span>)Math.min(newCapacity * loadFactor, MAX_ARRAY_SIZE + <span class="number">1</span>);</span><br><span class="line">        table = newMap;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = oldCapacity ; i-- &gt; <span class="number">0</span> ;) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Entry&lt;K,V&gt; old = (Entry&lt;K,V&gt;)oldMap[i] ; old != <span class="keyword">null</span> ; ) &#123;</span><br><span class="line">                Entry&lt;K,V&gt; e = old;</span><br><span class="line">                old = old.next;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> index = (e.hash &amp; <span class="number">0x7FFFFFFF</span>) % newCapacity;</span><br><span class="line">                e.next = (Entry&lt;K,V&gt;)newMap[index];</span><br><span class="line">                newMap[index] = e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h4 id="小结：HashMap和Hashtable区别"><a href="#小结：HashMap和Hashtable区别" class="headerlink" title="小结：HashMap和Hashtable区别"></a>小结：HashMap和Hashtable区别</h4><blockquote>
@@ -417,7 +417,7 @@
 <ol start="6">
 <li>扩容</li>
 </ol>
-<p>Hashtable中hash数组默认大小是11，增加的方式是 old <em> 2+1。HashMap中hash数组的默认大小是16， 增加的方式是 old </em> 2。</p>
+<p>Hashtable中hash数组默认大小是11，增加的方式是 old × 2+1。HashMap中hash数组的默认大小是16， 增加的方式是 old × 2。</p>
 </blockquote>
 <h4 id="2-1-ArrayList"><a href="#2-1-ArrayList" class="headerlink" title="2.1 ArrayList"></a>2.1 ArrayList</h4><p>初始容量：10</p>
 <p>扩容：oldCapacity + (oldCapacity &gt;&gt; 1)，即原集合长度的1.5倍。核心扩容方法grow()，扩容源码：</p>
