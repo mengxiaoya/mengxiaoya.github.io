@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-16T14:54:13.536Z">
+<meta property="og:updated_time" content="2019-10-16T15:11:26.266Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中几种容器的扩容机制总结">
 <meta name="twitter:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
@@ -378,7 +378,7 @@
 <h4 id="1-1-HashMap"><a href="#1-1-HashMap" class="headerlink" title="1.1 HashMap"></a>1.1 HashMap</h4><p>HashMap在JDK1.8中 底层数据结构上采用了数组＋链表＋红黑树。</p>
 <p>A. 初始容量默认为1&lt;&lt;4  (16)，最大容量为1&lt;&lt;30，源码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * The default initial capacity - MUST be a power of two.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">4</span>; <span class="comment">// aka 16</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * The maximum capacity, used if a higher value is implicitly specified</span></span><br><span class="line"><span class="comment">  * by either of the constructors with arguments.</span></span><br><span class="line"><span class="comment">  * MUST be a power of two &lt;= 1&lt;&lt;30.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br></pre></td></tr></table></figure>
-<p>B. 扩容加载因子为0.75，<strong>当HashMap中元素数量大于等于数组长度 <em> 加载因子(16</em>0.75=12) 时，触发扩容</strong>，扩容后的数组长度为原来的2倍。Node&lt;K,V&gt;[] resize()方法是扩容的核心源码：</p>
+<p>B. 扩容加载因子为0.75，<strong>当HashMap中元素数量大于等于数组长度×加载因子(16×0.75=12) 时，触发扩容</strong>，扩容后的数组长度为原来的2倍。Node&lt;K,V&gt;[] resize()方法是扩容的核心源码：</p>
 <p>HashMap的扩容可以分为三种情况：</p>
 <blockquote>
 <p>第一种：使用<strong>默认构造方法</strong>初始化HashMap。从下面resize()源码可以知道HashMap在一开始初始化的时候会返回一个空的table，并且thershold为0。因此第一次扩容的容量为默认值DEFAULT_INITIAL_CAPACITY也就是16。同时threshold = DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR = 12。</p>
