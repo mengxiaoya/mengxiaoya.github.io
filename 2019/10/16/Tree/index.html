@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="树,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文讲述几种树的概念，包括二叉树、二叉查找树、AVL树和红黑树。注意本文只是对相关概念的解释，不对原理做过多的解释，特别是红黑树的添加和删除节点，是比较麻烦的情况，感兴趣者可自行研究。">
+<meta name="keywords" content="树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构 - 树的初步认识">
+<meta property="og:url" content="http://yoursite.com/2019/10/16/Tree/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文讲述几种树的概念，包括二叉树、二叉查找树、AVL树和红黑树。注意本文只是对相关概念的解释，不对原理做过多的解释，特别是红黑树的添加和删除节点，是比较麻烦的情况，感兴趣者可自行研究。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/16/Tree/9.png">
+<meta property="og:updated_time" content="2019-10-16T14:52:19.854Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构 - 树的初步认识">
+<meta name="twitter:description" content="本文讲述几种树的概念，包括二叉树、二叉查找树、AVL树和红黑树。注意本文只是对相关概念的解释，不对原理做过多的解释，特别是红黑树的添加和删除节点，是比较麻烦的情况，感兴趣者可自行研究。">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/16/Tree/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/16/Tree/">
+
+
+
+
+
+  <title>数据结构 - 树的初步认识 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/16/Tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据结构 - 树的初步认识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-16T22:37:19+08:00">
+                2019-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构与算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构与算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/16/Tree/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/16/Tree/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文讲述几种树的概念，包括二叉树、二叉查找树、AVL树和红黑树。注意本文只是对相关概念的解释，不对原理做过多的解释，特别是红黑树的添加和删除节点，是比较麻烦的情况，感兴趣者可自行研究。</p>
+<a id="more"></a>
+<h4 id="一、树"><a href="#一、树" class="headerlink" title="一、树"></a>一、树</h4><p><strong>树</strong>–是计算机中的一种数据结构，是一个由n（&gt;=1）个元素组成具有层次关系的集合。因该数据结构呈现出的形状像一颗<strong>树</strong>，所以称这种数据结构叫做<strong>树</strong>，只不过这颗树是倒过来的。</p>
+<p><img src="/2019/10/16/Tree/../Tree\1.png" alt="avatar"></p>
+<p>在上面的截图中，简单抽象出数据结构中的<strong>树</strong>。在生活中，这样的结构比比皆是，例如：公司的组织架构、家族的族谱、计算机中的文件结构等等。只要符合上面的结构，均可以称为<strong>树</strong>；</p>
+<p>在计算机领域中，<strong>树</strong>只是一种简称，具体的实现还是交由其子树来完成；这其中就包括：二叉树、平衡二叉树、红黑树、B树、哈夫曼树等。</p>
+<p>一棵树的示例图：</p>
+<p><img src="/2019/10/16/Tree/../Tree\2.png" alt="avatar"></p>
+<p>树的相关术语：</p>
+<blockquote>
+<p><strong>节点(Nood)</strong>：<strong>树</strong>中的每一个元素都叫做<strong>节点</strong>，又或者称为<strong>结点</strong>；图中A、B、C、D等都称之为节点；</p>
+<p><strong>根节点(树根-Root)</strong>：在树中，最顶端的节点称之为<strong>根节点(树根-Root)</strong>；A节点就是整个树的根节点；</p>
+<p><strong>子树</strong>：除了根节点之外，其余节点自由组合成的树，称之为<strong>子树</strong>，子树可以是一个节点，也可以是多个节点；其中，Q节点可称之为子树，B、D、G三个节点结合也可以称之为子树；</p>
+<p><strong>叶子节点(叶节点)</strong>：没有孩子节点的节点，称之为<strong>叶子节点(叶节点)</strong>,也就是该节点下面没有子节点了；图中D、G、Q、V称之为叶子节点；</p>
+<p><strong>父节点</strong>：简单来说，就是一个节点上面的节点，就是该节点的<strong>父节点</strong>；B节点是D节点的父节点，C节点是Q节点的父节点；</p>
+<p><strong>树的高度</strong>：从叶子节点(此时高度为1)开始自底向上逐层增加，得到的值称之为树的高度；截图中树的高度为4（V、H、C、A）;</p>
+<p><strong>树的深度</strong>：从根节点(此时深度为1)开始自上而下逐层增加，最终得到的值称之为树的深度；截图中树的深度为4(A、C、H、V);</p>
+</blockquote>
+<p>注意：关于树的高度和深度第一个节点的基数到底是0还是1，我翻过好几本数据结构的书籍各有说法，此处不做过多讨论，本文以基数为1来对待。</p>
+<h4 id="二、二叉树"><a href="#二、二叉树" class="headerlink" title="二、二叉树"></a>二、二叉树</h4><p>二叉树是最基础的<strong>树</strong>结构，也是树结构中的根基。</p>
+<p>二叉树的特点：</p>
+<blockquote>
+<ol>
+<li>二叉树可以有多个元素，也可以只有一个元素，当然也可以一个元素也没有，它是一个元素的集合;</li>
+<li>二叉树规定了在每个节点下最多只能拥有两个子节点，一左一右；其中，左节点可以称为左子树，右节点称为右子树；</li>
+<li>二叉树没有要求左子树中任意节点的值要小于右子树中任意节点的值。</li>
+</ol>
+</blockquote>
+<p>二叉树示例图：</p>
+<p><img src="/2019/10/16/Tree/../Tree\3.png" alt="avatar"></p>
+<p>二叉树的节点实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="comment">//节点的值：</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> data;</span><br><span class="line">    <span class="comment">//指向左孩子的指针：</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode leftTreeNode;</span><br><span class="line">    <span class="comment">//指向右孩子的指针：</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode rightTreeNode;</span><br><span class="line">    <span class="comment">//指向父节点的指针</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode parentNode;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TreeNode</span><span class="params">(<span class="keyword">int</span> data, TreeNode leftTreeNode,</span></span></span><br><span class="line"><span class="function"><span class="params">                    TreeNode rightTreeNode, TreeNode parentNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">        <span class="keyword">this</span>.leftTreeNode = leftTreeNode;</span><br><span class="line">        <span class="keyword">this</span>.rightTreeNode = rightTreeNode;</span><br><span class="line">        <span class="keyword">this</span>.parentNode = parentNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getLeftTreeNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> leftTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLeftTreeNode</span><span class="params">(TreeNode leftTreeNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.leftTreeNode = leftTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getRightTreeNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rightTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRightTreeNode</span><span class="params">(TreeNode rightTreeNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rightTreeNode = rightTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getParentNode</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> parentNode;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParentNode</span><span class="params">(TreeNode parentNode)</span> </span>&#123;<span class="keyword">this</span>.parentNode = parentNode;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="三、二叉查找树"><a href="#三、二叉查找树" class="headerlink" title="三、二叉查找树"></a>三、二叉查找树</h4><p>二叉查找树在二叉树的基础上规定：</p>
+<blockquote>
+<p>任一结点的值都大于其左子树，小于其右子树。</p>
+</blockquote>
+<p>通过如上规定可以推出，二叉查找树的任意左子树和右子树中也同样形成了二叉查找树，所以说二叉查找树的特点比二叉树更加明确。</p>
+<p>此外，根据上面的特点，我们还可以使用<strong>二分查找</strong>在树中进行元素搜索：如果查找的元素大于根节点，则在树的右边进行搜索；如果小于根节点，则在树的左边进行搜索。如果等于根节点，则直接返回；所以二叉查找树的查询效率远远高于二叉树。</p>
+<p>二叉查找树示例图：</p>
+<p><img src="/2019/10/16/Tree/../Tree\4.png" alt="avatar"></p>
+<h4 id="四、平衡二叉树"><a href="#四、平衡二叉树" class="headerlink" title="四、平衡二叉树"></a>四、平衡二叉树</h4><p>平衡二叉树又叫AVL树，AVL树在二叉查找树的基础上规定：</p>
+<blockquote>
+<p>左右子树的高度差的绝对值不能大于1，也就是说左右子树的高度差只能为-1、0、1。</p>
+</blockquote>
+<p>实际上，二叉树可以理解为一个链表结构。试想下，如果一个二叉树的左子树为空，只有右子树，且右子树中又只有右节点（左节点），那么这个二叉树就形成了一个不折不扣的链表。对于二叉查找树来说，二分查找也就失去了原有的性能，变成了顺序查找。即元素的插入顺序是1、2、3、4、5、6的话，即可实现。</p>
+<p>AVL树示例图：</p>
+<p><img src="/2019/10/16/Tree/../Tree\5.png" alt="avatar"></p>
+<h4 id="五、红黑树"><a href="#五、红黑树" class="headerlink" title="五、红黑树"></a>五、红黑树</h4><p><strong>1. 红黑树的定义</strong></p>
+<p>红黑树又叫R-B Tree，本质上是一种<strong>自平衡二叉查找树</strong>，它满足了二叉查找树的特点，即左子树任意节点的值永远小于右子树任意节点的值。红黑树和平衡二叉树(AVL树)都是二叉查找树的变体，但红黑树的统计性能要好于AVL树。因为，AVL树是<strong>严格维持平衡</strong>的，红黑树是<strong>黑平衡</strong>的。维持平衡需要额外的操作，这就加大了数据结构的时间复杂度，所以红黑树可以看作是二叉查找树和AVL树的一个<strong>折中</strong>，维持平衡的同时也不需要花太多时间维护数据结构的性质。</p>
+<p>不过，<strong>二叉查找树还有一个致命的弱点，即左子树(右子树)可以为空</strong>，而插入的节点全部集中到了树的另一端，致使二叉查找树失去了平衡，二叉查找树搜索性能下降，从而失去了使用二分查找的意义。</p>
+<p>为了维护树的平衡性，平衡二叉树（AVL树）出现了，它<strong>用左右子树的高度差来保持着树的平衡</strong>。而我们本节要介绍的红黑树，<strong>用的是节点的颜色来维持树的平衡</strong>。</p>
+<p>红黑树，即红颜色和黑颜色并存的二叉树，插入的元素节点会被赋为红色或者黑色，待所有元素插入完成后就形成了一颗完整的红黑树。如下图所示：</p>
+<p><img src="/2019/10/16/Tree/../Tree\6.png" alt="avatar"></p>
+<p>不过，你不要想当然的以为只是给二叉树的阶段随意赋为黑色或者红色，就可保证树的平衡。事情远没有你想象的那么简单。<strong>一颗红黑树必须满足以下五点要求</strong>：</p>
+<blockquote>
+<ol>
+<li>树中每个节点必须是有颜色的，要么红色，要么黑色；</li>
+<li>树中的根节点必须是黑色的；</li>
+<li>树中的叶节点必须是黑色的，也就是树尾的NIL节点或者为null的节点；</li>
+<li>树中任意一个节点如果是红色的，那么它的两个子节点一点是黑色的；</li>
+<li>任意节点到叶节点（树最下面一个节点）的每一条路径所包含的黑色节点数目一定相同；</li>
+</ol>
+</blockquote>
+<p>科普：NIL节点是就是一个假想的或是无实在意义的节点，所有应该指向NULL的指针，都看成指向了NIL节点。包括叶节点的子节点指针或是根节点的父指针（均是指向null的）。</p>
+<p>红黑树的节点实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span> </span>&#123;</span><br><span class="line">    <span class="comment">//节点的值：</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> data;</span><br><span class="line">    <span class="comment">//节点的颜色：</span></span><br><span class="line">    <span class="keyword">private</span> String color;</span><br><span class="line">    <span class="comment">//指向左孩子的指针：</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode leftTreeNode;</span><br><span class="line">    <span class="comment">//指向右孩子的指针：</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode rightTreeNode;</span><br><span class="line">    <span class="comment">//指向父节点的指针</span></span><br><span class="line">    <span class="keyword">private</span> TreeNode parentNode;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TreeNode</span><span class="params">(<span class="keyword">int</span> data, String color, TreeNode leftTreeNode,</span></span></span><br><span class="line"><span class="function"><span class="params">                    TreeNode rightTreeNode, TreeNode parentNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">        <span class="keyword">this</span>.color = color;</span><br><span class="line">        <span class="keyword">this</span>.leftTreeNode = leftTreeNode;</span><br><span class="line">        <span class="keyword">this</span>.rightTreeNode = rightTreeNode;</span><br><span class="line">        <span class="keyword">this</span>.parentNode = parentNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getColor</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> color;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span><span class="params">(String color)</span> </span>&#123;<span class="keyword">this</span>.color = color;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getLeftTreeNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> leftTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLeftTreeNode</span><span class="params">(TreeNode leftTreeNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.leftTreeNode = leftTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getRightTreeNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rightTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRightTreeNode</span><span class="params">(TreeNode rightTreeNode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rightTreeNode = rightTreeNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">getParentNode</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> parentNode;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setParentNode</span><span class="params">(TreeNode parentNode)</span> </span>&#123;<span class="keyword">this</span>.parentNode = parentNode;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用图片来形容一个节点的话就是：</p>
+<p><img src="/2019/10/16/Tree/../Tree\7.png" alt="avatar"></p>
+<p><strong>2. 红黑树的旋转</strong></p>
+<p>上面说过，为了维护红黑树的平衡，不只是给节点着色那么简单，还有更复杂的处理逻辑。</p>
+<p>而这更复杂的处理逻辑就是对节点进行旋转操作，其中旋转操作又分为左旋、右旋两种；</p>
+<p>对于树的操作，最常见的就是添加、删除而已。不过，在添加或者删除之后，红黑树发生了改变，可能就不满足以上的5点要求，也就不是一颗红黑树了。于是我们需要通过对节点的旋转，使其重新成为一颗红黑树。</p>
+<p><strong>A.左旋</strong></p>
+<p>左旋，顾名思义就是对节点进行向左旋转处理</p>
+<p><img src="/2019/10/16/Tree/../Tree\8.png" alt="avatar"></p>
+<p>说明：</p>
+<blockquote>
+<p>对节点X进行向左进行旋转，将其变成了一个左子节点；</p>
+<p>这个左旋中的左，就是将被旋转的节点变成一个左节点；</p>
+<p>其中，如果Y的的左子节点不为null，则将其赋值X的右子节点；</p>
+</blockquote>
+<p><strong>B.右旋</strong></p>
+<p>右旋，同理，也就是对节点进行向右旋转处理</p>
+<p><img src="/2019/10/16/Tree/../Tree\9.png" alt="avatar"></p>
+<p>说明：</p>
+<blockquote>
+<p>对节点Y进行向右进行旋转，将其变成了一个右子节点；</p>
+<p>这个右旋中的右，就是将被旋转的节点变成一个右节点；</p>
+<p>其中，如果X节点的右子节点不为null，则赋值给Y的左子节点；</p>
+</blockquote>
+<p><strong>3.红黑树的节点添加和删除</strong></p>
+<p>在将一个节点插入到红黑树中，首选需要将红黑树当做一颗二叉树查找树来对待，将节点进行插入。然后，为新插入的节点进行着色；最后，通过旋转和重新着色的方式来修正树的平衡，使其成为一颗红黑树；</p>
+<blockquote>
+<ol>
+<li>对于红黑树来说，其底层依旧是一颗二叉查找树。当我们插入新的元素时，它依旧会对该元素进行排序比较，将其送入到左子树或者是右子树中。</li>
+<li>在将新节点安置好以后，在对其进行着色处理，<strong>必须着成红色</strong>。</li>
+</ol>
+</blockquote>
+<p>此时你可能会有疑问，为什么要着成红色，而不是黑色呢？</p>
+<p>通过重新回顾红黑树必须满足的五点要求，可以分析出，当将新增节点着成红色后，我们违背以上规范的条数最少，恢复平衡起来最省事，当新增节点为红色时：</p>
+<blockquote>
+<ol>
+<li>不会违背第五条 – 黑色节点数目相同；</li>
+<li>不会违背第一条 – 节点必须是红色，或者黑色；</li>
+<li>不会违背第二条 – 根节点是黑色。当树中已有元素时候，我们新增节点并不会影响根节点的颜色（若树中没有元素，新增节点会被当成根节点，此时虽被着为红色，但在最后一步中还会对其重新着色，变成黑色）；</li>
+<li>不会违背第三条 – 此处所指的叶节点指的是叶节点的子节点，也就是为null的元素；</li>
+<li>可能会违背第四条 – 任意节点为红色，其子节点一定是黑色；</li>
+</ol>
+</blockquote>
+<p>然而让人更头痛的是，即便是只违背第四条，真正处理起来的时候也非常麻烦，具体的分情况处理这里不做赘述，请自行研究！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/树/" rel="tag"># 树</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/16/Java-HashMap/" rel="next" title="HashMap的底层实现原理源码分析">
+                <i class="fa fa-chevron-left"></i> HashMap的底层实现原理源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、树"><span class="nav-number">1.</span> <span class="nav-text">一、树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、二叉树"><span class="nav-number">2.</span> <span class="nav-text">二、二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、二叉查找树"><span class="nav-number">3.</span> <span class="nav-text">三、二叉查找树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、平衡二叉树"><span class="nav-number">4.</span> <span class="nav-text">四、平衡二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、红黑树"><span class="nav-number">5.</span> <span class="nav-text">五、红黑树</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

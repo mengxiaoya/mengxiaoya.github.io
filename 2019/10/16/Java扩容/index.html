@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中几种容器的扩容机制总结">
+<meta property="og:url" content="http://yoursite.com/2019/10/16/Java扩容/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-16T14:54:13.536Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中几种容器的扩容机制总结">
+<meta name="twitter:description" content="本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/16/Java扩容/">
+
+
+
+
+
+  <title>Java中几种容器的扩容机制总结 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/16/Java扩容/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java中几种容器的扩容机制总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-16T22:37:04+08:00">
+                2019-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/16/Java扩容/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/16/Java扩容/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文总结Java中常用容器的扩容机制，扩容的过程是很耗时的，理解这些容器的扩容机制对开发来说还是很有必要的。</p>
+<a id="more"></a>
+<h4 id="Java中的部分需要扩容的内容总结如下："><a href="#Java中的部分需要扩容的内容总结如下：" class="headerlink" title="Java中的部分需要扩容的内容总结如下："></a>Java中的部分需要扩容的内容总结如下：</h4><p>第一部分：HashMap，HashSet，Hashtable</p>
+<p>第二部分：ArrayList，Vector，CopyOnWriteArrayList</p>
+<p>第三部分：StringBuffer，StringBuilder</p>
+<p>本文从以下几个方面分析（JDK1.8）：</p>
+<blockquote>
+<ol>
+<li>初始容量</li>
+<li>扩容机制</li>
+<li>同类型之间的对比</li>
+</ol>
+</blockquote>
+<h4 id="1-1-HashMap"><a href="#1-1-HashMap" class="headerlink" title="1.1 HashMap"></a>1.1 HashMap</h4><p>HashMap在JDK1.8中 底层数据结构上采用了数组＋链表＋红黑树。</p>
+<p>A. 初始容量默认为1&lt;&lt;4  (16)，最大容量为1&lt;&lt;30，源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * The default initial capacity - MUST be a power of two.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">4</span>; <span class="comment">// aka 16</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * The maximum capacity, used if a higher value is implicitly specified</span></span><br><span class="line"><span class="comment">  * by either of the constructors with arguments.</span></span><br><span class="line"><span class="comment">  * MUST be a power of two &lt;= 1&lt;&lt;30.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br></pre></td></tr></table></figure>
+<p>B. 扩容加载因子为0.75，<strong>当HashMap中元素数量大于等于数组长度 <em> 加载因子(16</em>0.75=12) 时，触发扩容</strong>，扩容后的数组长度为原来的2倍。Node&lt;K,V&gt;[] resize()方法是扩容的核心源码：</p>
+<p>HashMap的扩容可以分为三种情况：</p>
+<blockquote>
+<p>第一种：使用<strong>默认构造方法</strong>初始化HashMap。从下面resize()源码可以知道HashMap在一开始初始化的时候会返回一个空的table，并且thershold为0。因此第一次扩容的容量为默认值DEFAULT_INITIAL_CAPACITY也就是16。同时threshold = DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR = 12。</p>
+<p>第二种：<strong>指定初始容量的构造方法</strong>初始化HashMap。那么从下面源码可以看到初始容量会等于threshold，接着threshold = 当前的容量（threshold） * DEFAULT_LOAD_FACTOR。</p>
+<p>第三种：HashMap<strong>不是第一次扩容</strong>。如果HashMap已经扩容过的话，那么每次table的容量以及threshold量为原有的两倍。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * The load factor used when none specified in constructor.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initializes or doubles table size.  If null, allocates in</span></span><br><span class="line"><span class="comment">     * accord with initial capacity target held in field threshold.</span></span><br><span class="line"><span class="comment">     * Otherwise, because we are using power-of-two expansion, the</span></span><br><span class="line"><span class="comment">     * elements from each bin must either stay at same index, or move</span></span><br><span class="line"><span class="comment">     * with a power of two offset in the new table.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the table</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;K,V&gt;[] resize() &#123;</span><br><span class="line">        Node&lt;K,V&gt;[] oldTab = table; <span class="comment">// 首次初始化后table为null</span></span><br><span class="line">        <span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;</span><br><span class="line">        <span class="keyword">int</span> oldThr = threshold;  <span class="comment">// 默认构造器的情况下为0</span></span><br><span class="line">        <span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (oldCap &gt; <span class="number">0</span>) &#123;  <span class="comment">// table扩容过，说明不是第一次扩容</span></span><br><span class="line">            <span class="keyword">if</span> (oldCap &gt;= MAXIMUM_CAPACITY) &#123;  <span class="comment">// 当前table容量大于最大值的时候返回当前table</span></span><br><span class="line">                threshold = Integer.MAX_VALUE;</span><br><span class="line">                <span class="keyword">return</span> oldTab;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp;</span><br><span class="line">                     oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">                <span class="comment">// table的容量乘以2，threshold的值也乘以2，符合上述第三种扩容情况</span></span><br><span class="line">                newThr = oldThr &lt;&lt; <span class="number">1</span>; </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (oldThr &gt; <span class="number">0</span>) </span><br><span class="line">            <span class="comment">// 使用带有初始容量的构造器时，table容量为初始化得到的threshold</span></span><br><span class="line">            newCap = oldThr;</span><br><span class="line">        <span class="keyword">else</span> &#123;           </span><br><span class="line">            <span class="comment">// 默认构造器下进行扩容</span></span><br><span class="line">            newCap = DEFAULT_INITIAL_CAPACITY;</span><br><span class="line">            newThr = (<span class="keyword">int</span>)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (newThr == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 使用带有初始容量的构造器在此处进行扩容</span></span><br><span class="line">            <span class="keyword">float</span> ft = (<span class="keyword">float</span>)newCap * loadFactor;</span><br><span class="line">            newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (<span class="keyword">float</span>)MAXIMUM_CAPACITY ?</span><br><span class="line">                      (<span class="keyword">int</span>)ft : Integer.MAX_VALUE);</span><br><span class="line">        &#125;</span><br><span class="line">        threshold = newThr;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(&#123;<span class="string">"rawtypes"</span>,<span class="string">"unchecked"</span>&#125;)</span><br><span class="line">            Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])<span class="keyword">new</span> Node[newCap];</span><br><span class="line">        table = newTab;</span><br><span class="line">        <span class="keyword">if</span> (oldTab != <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="comment">// 对新扩容后的table进行赋值</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; oldCap; ++j) &#123;</span><br><span class="line">                Node&lt;K,V&gt; e;</span><br><span class="line">                <span class="keyword">if</span> ((e = oldTab[j]) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    oldTab[j] = <span class="keyword">null</span>;</span><br><span class="line">                    <span class="keyword">if</span> (e.next == <span class="keyword">null</span>)</span><br><span class="line">                        newTab[e.hash &amp; (newCap - <span class="number">1</span>)] = e;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (e <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">                        ((TreeNode&lt;K,V&gt;)e).split(<span class="keyword">this</span>, newTab, j, oldCap);</span><br><span class="line">                    <span class="keyword">else</span> &#123; <span class="comment">// preserve order</span></span><br><span class="line">                        Node&lt;K,V&gt; loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">                        Node&lt;K,V&gt; hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">                        Node&lt;K,V&gt; next;</span><br><span class="line">                        <span class="keyword">do</span> &#123;</span><br><span class="line">                            next = e.next;</span><br><span class="line">                            <span class="keyword">if</span> ((e.hash &amp; oldCap) == <span class="number">0</span>) &#123;</span><br><span class="line">                                <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</span><br><span class="line">                                    loHead = e;</span><br><span class="line">                                <span class="keyword">else</span></span><br><span class="line">                                    loTail.next = e;</span><br><span class="line">                                loTail = e;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> &#123;</span><br><span class="line">                                <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</span><br><span class="line">                                    hiHead = e;</span><br><span class="line">                                <span class="keyword">else</span></span><br><span class="line">                                    hiTail.next = e;</span><br><span class="line">                                hiTail = e;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</span><br><span class="line">                        <span class="keyword">if</span> (loTail != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            loTail.next = <span class="keyword">null</span>;</span><br><span class="line">                            newTab[j] = loHead;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (hiTail != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            hiTail.next = <span class="keyword">null</span>;</span><br><span class="line">                            newTab[j + oldCap] = hiHead;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newTab;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-HashSet"><a href="#1-2-HashSet" class="headerlink" title="1.2 HashSet"></a>1.2 HashSet</h4><p>初始容量定义：16。因为构造一个HashSet，其实相当于新建一个HashMap，然后取HashMap的Key。</p>
+<p>扩容机制和HashMap一样。</p>
+<h4 id="1-3-Hashtable"><a href="#1-3-Hashtable" class="headerlink" title="1.3 Hashtable"></a>1.3 <strong>Hashtable</strong></h4><p>初始容量定义：capacity (11)。</p>
+<p>扩容加载因子(0.75)，当超出默认长度（int）（11 <em> 0.75）=8时，扩容为old</em>2+1。</p>
+<p>扩容核心源码rehash()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">rehash</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldCapacity = table.length;</span><br><span class="line">        Entry&lt;?,?&gt;[] oldMap = table;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// overflow-conscious code</span></span><br><span class="line">        <span class="keyword">int</span> newCapacity = (oldCapacity &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldCapacity == MAX_ARRAY_SIZE)</span><br><span class="line">                <span class="comment">// Keep running with MAX_ARRAY_SIZE buckets</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            newCapacity = MAX_ARRAY_SIZE;</span><br><span class="line">        &#125;</span><br><span class="line">        Entry&lt;?,?&gt;[] newMap = <span class="keyword">new</span> Entry&lt;?,?&gt;[newCapacity];</span><br><span class="line"></span><br><span class="line">        modCount++;</span><br><span class="line">        threshold = (<span class="keyword">int</span>)Math.min(newCapacity * loadFactor, MAX_ARRAY_SIZE + <span class="number">1</span>);</span><br><span class="line">        table = newMap;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = oldCapacity ; i-- &gt; <span class="number">0</span> ;) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Entry&lt;K,V&gt; old = (Entry&lt;K,V&gt;)oldMap[i] ; old != <span class="keyword">null</span> ; ) &#123;</span><br><span class="line">                Entry&lt;K,V&gt; e = old;</span><br><span class="line">                old = old.next;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> index = (e.hash &amp; <span class="number">0x7FFFFFFF</span>) % newCapacity;</span><br><span class="line">                e.next = (Entry&lt;K,V&gt;)newMap[index];</span><br><span class="line">                newMap[index] = e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="小结：HashMap和Hashtable区别"><a href="#小结：HashMap和Hashtable区别" class="headerlink" title="小结：HashMap和Hashtable区别"></a>小结：HashMap和Hashtable区别</h4><blockquote>
+<ol>
+<li>继承不同</li>
+</ol>
+<p>public class Hashtable extends Dictionary implements Map<br>public class HashMap extends AbstractMap implements Map</p>
+<ol start="2">
+<li>同步性</li>
+</ol>
+<p>Hashtable 中的方法是同步的，而HashMap中的方法在缺省情况下是非同步的。在多线程并发的环境下，可以直接使用Hashtable，但是要使用HashMap的话就要自己增加同步处理了。</p>
+<ol start="3">
+<li>null键和null值</li>
+</ol>
+<p>Hashtable中，key和value都不允许出现null值。</p>
+<p>HashMap中，null可以作为键，这样的键只有一个；可以有一个或多个键所对应的值为null。当get()方法返回null值时，即可以表示 HashMap中没有该键，也可以表示该键所对应的值为null。因此，在HashMap中不能由get()方法来判断HashMap中是否存在某个键， 而应该用containsKey()方法来判断。</p>
+<ol start="4">
+<li>遍历方式</li>
+</ol>
+<p>两个遍历方式的内部实现上不同。Hashtable、HashMap都使用了 Iterator。而由于历史原因，Hashtable还使用了Enumeration的方式 。</p>
+<ol start="5">
+<li>哈希值</li>
+</ol>
+<p>Hashtable直接使用对象的hashCode。而HashMap重新计算hash值。</p>
+<ol start="6">
+<li>扩容</li>
+</ol>
+<p>Hashtable中hash数组默认大小是11，增加的方式是 old <em> 2+1。HashMap中hash数组的默认大小是16， 增加的方式是 old </em> 2。</p>
+</blockquote>
+<h4 id="2-1-ArrayList"><a href="#2-1-ArrayList" class="headerlink" title="2.1 ArrayList"></a>2.1 ArrayList</h4><p>初始容量：10</p>
+<p>扩容：oldCapacity + (oldCapacity &gt;&gt; 1)，即原集合长度的1.5倍。核心扩容方法grow()，扩容源码：</p>
+<p>ArrayList的扩容也可以分为三种情况进行分析：</p>
+<blockquote>
+<ol>
+<li>当前数组是由<strong>默认构造方法</strong>生成的空数组并且第一次添加数据。此时minCapacity等于默认的容量（10）那么根据下面逻辑可以看到最后数组的容量会从0扩容成10。而后的数组扩容才是按照当前容量的1.5倍进行扩容。</li>
+<li>当前数组是由<strong>自定义初始容量构造方法创建并且指定初始容量为0</strong>。此时minCapacity等于1那么根据下面逻辑可以看到最后数组的容量会从0变成1。这边可以看到一个严重的问题，一旦我们执行了初始容量为0，那么根据下面的算法前四次扩容每次都 +1，在第5次添加数据进行扩容的时候才是按照当前容量的1.5倍进行扩容。</li>
+<li><strong>不是第一次扩容</strong>，当扩容量（newCapacity）大于ArrayList数组定义的最大值后会调用hugeCapacity来进行判断。如果minCapacity已经大于Integer的最大值（溢出为负数）那么抛出OutOfMemoryError，否则的话根据与MAX_ARRAY_SIZE的比较情况确定是返回Integer最大值还是MAX_ARRAY_SIZE。这边也可以看到ArrayList允许的最大容量就是Integer的最大值（-2的31次方~2的31次方减1）。</li>
+</ol>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>; <span class="comment">//数组默认初始容量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 定义一个空的数组实例以供其他需要用到空数组的地方调用，其中一处就是使用自定义初始容量构造方法时候如果你指</span></span><br><span class="line"><span class="comment">* 定初始容量为0的时候就会返回</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 是用来使用默认构造方法时候返回的空数组。如果第一次添加数据的话那么数组扩容长度为DEFAULT_CAPACITY=10</span></span><br><span class="line"><span class="comment">* 跟前面的区别就是这个空数组是用来判断ArrayList第一添加数据的时候要扩容多少</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 数据存的地方它的容量就是这个数组的长度，同时只要是使用默认构造器</span></span><br><span class="line"><span class="comment">* （DEFAULTCAPACITY_EMPTY_ELEMENTDATA ）第一次添加数据的时候容量扩容为DEFAULT_CAPACITY = 10</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">transient</span> Object[] elementData;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> size; <span class="comment">//当前数组的长度</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* minCapacitt表示修改后的数组容量，minCapacity = size + 1，此方法是进行add操作时就会调用判断</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断看看是否需要扩容</span></span><br><span class="line">    ensureExplicitCapacity(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 判断当前ArrayList是否需要扩容</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 扩容核心方法</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-CopyOnWriteArrayList"><a href="#2-2-CopyOnWriteArrayList" class="headerlink" title="2.2 CopyOnWriteArrayList"></a>2.2 <strong>CopyOnWriteArrayList</strong></h4><p>CopyOnWriteArrayList在做修改操作时，每次都是重新创建一个新的数组，在新数组上操作，最终再将新数组替换掉原数组。因此，在做修改操作时，仍可以做读取操作，读取直接操作的原数组。读和写操作的对象都不同，因此读操作和写操作互不干扰。只有写与写之间需要进行同步等待。另外，原数组被声明为volatile，这就保证了，一旦数组发生变化，则结果对其它线程(读线程和其它写线程)是可见的。</p>
+<p>CopyOnWriteArrayList并不像ArrayList一样指定默认的初始容量。它也没有自动扩容的机制，而是添加几个元素，长度就相应的增长多少。<strong>CopyOnWriteArrayList适用于读多写少</strong>，既然是写的情况少，则不需要频繁扩容。并且修改操作每次在生成新的数组时就指定了新的容量，也就相当于扩容了，所以不需要额外的机制来实现扩容。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><blockquote>
+<ol>
+<li>ArrayList与Vector初始容量都为10。</li>
+<li>扩容机制不同，当超出当前长度时ArrayList扩展为原来的1.5倍，Vector扩容时有一个增量的概念，这个值可以在初始化Vector时作为参数传递，真正的扩容是newCapacity()这个函数，首先它判断增量是否大于0，也就是判断是否有最初设定的增量大小，如果有增量大小，新容量=增量+旧容量，如果没有增量则容量变为原来的两倍。</li>
+<li>ArrayList为非线程安全的，处理效率上较Vector快，若同时考虑线程安全和效率，可以使用 CopyOnWriteArrayList。</li>
+</ol>
+</blockquote>
+<h4 id="3-1-StringBuffer"><a href="#3-1-StringBuffer" class="headerlink" title="3.1 StringBuffer"></a>3.1 StringBuffer</h4><p>初始容量定义：16。</p>
+<p>扩容：因为StringBuffer extends AbstractStringBuilder，所以实际上是用的是AbstractStringBuilder的扩容方法，先将新容量扩大到value的长度乘以2加2，如果不够则直接扩充到所需的容量大小minCapacity。如果够则还要进行如下判断，如果比Integer的最大值还要大会抛OOM异常；否则，如果比MAX_ARRAY_SIZE大，则创建新容量为minCapacity；如果比MAX_ARRAY_SIZE小，则新容量为MAX_ARRAY_SIZE。扩容核心源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* The maximum size of array to allocate (unless necessary).</span></span><br><span class="line"><span class="comment">* Some VMs reserve some header words in an array.</span></span><br><span class="line"><span class="comment">* Attempts to allocate larger arrays may result in</span></span><br><span class="line"><span class="comment">* OutOfMemoryError: Requested array size exceeds VM limit</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">newCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = (value.length &lt;&lt; <span class="number">1</span>) + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (newCapacity &lt;= <span class="number">0</span> || MAX_ARRAY_SIZE - newCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        ? hugeCapacity(minCapacity)</span><br><span class="line">        : newCapacity;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">hugeCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Integer.MAX_VALUE - minCapacity &lt; <span class="number">0</span>) &#123; <span class="comment">// overflow</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> OutOfMemoryError();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (minCapacity &gt; MAX_ARRAY_SIZE)</span><br><span class="line">        ? minCapacity : MAX_ARRAY_SIZE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-2-StringBuilder"><a href="#3-2-StringBuilder" class="headerlink" title="3.2 StringBuilder"></a>3.2 StringBuilder</h4><p>同3.1</p>
+<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h4><blockquote>
+<ol>
+<li>StringBuilder是jdk1.5引进的，而StringBuffer在1.0就有了。</li>
+<li>StringBuilder和StringBuffer都是可变的字符串。能够通过append或者insert等方法改动串的内容。</li>
+<li>StringBuffer是线程安全的而StringBuilder不是，因而在多线程的环境下优先使用StringBuffer，而其它情况下推荐使用StringBuilder，由于它更快。</li>
+<li>StringBuilder和StringBuffer都继承自AbstractStringBuilder类，AbStractStringBuilder主要实现了扩容、append、insert方法。StrngBuilder和StringBuffer的相关方法都直接调用的父类。</li>
+<li>StringBuilder和StringBuffer的初始容量都是16，程序猿尽量手动设置初始值。以避免多次扩容所带来的性能问题。</li>
+<li>StringBuilder和StringBuffer的扩容机制是相同的。</li>
+</ol>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/15/hdfs-lease/" rel="next" title="Lease机制导致的追加写入文件异常分析">
+                <i class="fa fa-chevron-left"></i> Lease机制导致的追加写入文件异常分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/16/Java-HashMap/" rel="prev" title="HashMap的底层实现原理源码分析">
+                HashMap的底层实现原理源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java中的部分需要扩容的内容总结如下："><span class="nav-number">1.</span> <span class="nav-text">Java中的部分需要扩容的内容总结如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-HashMap"><span class="nav-number">2.</span> <span class="nav-text">1.1 HashMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-HashSet"><span class="nav-number">3.</span> <span class="nav-text">1.2 HashSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-Hashtable"><span class="nav-number">4.</span> <span class="nav-text">1.3 Hashtable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结：HashMap和Hashtable区别"><span class="nav-number">5.</span> <span class="nav-text">小结：HashMap和Hashtable区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-ArrayList"><span class="nav-number">6.</span> <span class="nav-text">2.1 ArrayList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-CopyOnWriteArrayList"><span class="nav-number">7.</span> <span class="nav-text">2.2 CopyOnWriteArrayList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">8.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-StringBuffer"><span class="nav-number">9.</span> <span class="nav-text">3.1 StringBuffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-StringBuilder"><span class="nav-number">10.</span> <span class="nav-text">3.2 StringBuilder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结-1"><span class="nav-number">11.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
