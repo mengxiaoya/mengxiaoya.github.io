@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-24T13:20:28.522Z">
+<meta property="og:updated_time" content="2019-10-24T13:51:46.469Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark-On-Yarn的Executor、Cores和Memory的分配">
 <meta name="twitter:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
@@ -365,14 +365,96 @@
         <p>在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。</p>
 <a id="more"></a>
 <h4 id="理论引导"><a href="#理论引导" class="headerlink" title="理论引导"></a>理论引导</h4><p><strong>当配置参数时，请遵循下表，并将其推荐建议牢记于心！</strong></p>
-<p>Hadoop/Yarn/OS 守护进程：</p>
+<ul>
+<li>Hadoop/Yarn/OS 守护进程：</li>
+</ul>
 <blockquote>
 <p>当利用一个集群管理器（比如YARN）运行spark程序时，存在一些守护进程运行在后台，比如NameNode，Secondary NameNode，DataNode，ResourceManager和NodeManager。因此，当确定num-executors时，我们需要确保有足够的cores（大约每个节点一个core）维持这些守护进程的平稳运行。</p>
 </blockquote>
-<p>Yarn ApplicationMaster (AM)：</p>
+<ul>
+<li>Yarn ApplicationMaster (AM)：</li>
+</ul>
 <blockquote>
-<p>ApplicationMaster的职责是：向ResourceManager申请资源，与NodeManager一同执行并监控containner及其资源消耗。如果程序运行在Spark-On-Yarn，我们需要预留一些资源给ApplicationMaster，AM大约需要1024MB的内存和一个Executor。</p>
+<p>ApplicationMaster的职责是：向ResourceManager申请资源，与NodeManager一同执行并监控container及其资源消耗。如果程序运行在Spark-On-Yarn，我们需要预留一些资源给ApplicationMaster，AM大约需要1024MB的内存和一个Executor。</p>
 </blockquote>
+<ul>
+<li>HDFS吞吐：</li>
+</ul>
+<blockquote>
+<p>HDFS客户端会遇到大量并发线程的问题。 据观察，HDFS当达到全写入吞吐量时，需要每个executor执行约5个任务。 因此，最好控制每个executor中core的数目低于这个数字。</p>
+</blockquote>
+<ul>
+<li>内存开销：</li>
+</ul>
+<blockquote>
+<p>Spark-On-Yarn的每个executor的内存由以下两部分组成：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; Full memory requested to yarn per executor =</span><br><span class="line">&gt;          spark-executor-memory + spark.yarn.executor.memoryOverhead</span><br><span class="line">&gt; spark.yarn.executor.memoryOverhead = Max(<span class="number">384</span>MB, <span class="number">7</span>% <span class="keyword">of</span> spark.executor-memory)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>所以，如果我们申请了每个executor的内存为30G，那么，对我们而言，AM将得到30G + 7% × 30G约等于32G的内存。</p>
+</blockquote>
+<ul>
+<li>执行拥有太多内存的executor会产生过多的垃圾回收延迟</li>
+<li>执行过小的executor（举例而言，一个只有一核和仅仅足够内存跑一个task的executor），将会丢失在单个JVM中运行多任务的好处。</li>
+</ul>
+<h4 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h4><p>现在，我们考虑一个10个节点的如下配置的集群，并分析不同参数设置的结果。<br>集群配置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>个节点</span><br><span class="line">每个节点<span class="number">16</span>核</span><br><span class="line">每个节点<span class="number">64</span>G内存</span><br></pre></td></tr></table></figure>
+<p><strong>第一种方案：Tiny executors (每个Executor一个Core)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'--num-executors'</span> = <span class="string">'该方案下，每个executor配置一个core'</span></span><br><span class="line">                                = <span class="string">'集群中的core的总数'</span></span><br><span class="line">                                = <span class="string">'每个节点的core数目 * 集群中的节点数'</span> </span><br><span class="line">                                = <span class="number">16</span> x <span class="number">10</span> = <span class="number">160</span></span><br><span class="line"><span class="string">'--executor-cores'</span> = <span class="number">1</span> (每个executor一个core)</span><br><span class="line"><span class="string">'--executor-memory'</span> = <span class="string">'每个executor的内存'</span></span><br><span class="line">                                = <span class="string">'每个节点的内存/每个节点的executor数目'</span></span><br><span class="line">                                = <span class="number">64</span>GB/<span class="number">16</span> = <span class="number">4</span>GB</span><br></pre></td></tr></table></figure>
+<p>分析</p>
+<blockquote>
+<p>当一个executor只有一个core时，正如我们上面分析的，我们可能不能发挥在单个JVM上运行多任务的优势。此外，共享/缓存变量（如广播变量和累加器）将复制到节点的每个core，这里是16次。并且，我们没有为Hadoop / Yarn守护进程留下足够的内存开销，我们也没有计入ApplicationManager。因此，这不是一个好的方案！</p>
+</blockquote>
+<p><strong>第二种方案：Fat executors (每个节点一个Executor)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'--num-executors'</span> = <span class="string">'该方案下，一个executor独占一个节点'</span></span><br><span class="line">                                = <span class="string">'集群中的节点的数目'</span></span><br><span class="line">                                = <span class="number">10</span></span><br><span class="line"><span class="string">'--executor-cores'</span> = <span class="string">'一个节点一个executor意味着每个executor独占节点中所有的cores'</span></span><br><span class="line">                                = <span class="string">'节点中的core的数目'</span></span><br><span class="line">                                = <span class="number">16</span></span><br><span class="line"><span class="string">'--executor-memory'</span> = <span class="string">'每个executor的内存'</span></span><br><span class="line">                                = <span class="string">'节点的内存/节点中executor的数目'</span></span><br><span class="line">                                = <span class="number">64</span>GB/<span class="number">1</span> = <span class="number">64</span>GB</span><br></pre></td></tr></table></figure>
+<p>分析</p>
+<blockquote>
+<p>每个executor独占16个核心，则ApplicationManager和守护程序进程则无法分配到core，并且，HDFS吞吐量会受到影响，导致过多的垃圾结果。 同样地，该方案不好！</p>
+</blockquote>
+<p><strong>第三种方案：Balance between Fat (vs) Tiny</strong></p>
+<p><strong>根据上面讨论的建议：</strong></p>
+<blockquote>
+<ul>
+<li><p>基于上述的建议，我们给每个executor分配5个core =&gt; – executor-cores = 5 (保证良好的HDFS吞吐)</p>
+</li>
+<li><p>每个节点留一个core给Hadoop/Yarn守护进程 =&gt; 每个节点可用的core的数目 = 16 - 1 = 15</p>
+</li>
+<li><p>所以，集群中总共可用的core的数目是 15 * 10 = 150</p>
+</li>
+<li><p>可用的executor的数目 = （总的可用的core的数目 / 每个executor的core的数目）= 150 / 5 = 30</p>
+</li>
+<li><p>留一个executor给ApplicationManager =&gt; –num-executors = 29</p>
+</li>
+<li><p>每个节点的executor的数目 = 30 / 10 = 3</p>
+</li>
+<li><p>每个executor的内存 = 40GB / 3 = 13GB (这里假设总64G内存拿出40G来分配给spark使用)</p>
+</li>
+<li><p>计算堆开销 = 7% * 13GB = 1GB。因此，实际的 –executor-memory = 13 -1 = 12GB</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>因此，推荐的配置如下：29 executors, 12GB memory each and 5 cores</strong></p>
+<p>分析</p>
+<blockquote>
+<p>很明显，第三种方案在Fat vs Tiny 两种方案中找到了合适的平衡点。毋庸置疑，它实现了Fat executor的并行性和Tiny executor的最佳吞吐量！</p>
+</blockquote>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>当为spark程序配置运行参数的时候，应谨记一些推荐事项：</p>
+<blockquote>
+<ol>
+<li>为Yarn的Application Manager预留资源</li>
+<li>我们应该如何为Hadoop / Yarn / OS deamon进程节省一些cores</li>
+<li>学习关于spark-yarn-memory-usage</li>
+</ol>
+</blockquote>
+<p>另外，检查并分析了配置这些参数的三种不同方法：</p>
+<blockquote>
+<ol>
+<li>Tiny Executors - 每个executor配置一个core</li>
+<li>Fat Executors - 每个executor独占一个节点</li>
+<li>推荐方案 - 基于建议项的Tiny（Vs）Fat的合适的平衡</li>
+</ol>
+</blockquote>
+<p>–num-executors, –executor-cores and –executor-memory 这三个参数在spark性能中扮演很重要的角色，它们控制着spark程序获得的CPU和内存的资源。因此对于用户来说，很有必要理解如何去配置它们。</p>
 
       
     </div>
@@ -602,7 +684,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#理论引导"><span class="nav-number">1.</span> <span class="nav-text">理论引导</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#理论引导"><span class="nav-number">1.</span> <span class="nav-text">理论引导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实战演练"><span class="nav-number">2.</span> <span class="nav-text">实战演练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">3.</span> <span class="nav-text">结论</span></a></li></ol></div>
             
 
           </div>
