@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Yarn,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="YARN是一种新的 Hadoop资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。">
+<meta name="keywords" content="Yarn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析 - YARN资源调度平台">
+<meta property="og:url" content="http://yoursite.com/2019/10/24/yarn/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="YARN是一种新的 Hadoop资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/10/24/yarn/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/24/yarn/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/24/yarn/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/24/yarn/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/24/yarn/4.png">
+<meta property="og:updated_time" content="2019-10-24T13:08:31.768Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅析 - YARN资源调度平台">
+<meta name="twitter:description" content="YARN是一种新的 Hadoop资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/24/yarn/5.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/24/yarn/">
+
+
+
+
+
+  <title>浅析 - YARN资源调度平台 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/24/yarn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅析 - YARN资源调度平台</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-24T20:59:36+08:00">
+                2019-10-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Yarn/" itemprop="url" rel="index">
+                    <span itemprop="name">Yarn</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/24/yarn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/24/yarn/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>YARN是一种新的 Hadoop资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度，它的引入为集群在利用率、资源统一管理和数据共享等方面带来了巨大好处。</p>
+<a id="more"></a>
+<h4 id="一、YARN中的核心概念"><a href="#一、YARN中的核心概念" class="headerlink" title="一、YARN中的核心概念"></a>一、YARN中的核心概念</h4><ol>
+<li><p>ResourceManager</p>
+<blockquote>
+<p>ResourceManager是master上的进程，负责整个分布式系统的资源管理和调度。</p>
+<p>作用：</p>
+<ol>
+<li>处理来自client端的请求（包括提交作业/杀死作业）；</li>
+<li>启动/监控Application Master；</li>
+<li>监控NodeManager的情况，比如可能挂掉的NodeManager。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>NodeManager</p>
+<blockquote>
+<p>NodeManager是处在slave节点上的进程，他只负责当前slave的资源管理和调度，以及task的运行。</p>
+<p>作用：</p>
+<ol>
+<li>定期向ResourceManager汇报资源/Container的情况（heartbeat）；</li>
+<li>接受来自ResourceManager对于Container的启停命令。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>Application Master</p>
+<blockquote>
+<p>每一个提交到集群的作业都会有一个与之对应的Application Master来负责应用程序的管理。</p>
+<p>作用：</p>
+<ol>
+<li>负责进行数据切分；</li>
+<li>为当前应用程序向ResourceManager去申请资源（也就是Container），并分配给具体的任务；</li>
+<li>与NodeManager通信，用来启停具体的任务，任务运行在Container中；</li>
+<li>任务的监控和容错也是由Application Master来负责的。</li>
+</ol>
+</blockquote>
+</li>
+<li><p>Container</p>
+<blockquote>
+<p>包含了Application Master向ResourceManager申请的计算资源，比如说CPU/内存的大小，以及任务运行所需的环境变量和队任务运行情况的描述。AM也是在Container上运行的，不过AM的Container是RM申请的。</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>理解重点：</strong></p>
+<ol>
+<li>Container是YARN中<strong>资源的抽象</strong>，它封装了某个节点上一定量的资源（CPU和内存两类资源）。</li>
+<li>Container由ApplicationMaster向ResourceManager申请的，由ResouceManager中的资源调度器异步分配给ApplicationMaster。</li>
+<li>Container的运行是由ApplicationMaster向资源所在的NodeManager发起的，Container运行时需提供内部执行的任务命令（可以是任何命令，比如java、Python、C++进程启动命令均可）以及该命令执行所需的环境变量和外部资源（比如词典文件、可执行文件、jar包等）。</li>
+</ol>
+<p>另外，由上述的<strong>AM也是在Container上运行的，不过AM的Container是RM申请的</strong>这句话可以得出一个应用程序所需的Container分为两大类，如下：</p>
+<blockquote>
+<ol>
+<li>运行ApplicationMaster的Container：这是由ResourceManager（向内部的资源调度器）申请和启动的，用户提交应用程序时，可指定唯一的ApplicationMaster所需的资源；</li>
+<li>运行各类任务的Container：这是由ApplicationMaster向ResourceManager申请的，并由ApplicationMaster与NodeManager通信以启动之。</li>
+</ol>
+<p>注意：以上两类Container可能运行在任意节点上，它们的位置通常而言是随机的，即ApplicationMaster可能与它管理的任务运行在同一个节点上。</p>
+</blockquote>
+<h4 id="二、YARN工作原理"><a href="#二、YARN工作原理" class="headerlink" title="二、YARN工作原理"></a>二、YARN工作原理</h4><ol>
+<li>Client端提交应用程序到RM，其中包括AM程序、启动AM命令、用户程序等 。</li>
+<li>RM接收到请求后为该作业分配一个Container(这个Container是如上两种的<strong>第一种</strong>)，并与NM进行通信，要求NM在刚刚分配好的Container中启动应用程序的AM。</li>
+<li>AM首先会向RM注册，这样用户就可以直接通过RM查看任务运行的状态，而后RM会为各个任务申请资源，并监控运行情况，直到运行结束，即重复4~7步骤。</li>
+<li>AM采用轮询(polling)的方式通过RPC协议向RM申请并领取资源(此处领取的资源是<strong>第二种</strong>Container)。</li>
+<li>一旦AM申请到资源后，便与对应的NM通信，要求它启动任务。</li>
+<li>NM为任务设置好运行环境(包括环境变量、JAR包、二进制程序等)后，将任务启动命令写到一个脚本中，并通过运行该脚本启动任务。</li>
+<li>各个任务通过RPC协议向AM汇报自己的状态和进度，以让AM随时掌握各个任务的运行状态，从而可以在任务失败时重新启动任务。在应用程序运行过程中，用户可随时通过RPC向AM查询应用程序的当前运行状态。</li>
+<li>应用程序运行完成后，AM向RM注销并关闭自己 。</li>
+</ol>
+<p>流程图如下所示：</p>
+<p><img src="/2019/10/24/yarn/../yarn\5.png" alt="avatar"></p>
+<h4 id="三、YARN的通信协议"><a href="#三、YARN的通信协议" class="headerlink" title="三、YARN的通信协议"></a>三、YARN的通信协议</h4><blockquote>
+<ol>
+<li><p>jobclient(作业提交客户端)与RM之间的协议 - ApplicationClientProtocol</p>
+<p>jobclient通过该RPC协议提交应用程序、查询应用程序状态等 。</p>
+</li>
+<li><p>admin(管理员)与RM之间的通信协议 - ResourceManagerAdministration Protocol</p>
+<p>admin通过该RPC协议更新系统配置文件，比如节点黑白名单、用户队列权限等 。</p>
+</li>
+<li><p>AM与RM之间的协议 - ApplicationMasterProtocol</p>
+<p>AM通过该RPC协议向RM注册和撤销自己，并为各个任务申请资源 。</p>
+</li>
+<li><p>AM与NM之间的协议 - ContainerManagementProtoocl</p>
+<p>AM通过该RPC要求NM启动或者停止container，获取各个container的使用状态等信息 。</p>
+</li>
+<li><p>NM与RM之间的协议 - ResourceTracker</p>
+<p>NM通过该RPC协议向RM注册，并定时发送心跳信息汇报当前节点的资源使用情况和container运行情况 。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="四、YARN三种调度器的详细介绍"><a href="#四、YARN三种调度器的详细介绍" class="headerlink" title="四、YARN三种调度器的详细介绍"></a>四、YARN三种调度器的详细介绍</h4><p><strong>1.FIFO Scheduler</strong></p>
+<p><strong>1.1 定义</strong></p>
+<p>将所有的Applications放到队列中，<strong>先按照作业的优先级高低、再按照到达时间的先后</strong>，为每个app分配资源。如果第一个app需要的资源被满足了，如果还剩下了资源并且满足第二个app需要的资源，那么就为第二个app分配资源；如果没有剩下，那么第二个app一直等待第一个app执行完毕。</p>
+<p><img src="/2019/10/24/yarn/../yarn\1.png" alt="avatar"></p>
+<p>上图示例：有一个很大的job1，它先提交，并且占据了全部的资源。那么job2提交时发现没有资源了，则job2必须等待job1执行结束，才能获得资源执行。</p>
+<p><strong>1.2 优缺点</strong></p>
+<blockquote>
+<p>优点：简单，不需要配置。</p>
+<p>缺点：不适合共享集群。如果有大的app需要很多资源，那么其他app可能会一直等待。</p>
+</blockquote>
+<p><strong>1.3 配置</strong></p>
+<p>FIFO Scheduler不需要配置。</p>
+<p><strong>2.Capacity Scheduler (YRAN默认的调度器)</strong></p>
+<p><strong>2.1 定义</strong></p>
+<p>CapacityScheduler用于一个集群（集群被多个组织共享）中运行多个Application的情况，目标是<strong>最大化吞吐量和集群利用率。</strong>CapacityScheduler允许将整个集群的资源分成多个部分，每个组织使用其中的一部分，即每个组织有一个专门的队列，每个组织的队列还可以进一步划分成层次结构（<strong>Hierarchical Queues</strong>），从而允许组织内部的不同用户组的使用。每个队列内部，按照FIFO的方式调度Applications。当某个队列的资源空闲时，可以将它的剩余资源共享给其他队列。<strong>集群资源按照队列为单位进行划分。</strong></p>
+<p><img src="/2019/10/24/yarn/../yarn\2.png" alt="avatar"></p>
+<p>上图示例：有一个专门的队列允许小的apps提交之后能够尽快执行，注意到job1先提交，先执行时并没有占用系统的全部资源（假如job1需要100G内存，但是整个集群只有100G内存，那么只分配给job1  80G），而是保留了一部分的系统资源。</p>
+<p><strong>2.2 优缺点</strong></p>
+<blockquote>
+<p>对于Capacity调度器，有一个专门的队列用来运行小任务，但是为小任务专门设置一个队列会预先占用一定的集群资源，这就导致大任务的执行时间会落后于使用FIFO调度器时的时间。</p>
+</blockquote>
+<p><strong>2.3 配置</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0"?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.queues<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>prod,dev<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.dev.queues<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>eng,science<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.prod.capacity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>40<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.dev.capacity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>60<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.dev.maximum-capacity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>75<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.dev.eng.capacity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>50<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.capacity.root.dev.science.capacity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>50<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<blockquote>
+<ol>
+<li>root队列下面有两个队列，分别为prod（40%的容量，即使用40%的集群资源）和dev（60%的容量，最大的75%，说明即使prod队列空闲了，那么dev最多只能使用75%的集群资源。这样就可以保证prod中添加新的apps时马上可以使用25%的资源）。</li>
+<li>除了队列的容量和层次，还可以指定单个用户或者应用被分配的资源大小、同时可以运行的app数量、队列的ACLs。</li>
+<li>可以指定app要放在哪个队列中。如果不指定，app将会被放在名字是 default的队列中。</li>
+<li>CapacityScheduler的队列名字必须是层次结构最后的名字，比如eng。不能是root.dev.eng或者dev.eng。</li>
+</ol>
+</blockquote>
+<p><strong>配置步骤</strong> </p>
+<blockquote>
+<ol>
+<li>关闭yarn，stop-yarn.sh</li>
+<li>先备份原来的capacity-scheduler.xml: cp capacity-scheduler.xml  capacity-scheduler.xml.bak，然后编辑新的capacity-scheduler.xml文件内容如上。</li>
+<li>将该文件发送到集群中的其他机器中，用scp即可。</li>
+<li>启动yarn，start-yarn.sh</li>
+<li>通过WebUI查看配置是否成功，即8088页面的Cluster-&gt;Scheduler。</li>
+<li>在DistributedCount.java中MapReduce程序指定队列运行<br><code>job.getConfiguration().set(&quot;mapreduce.job.queuename&quot;, &quot;eng&quot;);</code> </li>
+</ol>
+<p>运行中可以通过WebUI可以查看运行过程。</p>
+</blockquote>
+<p><strong>3.Fair Scheduler</strong></p>
+<p><strong>3.1 定义</strong></p>
+<p><strong>Fair Scheduler</strong>允许应用在一个集群中公平地共享资源。<strong>默认情况下</strong>FairScheduler的公平调度<strong>只基于内存</strong>，也可以配置成基于memory and CPU。当集群中只有一个app时，它独占集群资源。当有新的app提交时，空闲的资源被新的app使用，这样最终每个app就会得到大约相同的资源。可以为不同的app设置优先级，决定每个app占用的资源百分比。FairScheduler可以让短的作业在合理的时间内完成，而不必一直等待长作业的完成。</p>
+<p><strong>Fair Sharing</strong>： Scheduler将apps组织成queues，将资源在这些queues之间公平分配。默认情况下，所有的apps都加入到名字为“default“的队列中。app也可以指定要加入哪个队列中。队列内部的默认调度策略是基于内存的共享策略，也可以配置成FIFO和multi-resource with Dominant Resource Fairness。</p>
+<p><strong>Minimum Sharing</strong>：FairScheduller提供公平共享，还允许指定minimum shares to queues，从而保证所有的用户以及Apps都能得到足够的资源。如果有的app用不了指定的minimum的资源，那么可以将超出的资源分给别的app使用。</p>
+<p>FairScheduler默认让所有的apps都运行，但是也可以通过配置文件小智每个用户以及每个queue运行的apps的数量。这是针对一个用户一次提交hundreds of apps产生大量中间结果数据或者大量的context-switching的情况。</p>
+<p><img src="/2019/10/24/yarn/../yarn\3.png" alt="avatar"></p>
+<p>上图示例：大的任务job1提交并执行，占用了集群的全部资源，开始执行。之后小的job2执行时，获得系统一半的资源，开始执行。因此每个job可以公平地使用系统的资源。当job2执行完毕，并且集群中没有其他的job加入时，job1又可以获得全部的资源继续执行。</p>
+<p>注意：<strong>job2提交之后并不能马上就获取到集群一半的资源</strong>，因为job2必须等待job1释放containers。</p>
+<p>下图：Fair Sharing between user queues</p>
+<p><img src="/2019/10/24/yarn/../yarn\4.png" alt="avatar"></p>
+<p>上图示例：两个用户A和B。A提交job1时集群内没有正在运行的app，因此job1独占集群中的资源。用户B的job2提交时，job2在job1释放一半的containers之后，开始执行。job2还没执行完的时候，用户B提交了job3，job2释放它占用的一半containers之后，job3获得资源开始执行。</p>
+<p><strong>3.3 配置</strong></p>
+<p>一个简单的公平调度器配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">allocations</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"infrastructure"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">minResources</span>&gt;</span>102400 mb, 50 vcores <span class="tag">&lt;/<span class="name">minResources</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">maxResources</span>&gt;</span>153600 mb, 100 vcores <span class="tag">&lt;/<span class="name">maxResources</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">maxRunningApps</span>&gt;</span>200<span class="tag">&lt;/<span class="name">maxRunningApps</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">minSharePreemptionTimeout</span>&gt;</span>300<span class="tag">&lt;/<span class="name">minSharePreemptionTimeout</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">weight</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">weight</span>&gt;</span></span><br><span class="line">                          <span class="tag">&lt;<span class="name">aclSubmitApps</span>&gt;</span>root,yarn,search,hdfs<span class="tag">&lt;/<span class="name">aclSubmitApps</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"tool"</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">minResources</span>&gt;</span>102400 mb, 30 vcores<span class="tag">&lt;/<span class="name">minResources</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">maxResources</span>&gt;</span>153600 mb, 50 vcores<span class="tag">&lt;/<span class="name">maxResources</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line"></span><br><span class="line">   <span class="tag">&lt;<span class="name">queue</span> <span class="attr">name</span>=<span class="string">"sentiment"</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">minResources</span>&gt;</span>102400 mb, 30 vcores<span class="tag">&lt;/<span class="name">minResources</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">maxResources</span>&gt;</span>153600 mb, 50 vcores<span class="tag">&lt;/<span class="name">maxResources</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">queue</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">allocations</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>配置步骤</strong></p>
+<blockquote>
+<p>相比Capacity Scheduler的配置步骤多了一步，就是需要在第二步之前做如下操作：</p>
+<p>在yarn-site.xml文件中配置如下内容开启fair机制。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">description</span>&gt;</span>The class to use as the resource scheduler.<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.scheduler.class<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">&gt; </span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.fair.allocation.file<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">value</span>&gt;</span>/home/hadoop/etc/hadoop/fairscheduler.xml<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">&gt; </span><br><span class="line">&gt; <span class="comment">&lt;!-- 当queue占用的资源大于它应得的，那么调度器可以杀掉queue对应的containers --&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.fair.preemption<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">&gt; <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>4. Fair Scheduler和Capacity Scheduler的异同</strong></p>
+<p>同</p>
+<blockquote>
+<ol>
+<li>以队列划分资源</li>
+<li>设定最低保证和最大使用上限</li>
+<li>在某个队列空闲时可以将资源共享给其他队列。</li>
+</ol>
+</blockquote>
+<p>异</p>
+<blockquote>
+<ol>
+<li>资源公平共享：在每个队列中，Fair Scheduler可选择按照FIFO、Fair或DRF策略为应用程序分配资源。Fair策略即平均分配，默认情况下，每个队列采用该方式分配资源</li>
+<li>支持资源抢占：当某个队列中有剩余资源时，调度器会将这些资源共享给其他队列，而当该队列中有新的应用程序提交时，调度器要为它回收资源。为了尽可能降低不必要的计算浪费，调度器采用了先等待再强制回收的策略，即如果等待一段时间后尚有未归还的资源，则会进行资源抢占；从那些超额使用资源的队列中杀死一部分任务，进而释放资源</li>
+<li>负载均衡：Fair Scheduler提供了一个基于任务数的负载均衡机制，该机制尽可能将系统中的任务均匀分配到各个节点上。此外，用户也可以根据自己的需求设计负载均衡机制</li>
+<li>调度策略灵活配置：Fiar Scheduler允许管理员为每个队列单独设置调度策略（当前支持FIFO、Fair或DRF三种）</li>
+<li>提高小应用程序响应时间：由于采用了最大最小公平算法，小作业可以快速获取资源并运行完成</li>
+</ol>
+</blockquote>
+<p><strong>5. 总结：三种调度策略对比</strong></p>
+<blockquote>
+<ol>
+<li>FIFO Scheduler分配资源的顺序和提交应用程序的顺序相同，不适用于共享集群。大的应用可能会占用所有集群资源，这就导致其它应用被阻塞。 </li>
+<li>Capacity Scheduler中，有一个专门的队列用来运行小任务，但是为小任务专门设置一个队列会预先占用一定的集群资源，这就导致大任务的执行时间会落后于使用FIFO调度器时的时间。 </li>
+<li>Fair Scheduler中，我们不需要预先占用一定的系统资源，Fair调度器会为所有运行的job动态的调整系统资源。</li>
+</ol>
+</blockquote>
+<h4 id="五、Container资源参数"><a href="#五、Container资源参数" class="headerlink" title="五、Container资源参数"></a>五、Container资源参数</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">			参数	 							默认值</span><br><span class="line">yarn.nodemanager.resource.memory-mb           -1</span><br><span class="line">yarn.nodemanager.resource.cpu-vcores		  -1</span><br><span class="line">yarn.scheduler.minimum-allocation-mb	     1024MB</span><br><span class="line">yarn.scheduler.maximum-allocation-mb		 8192MB</span><br><span class="line">yarn.scheduler.minimum-allocation-vcores	   1</span><br><span class="line">yarn.scheduler.maximum-allocation-vcores	   4</span><br></pre></td></tr></table></figure>
+<p><strong>内存配置</strong></p>
+<blockquote>
+<ol>
+<li>yarn.nodemanager.resource.memory-mb默认值为-1，代表着YARN的NodeManager占总内存的80%。也就是说假如我们的机器为64GB内存，出去非YARN进程需要的20%内存，我们大概需要64*0.8≈51GB，在分配的时候，单个任务可以申请的默认最小内存为1G，任务量大的话可最大提高到8GB。</li>
+<li>在生产场景中，简单的配置，一般情况下：yarn.nodemanager.resource.memory-mb直接设置成我们需要的值，且要是最大和最小内存需求的整数倍；（一般Container容器中最小内存为4G，最大内存为16G）。</li>
+<li>假如64GB的机器内存，我们有51GB的内存可用于NodeManager分配，根据上面的介绍，我们可以直接将yarn.nodemanager.resource.memory-mb值为48GB，然后容器最小内存为4GB，最大内存为16GB，也就是在当前的NodeManager节点下，我们最多可以有12个容器，最少可以有3个容器。</li>
+</ol>
+</blockquote>
+<p><strong>CPU配置</strong></p>
+<blockquote>
+<ol>
+<li>此处的CPU指的是虚拟的CPU（CPU virtual core），之所以产生虚拟CPU（CPU vCore）这一概念，是因为物理CPU的处理能力的差异，为平衡这种差异，就引入这一概念。</li>
+<li>yarn.nodemanager.resource.cpu-vcores表示能够分配给Container的CPU核数，默认配置为-1，代表值为8个虚拟CPU，推荐该值的设置和物理CPU的核数数量相同，若不够，则需要调小该值。</li>
+<li>yarn.scheduler.minimum-allocation-vcores的默认值为1，表示每个Container容器在处理任务的时候可申请的最少CPU个数为1个。</li>
+<li>yarn.scheduler.maximum-allocation-vcores的默认值为4，表示每个Container容器在处理任务的时候可申请的最大CPU个数为4个。</li>
+</ol>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Yarn/" rel="tag"># Yarn</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/18/Elasticsearch/" rel="next" title="Elasticsearch内部机制和原理解析 (一)">
+                <i class="fa fa-chevron-left"></i> Elasticsearch内部机制和原理解析 (一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、YARN中的核心概念"><span class="nav-number">1.</span> <span class="nav-text">一、YARN中的核心概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、YARN工作原理"><span class="nav-number">2.</span> <span class="nav-text">二、YARN工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、YARN的通信协议"><span class="nav-number">3.</span> <span class="nav-text">三、YARN的通信协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、YARN三种调度器的详细介绍"><span class="nav-number">4.</span> <span class="nav-text">四、YARN三种调度器的详细介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、Container资源参数"><span class="nav-number">5.</span> <span class="nav-text">五、Container资源参数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
