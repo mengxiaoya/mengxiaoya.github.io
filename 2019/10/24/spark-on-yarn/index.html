@@ -79,15 +79,18 @@
 
 
 
+<meta name="description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
 <meta name="keywords" content="Yarn,Spark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark on yarn的Executor、Cores和Memory的分配">
+<meta property="og:title" content="Spark-On-Yarn的Executor、Cores和Memory的分配">
 <meta property="og:url" content="http://yoursite.com/2019/10/24/spark-on-yarn/index.html">
 <meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-24T13:12:44.753Z">
+<meta property="og:updated_time" content="2019-10-24T13:20:28.522Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark on yarn的Executor、Cores和Memory的分配">
+<meta name="twitter:title" content="Spark-On-Yarn的Executor、Cores和Memory的分配">
+<meta name="twitter:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
 
 
 
@@ -123,7 +126,7 @@
 
 
 
-  <title>Spark on yarn的Executor、Cores和Memory的分配 | Mxsenn</title>
+  <title>Spark-On-Yarn的Executor、Cores和Memory的分配 | Mxsenn</title>
   
 
 
@@ -277,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Spark on yarn的Executor、Cores和Memory的分配</h1>
+          <h1 class="post-title" itemprop="name headline">Spark-On-Yarn的Executor、Cores和Memory的分配</h1>
         
 
         <div class="post-meta">
@@ -359,7 +362,18 @@
       
 
       
-        
+        <p>在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。</p>
+<a id="more"></a>
+<h4 id="理论引导"><a href="#理论引导" class="headerlink" title="理论引导"></a>理论引导</h4><p><strong>当配置参数时，请遵循下表，并将其推荐建议牢记于心！</strong></p>
+<p>Hadoop/Yarn/OS 守护进程：</p>
+<blockquote>
+<p>当利用一个集群管理器（比如YARN）运行spark程序时，存在一些守护进程运行在后台，比如NameNode，Secondary NameNode，DataNode，ResourceManager和NodeManager。因此，当确定num-executors时，我们需要确保有足够的cores（大约每个节点一个core）维持这些守护进程的平稳运行。</p>
+</blockquote>
+<p>Yarn ApplicationMaster (AM)：</p>
+<blockquote>
+<p>ApplicationMaster的职责是：向ResourceManager申请资源，与NodeManager一同执行并监控containner及其资源消耗。如果程序运行在Spark-On-Yarn，我们需要预留一些资源给ApplicationMaster，AM大约需要1024MB的内存和一个Executor。</p>
+</blockquote>
+
       
     </div>
     
@@ -492,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -569,6 +592,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#理论引导"><span class="nav-number">1.</span> <span class="nav-text">理论引导</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
