@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-24T13:51:46.469Z">
+<meta property="og:updated_time" content="2019-10-24T13:56:04.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark-On-Yarn的Executor、Cores和Memory的分配">
 <meta name="twitter:description" content="在跑Spark-On-Yarn程序时，往往会对几个参数（num-executors，executor-cores，executor-memory等）理解很模糊，从而凭感觉地去指定值，这是不符合有追求程序员信仰的。因此，搞懂它们，很有必要。">
@@ -391,8 +391,8 @@
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; Full memory requested to yarn per executor =</span><br><span class="line">&gt;          spark-executor-memory + spark.yarn.executor.memoryOverhead</span><br><span class="line">&gt; spark.yarn.executor.memoryOverhead = Max(<span class="number">384</span>MB, <span class="number">7</span>% <span class="keyword">of</span> spark.executor-memory)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 </blockquote>
 <blockquote>
-<p>所以，如果我们申请了每个executor的内存为30G，那么，对我们而言，AM将得到30G + 7% × 30G约等于32G的内存。</p>
 </blockquote>
+<p>所以，如果我们申请了每个executor的内存为30G，那么，对我们而言，AM将得到30G + 7% × 30G约等于32G的内存。</p>
 <ul>
 <li>执行拥有太多内存的executor会产生过多的垃圾回收延迟</li>
 <li>执行过小的executor（举例而言，一个只有一核和仅仅足够内存跑一个task的executor），将会丢失在单个JVM中运行多任务的好处。</li>
