@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Doris,">
+  <meta name="keywords" content="Spark,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
-<meta name="keywords" content="Doris">
+<meta name="description" content="题目：spark-env.sh参数配置">
+<meta name="keywords" content="Spark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Docker镜像进行Doris源码编译">
-<meta property="og:url" content="http://yoursite.com/2019/05/13/doris-compile/index.html">
+<meta property="og:title" content="Spark配置文件参数详解之 - spark-env.sh">
+<meta property="og:url" content="http://yoursite.com/2019/10/27/spark-env/index.html">
 <meta property="og:site_name" content="Mxsenn">
-<meta property="og:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta property="og:description" content="题目：spark-env.sh参数配置">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-21T13:17:58.983Z">
+<meta property="og:updated_time" content="2019-10-27T03:16:00.990Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Docker镜像进行Doris源码编译">
-<meta name="twitter:description" content="由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。">
+<meta name="twitter:title" content="Spark配置文件参数详解之 - spark-env.sh">
+<meta name="twitter:description" content="题目：spark-env.sh参数配置">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/13/doris-compile/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/27/spark-env/">
 
 
 
 
 
-  <title>使用Docker镜像进行Doris源码编译 | Mxsenn</title>
+  <title>Spark配置文件参数详解之 - spark-env.sh | Mxsenn</title>
   
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/doris-compile/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/27/spark-env/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="XYa">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用Docker镜像进行Doris源码编译</h1>
+          <h1 class="post-title" itemprop="name headline">Spark配置文件参数详解之 - spark-env.sh</h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-13T22:43:15+08:00">
-                2019-05-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-27T10:57:30+08:00">
+                2019-10-27
               </time>
             
 
@@ -315,8 +315,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Doris/" itemprop="url" rel="index">
-                    <span itemprop="name">Doris</span>
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
                   </a>
                 </span>
 
@@ -333,8 +333,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/05/13/doris-compile/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/13/doris-compile/" itemprop="commentCount"></span>
+                <a href="/2019/10/27/spark-env/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/27/spark-env/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -362,51 +362,186 @@
       
 
       
-        <p>由于Druid对SQL join支持并不友好，而线上项目需要类似于Druid这样一款OLAP引擎，而我之前就调研过Baidu Doris，Doris现已进入Apache基金会孵化器，本文讲述使用Docker镜像进行Doris的源码编译。</p>
+        <p>题目：spark-env.sh参数配置</p>
 <a id="more"></a>
-<p>在进行源码编译前，先简单介绍一下Doris，Doris原名Palo，是百度自研发的一款MPP的OLAP系统，主要整合了<strong>Google Mesa</strong>（数据模型），<strong>Apache Impala</strong>（MPP Query Engine)和<strong>Apache ORCFile</strong> (存储格式，编码和压缩) 的技术。有想进一步了解Doris的小伙伴可<a href="https://cloud.baidu.com/doc/PALO/QuickStart.html" target="_blank" rel="noopener">点击这里</a>。</p>
-<p>下面开始进行Doris源码的编译。</p>
-<h4 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. 环境准备</h4><blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">环境变量</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SPARK_MASTER_IP</td>
+<td style="text-align:center">master实例绑定的IP地址</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_MASTER_PORT</td>
+<td style="text-align:center">mater实例绑定的端口（默认7077）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_MASTER_WEBUI_PORT</td>
+<td style="text-align:center">master web UI的端口（默认8080）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_MASTER_OPTS</td>
+<td style="text-align:center">master专用配置属性，格式如”-Dx=y” （默认空），可能的选项请参考下面的列表。</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_LOCAL_DIRS</td>
+<td style="text-align:center">Spark的本地工作目录，包括：映射输出的临时文件和RDD保存到磁盘上的临时数据。这个目录需要快速访问，最好设成本地磁盘上的目录。也可以通过使用逗号分隔列表，将其设成多个磁盘上的不同路径。</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_CORES</td>
+<td style="text-align:center">本机上Spark应用可以使用的CPU core上限（默认所有CPU core）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_MEMORY</td>
+<td style="text-align:center">本节点上Spark应用可以使用的内存上限，如：1000m，2g（默认为本机所有内存减去1GB）；注意每个应用单独使用的内存大小要用 spark.executor.memory 属性配置的。</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_PORT</td>
+<td style="text-align:center">Spark worker绑定的端口（默认随机）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_WEBUI_PORT</td>
+<td style="text-align:center">worker web UI端口（默认8081）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_INSTANCES</td>
+<td style="text-align:center">每个slave机器上启动的worker实例个数（默认：1）。如果你的slave机器非常强劲，可以把这个值设为大于1；相应的，你需要设置SPARK_WORKER_CORES参数来显式地限制每个worker实例使用的CPU个数，否则每个worker实例都会使用所有的CPU。</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_DIR</td>
+<td style="text-align:center">Spark worker的工作目录，包括worker的日志以及临时存储空间（默认：${SPARK_HOME}/work）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_WORKER_OPTS</td>
+<td style="text-align:center">worker的专用配置属性，格式为：”-Dx=y”，可能的选项请参考下面的列表。</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_DAEMON_MEMORY</td>
+<td style="text-align:center">Spark master和worker后台进程所使用的内存（默认：1g）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_DAEMON_JAVA_OPTS</td>
+<td style="text-align:center">Spark master和workers后台进程所使用的JVM选项，格式为：”-Dx=y”（默认空）</td>
+</tr>
+<tr>
+<td style="text-align:center">SPARK_PUBLIC_DNS</td>
+<td style="text-align:center">Spark master和workers使用的公共DNS（默认空）</td>
+</tr>
+</tbody>
+</table>
+<p>SPARK_MASTER_OPTS支持以下属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">属性名</th>
+<th style="text-align:center">默认值</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">spark.deploy.retainedApplications</td>
+<td style="text-align:center">200</td>
+<td style="text-align:center">web UI上最多展示几个已结束应用。更早的应用的数将被删除。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.retainedDrivers</td>
+<td style="text-align:center">200</td>
+<td style="text-align:center">web UI上最多展示几个已结束的驱动器。更早的驱动器进程数据将被删除。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.spreadOut</td>
+<td style="text-align:center">true</td>
+<td style="text-align:center">独立部署集群的master是否应该尽可能将应用分布到更多的节点上；设为true，对数据本地性支持较好；设为false，计算会收缩到少数几台机器上，这对计算密集型任务比较有利。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.defaultCores</td>
+<td style="text-align:center">无限制</td>
+<td style="text-align:center">Spark独立模式下应用程序默认使用的CPU个数（没有设置spark.cores.max的情况下）。如果不设置，则为所有可用CPU个数（除非设置了spark.cores.max）。如果集群是共享的，最好将此值设小一些，以避免用户占满整个集群。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.worker.timeout</td>
+<td style="text-align:center">60</td>
+<td style="text-align:center">如果master没有收到worker的心跳，那么将在这么多秒之后，master将丢弃该worker。</td>
+</tr>
+</tbody>
+</table>
+<p>SPARK_WORKER_OPTS支持以下属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">属性名</th>
+<th style="text-align:center">默认值</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">spark.worker.cleanup.enabled</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">是否定期清理 worker 和应用的工作目录。注意，该设置仅在独立模式下有效，YARN有自己的清理方式；同时，只会清理已经结束的应用对应的目录。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.worker.cleanup.interval</td>
+<td style="text-align:center">1800 (30 minutes)</td>
+<td style="text-align:center">worker清理本地应用工作目录的时间间隔（秒）</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.worker.cleanup.appDataTtl</td>
+<td style="text-align:center">7 <em> 24 </em> 3600 (7 days)</td>
+<td style="text-align:center">清理多久以前的应用的工作目录。这个选项值将取决于你的磁盘总量。spark应用会将日志和jar包都放在其对应的工作目录下。随着时间流逝，应用的工作目录很快会占满磁盘，尤其是在你的应用提交比较频繁的情况下。</td>
+</tr>
+</tbody>
+</table>
+<p>SPARK_DAEMON_JAVA_OPTS支持以下属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">name</th>
+<th style="text-align:center">111</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">spark.deploy.recoveryMode</td>
+<td style="text-align:center">Spark master HA配置模式，默认为NONE，可配置成FILESYSTEM或者ZOOKEEPER。</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.recoveryDirectory</td>
+<td style="text-align:center">Spark HA FILESYSTEM模式下保存恢复状态的目录</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.zookeeper.url</td>
+<td style="text-align:center">Spark HA ZOOKEEPER模式下的zk集群地址</td>
+</tr>
+<tr>
+<td style="text-align:center">spark.deploy.zookeeper.dir</td>
+<td style="text-align:center">Spark HA ZOOKEEPER模式下保存恢复状态的目录</td>
+</tr>
+</tbody>
+</table>
+<p>关于以上几个配置参数的说明  (<strong>Spark On Yarn cluster模式</strong>)：</p>
+<blockquote>
+<p>如果没有配置SPARK_WORKER_INSTANCES参数，那么一个slave节点上worker的实例个数就是1。此时SPARK_WORKER_CORES和SPARK_WORKER_MEMORY属性就是本worker节点上所有executor所有可用cores和memory的总和。看如下示例：</p>
+<p>export SPARK_WORKER_CORES=8</p>
+<p>export SPARK_WORKER_MEMORY=8g</p>
+<p>假如executors=4，那么每个executor的可用cores为2，可用memory为2g。</p>
+<p>也就是说：</p>
 <ol>
-<li>一台可以运行Docker的宿主机，并且可以访问外网</li>
-<li>最低配置：内存4G，CPU 4核，磁盘空间10G</li>
-<li>在root账户下操作</li>
+<li>一个slave节点=一台机器可以配置多个worker (机器性能较好的情况下)，一般都是一个worker。</li>
+<li>一个worker包括多个Executor，这多个Executor所有可用资源的总和就是SPARK_WORKER_CORES和SPARK_WORKER_MEMORY。</li>
+<li>一个executor中Task的数量=core数量，一个Task可以看做是executor进程中的一个线程。</li>
+<li>一个job中Executor数量等于<strong>AM的一个Executor</strong>加通过<strong>–num-executors</strong>指定的实际运行任务的Executor数量。</li>
+<li>一个job的Task被执行的并发度 = Executor数目 * 每个Executor核数。</li>
+<li><strong>Container数量=Executor数量。</strong></li>
+<li>AM的Executor进程名为ApplicationMaster，执行任务的Executor进程名为CoarseGrainedExecutorBackend。</li>
 </ol>
 </blockquote>
-<h4 id="2-确保宿主机已经安装Docker并启动服务"><a href="#2-确保宿主机已经安装Docker并启动服务" class="headerlink" title="2. 确保宿主机已经安装Docker并启动服务"></a>2. 确保宿主机已经安装Docker并启动服务</h4><p>centos 用户可以通过以下命令安装和启动 docker：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install docker-io</span><br><span class="line"></span><br><span class="line">service docker start</span><br></pre></td></tr></table></figure>
-<h4 id="3-创建Docker镜像"><a href="#3-创建Docker镜像" class="headerlink" title="3. 创建Docker镜像"></a>3. 创建Docker镜像</h4><p><strong>3.1 假设工作目录为 /use/local/dockerfile</strong></p>
-<p>下载 Dockerfile 到工作目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/apache/incubator-doris/blob/master/docker/Dockerfile -O /use/<span class="built_in">local</span>/dockerfile/</span><br></pre></td></tr></table></figure>
-<p><strong>3.2 构建镜像</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /use/<span class="built_in">local</span>/dockerfile &amp;&amp; docker build -t doris-dev:v1.0 .</span><br></pre></td></tr></table></figure>
-<p>doris-dev:v1.0 为镜像名称和版本，可自定义</p>
-<p><strong>说明：</strong>根据宿主机性能，镜像构建时间可能在几十分钟到1小时不等。推荐使用nohup命令进行镜像的构建，以防止终端退出而构建失败。构建完成后，可通过 <strong>docker images</strong> 命令查看镜像，大小约为3.5G。</p>
-<p><strong>注：</strong>如果你不想自己创建Docker镜像或者环境不允许，可以通过如下命令下载Baidu提供的镜像：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull apachedoris/doris-dev:build-env</span><br></pre></td></tr></table></figure>
-<h4 id="4-进行源码编译"><a href="#4-进行源码编译" class="headerlink" title="4. 进行源码编译"></a>4. 进行源码编译</h4><p><strong>4.1 下载Doris源码</strong></p>
-<p>如果宿主机安装了git，可使用如下命令进行下载：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/apache/incubator-doris.git /usr/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>如果宿主机未安装git，可以去<a href="http://doris.apache.org/downloads.html" target="_blank" rel="noopener">Doris官网下载地址</a>进行下载。</p>
-<p><strong>4.2 启动并进入docker容器</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name doris-dev-test -v /usr/<span class="built_in">local</span>/incubator-doris/:/var/<span class="built_in">local</span>/incubator-doris/ doris-dev:v1.0</span><br></pre></td></tr></table></figure>
-<p><strong>说明：</strong>该命令启动并进入了一个名为 doris-dev-test 的容器，通过 <strong>-v</strong> 参数将宿主机/usr/local/incubator-doris/ 映射到容器内路径 /var/local/incubator-doris/。</p>
-<p><strong>4.3 现在你应该位于docker容器内了，进入到build.sh目录执行命令进行源码编译</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/<span class="built_in">local</span>/incubator-doris/</span><br></pre></td></tr></table></figure>
-<p>通过以下命令编译Doris FE 和 BE：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh build.sh --fe --be --clean</span><br></pre></td></tr></table></figure>
-<p><strong>注：</strong>如果你的宿主机配置较低，建议将 build.sh 中的 PARALLEL 参数调整为 4 或更低，防止编译过程中内存不足导致编译失败。编译完成后，最终的部署文件将产出到 output 目录下。</p>
-<p>通过以下命令编译fs_broker （可选）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> fs_brokers/apache_hdfs_broker/ &amp;&amp; sh build.sh</span><br></pre></td></tr></table></figure>
-<p><strong>4.4 退出容器</strong></p>
-<p>退出并保持容器继续运行：ctrl + pq</p>
-<p>退出并终止容器：ctrl + d</p>
-<p><strong>4.5 拷贝容器中的文件到宿主机</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp containerID:/var/<span class="built_in">local</span>/incubator-doris/output/ /path/to/your/host/</span><br></pre></td></tr></table></figure>
-<p>containerID为容器的ID，可以通过 <strong>docker ps -l</strong> 查看，/var/local/incubator-doris/output/为容器内目录，/path/to/your/host/ 为宿主机目录。</p>
-<p>至此Doris源码编译完成。</p>
-<p><strong>附录：</strong>Docker常用命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">docker ps ：列出所有运行中容器</span><br><span class="line">docker ps -a ：列出所有容器，包含沉睡镜像</span><br><span class="line">docker ps -l ：仅列出最新创建的一个容器</span><br><span class="line">docker <span class="built_in">kill</span> containerID ：杀死某个容器</span><br><span class="line">docker rm containerID ：删除某个容器</span><br><span class="line">docker rmi docker images -q ：删除所有镜像</span><br><span class="line">docker stop $(docker ps -q) ：停用全部运行中的容器</span><br><span class="line">docker rm $(docker ps -aq) ：删除全部容器</span><br><span class="line">一条命令实现停用并删除容器：</span><br><span class="line">docker stop $(docker ps -q) &amp; docker rm $(docker ps -aq) </span><br><span class="line">按条件删除镜像：</span><br><span class="line">1.没有打标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">2.指定标签</span><br><span class="line">docker rmi docker images -q | awk <span class="string">'/^&lt;none&gt;/ &#123; print $3 &#125;'</span>   </span><br><span class="line">3.镜像名包含关键字doss-api</span><br><span class="line">docker rmi --force docker images | grep doss-api | awk <span class="string">'&#123;print $3&#125;'</span></span><br><span class="line">4.组合</span><br><span class="line">docker rmi $(docker images | grep v1.11.2 | awk ‘&#123; <span class="built_in">print</span> <span class="variable">$2</span>, <span class="variable">$3</span> &#125;’)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -453,7 +588,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Doris/" rel="tag"># Doris</a>
+            <a href="/tags/Spark/" rel="tag"># Spark</a>
           
         </div>
       
@@ -466,8 +601,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/13/consciousness/" rel="next" title="你必须知道的职场意识">
-                <i class="fa fa-chevron-left"></i> 你必须知道的职场意识
+              <a href="/2019/10/24/spark-on-yarn/" rel="next" title="Spark-On-Yarn的Executor、Cores和Memory的分配">
+                <i class="fa fa-chevron-left"></i> Spark-On-Yarn的Executor、Cores和Memory的分配
               </a>
             
           </div>
@@ -475,10 +610,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/14/bitmap/" rel="prev" title="经典算法系列之 - BitMap">
-                经典算法系列之 - BitMap <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -542,17 +673,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -628,22 +750,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-环境准备"><span class="nav-number">1.</span> <span class="nav-text">1. 环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-确保宿主机已经安装Docker并启动服务"><span class="nav-number">2.</span> <span class="nav-text">2. 确保宿主机已经安装Docker并启动服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-创建Docker镜像"><span class="nav-number">3.</span> <span class="nav-text">3. 创建Docker镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-进行源码编译"><span class="nav-number">4.</span> <span class="nav-text">4. 进行源码编译</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
