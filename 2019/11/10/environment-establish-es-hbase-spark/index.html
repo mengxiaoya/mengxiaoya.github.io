@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-10T14:26:55.960Z">
+<meta property="og:updated_time" content="2019-11-10T14:38:32.934Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="大数据环境搭建之 - ES5.4.0、HBase1.2.0 HA、Spark2.2.1 HA">
 <meta name="twitter:description" content="本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。">
@@ -382,7 +382,8 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su es</span><br><span class="line">/opt/modules/elasticsearch-5.4.0/bin/elasticsearch -d</span><br></pre></td></tr></table></figure>
 <p>可通过查看日志确认是否启动成功，或者可安装cerebro等ES UI工具。</p>
 <h4 id="二、-HBase-HA集群"><a href="#二、-HBase-HA集群" class="headerlink" title="二、 HBase HA集群"></a>二、 HBase HA集群</h4><h4 id="1-下载并解压"><a href="#1-下载并解压" class="headerlink" title="1. 下载并解压"></a>1. 下载并解压</h4><p>地址：&lt;<a href="https://archive.apache.org/dist/hbase/1.2.0/hbase-1.2.0-bin.tar.gz" target="_blank" rel="noopener">https://archive.apache.org/dist/hbase/1.2.0/hbase-1.2.0-bin.tar.gz</a> &gt;</p>
-<h4 id="2-配置文件修改"><a href="#2-配置文件修改" class="headerlink" title="2. 配置文件修改"></a>2. 配置文件修改</h4><p><strong>/etc/profile</strong></p>
+<h4 id="2-配置文件修改"><a href="#2-配置文件修改" class="headerlink" title="2. 配置文件修改"></a>2. 配置文件修改</h4><p>首先将hadoop的配置文件core-site.xml和hdfs-site.xml移动到HBase的conf目录下。不然启动HBase时会报找不到命名空间的错误。</p>
+<p><strong>/etc/profile</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_HOME=/opt/modules/hbase-1.2.0</span><br><span class="line">export PATH=$PATH:$HBASE_HOME/bin</span><br></pre></td></tr></table></figure>
 <p>注意：source /etc/profile</p>
 <p><strong>hbase-env.sh</strong></p>
