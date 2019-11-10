@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="环境搭建,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。">
+<meta name="keywords" content="环境搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据环境搭建之 - ES5.4.0、HBase1.2.0 HA、Spark2.2.1 HA">
+<meta property="og:url" content="http://yoursite.com/2019/11/10/environment-establish-es-hbase-spark/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-10T14:19:05.952Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="大数据环境搭建之 - ES5.4.0、HBase1.2.0 HA、Spark2.2.1 HA">
+<meta name="twitter:description" content="本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/11/10/environment-establish-es-hbase-spark/">
+
+
+
+
+
+  <title>大数据环境搭建之 - ES5.4.0、HBase1.2.0 HA、Spark2.2.1 HA | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/10/environment-establish-es-hbase-spark/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">大数据环境搭建之 - ES5.4.0、HBase1.2.0 HA、Spark2.2.1 HA</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-10T18:53:02+08:00">
+                2019-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/环境搭建/" itemprop="url" rel="index">
+                    <span itemprop="name">环境搭建</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/10/environment-establish-es-hbase-spark/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/10/environment-establish-es-hbase-spark/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文记录Elasticsearch5.4.0，HBase 1.2.0 HA，Spark2.2.1 HA环境搭建过程。</p>
+<a id="more"></a>
+<h4 id="一、-Elasticsearch集群"><a href="#一、-Elasticsearch集群" class="headerlink" title="一、 Elasticsearch集群"></a>一、 Elasticsearch集群</h4><p>ES 5.4.0需要JDK1.8以上，安装前确认JDK已安装完毕。</p>
+<h4 id="1-下载安装包并解压"><a href="#1-下载安装包并解压" class="headerlink" title="1. 下载安装包并解压"></a>1. 下载安装包并解压</h4><p>地址：<a href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.0.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.0.tar.gz</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf elasticsearch-5.4.0.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="2-配置文件"><a href="#2-配置文件" class="headerlink" title="2. 配置文件"></a>2. 配置文件</h4><p>vim elasticsearch.yml ， 需要修改的内容如下： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: xya-esv5</span><br><span class="line">node.name: node-1</span><br><span class="line">path.data: /opt/modules/elasticsearch-5.4.0/data</span><br><span class="line">path.logs: /opt/modules/elasticsearch-5.4.0/logs</span><br><span class="line">network.host: 192.168.199.141</span><br><span class="line">discovery.zen.ping.unicast.hosts: ["BR-TEST-01", "BR-TEST-02", "BR-TEST-03"]</span><br><span class="line">discovery.zen.minimum_master_nodes: 2</span><br><span class="line"><span class="meta">#</span><span class="bash"> 避免出现跨域问题</span></span><br><span class="line">http.cors.enabled: true</span><br><span class="line">http.cors.allow-origin: "*"</span><br></pre></td></tr></table></figure>
+<h4 id="3-其它机器的配置修改"><a href="#3-其它机器的配置修改" class="headerlink" title="3. 其它机器的配置修改"></a>3. 其它机器的配置修改</h4><p>将安装包传输到其他机器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp -r elasticsearch-5.4.0 root@BR-TEST-02:/opt/modules</span><br><span class="line">scp -r elasticsearch-5.4.0 root@BR-TEST-03:/opt/modules</span><br></pre></td></tr></table></figure>
+<p>其他机器需要修改的地方有两处，如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node.name: node-1   # es每台机器节点名，互相之间不能重复</span><br><span class="line">network.host: 192.168.199.141   # es每台机器IP</span><br></pre></td></tr></table></figure>
+<h4 id="4-创建用户用以启动ES集群"><a href="#4-创建用户用以启动ES集群" class="headerlink" title="4. 创建用户用以启动ES集群"></a>4. 创建用户用以启动ES集群</h4><p>ES 不可用root用户启动，必须创建一个其他用户。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">useradd es</span><br><span class="line">passwd es</span><br></pre></td></tr></table></figure>
+<p>上述命令创建了一个es用户并为其设定了密码。</p>
+<p>将es安装包目录用户和用户组改为es，所有节点都要做：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R es:es elasticsearch-5.4.0</span><br></pre></td></tr></table></figure>
+<p>切换到es用户，启动ES集群：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su es</span><br><span class="line">/opt/modules/elasticsearch-5.4.0/bin/elasticsearch -d</span><br></pre></td></tr></table></figure>
+<p>可通过查看日志确认是否启动成功，或者可安装cerebro等ES UI工具。</p>
+<h4 id="二、-HBase-HA集群"><a href="#二、-HBase-HA集群" class="headerlink" title="二、 HBase HA集群"></a>二、 HBase HA集群</h4><h4 id="1-下载并解压"><a href="#1-下载并解压" class="headerlink" title="1. 下载并解压"></a>1. 下载并解压</h4><p>地址：&lt;<a href="https://archive.apache.org/dist/hbase/1.2.0/hbase-1.2.0-bin.tar.gz" target="_blank" rel="noopener">https://archive.apache.org/dist/hbase/1.2.0/hbase-1.2.0-bin.tar.gz</a> &gt;</p>
+<h4 id="2-配置文件修改"><a href="#2-配置文件修改" class="headerlink" title="2. 配置文件修改"></a>2. 配置文件修改</h4><p><strong>/etc/profile</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_HOME=/opt/modules/hbase-1.2.0</span><br><span class="line">export PATH=$PATH:$HBASE_HOME/bin</span><br></pre></td></tr></table></figure>
+<p>注意：source /etc/profile</p>
+<p><strong>hbase-env.sh</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/opt/env/jdk1.8.0_181</span><br><span class="line">export HBASE_MANAGES_ZK=false</span><br><span class="line">export HBASE_LOG_DIR=$&#123;HBASE_HOME&#125;/logs</span><br></pre></td></tr></table></figure>
+<p><strong>backup-masters</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BR-TEST-02    # HA配置，standby HMaster</span><br></pre></td></tr></table></figure>
+<p><strong>regionservers</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BR-TEST-01</span><br><span class="line">BR-TEST-02</span><br><span class="line">BR-TEST-03</span><br><span class="line">BR-TEST-04</span><br></pre></td></tr></table></figure>
+<p><strong>hbase-site.xml</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 指定缓存文件存储的路径 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hbase.tmp.dir&lt;/name&gt;</span><br><span class="line">       &lt;value&gt;/opt/modules/hbase-1.2.0/data&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;!-- 设置HRegionServers共享目录 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hbase.rootdir&lt;/name&gt;</span><br><span class="line">       &lt;value&gt;hdfs://mxsenn/hbase&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;!-- 设置HMaster的rpc端口 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.master.port&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;16000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;!-- 设置HMaster的http端口 --&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.master.info.port&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;16010&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 开启分布式模式 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.zookeeper.quorum&lt;/name&gt;</span><br><span class="line">       &lt;value&gt;BR-TEST-01,BR-TEST-02,BR-TEST-03&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 指定ZooKeeper集群端口 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hbase.zookeeper.property.clientPort&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2181&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--指定Zookeeper数据目录，需要与ZooKeeper集群上配置相一致 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.zookeeper.property.dataDir&lt;/name&gt;</span><br><span class="line">       &lt;value&gt;/opt/modules/zookeeper-3.4.6/data&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- hbase客户端rpc扫描一次获取的行数,默认是2147483647， --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.client.scanner.caching&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- HRegion分裂前最大的文件大小(默认1.25G)--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.hregion.max.filesize&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;10737418240&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- HRegionServer中最大的region数量 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.regionserver.reginoSplitLimit&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;2000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- StoreFile开始合并的阀值 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hbase.hstore.compactionThreshold&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;6&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 当某一个region的storefile个数达到该值则block写入，等待compact--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.hstore.blockingStoreFiles&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;14&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--当MemStore占用内存大小超过hbase.hregion.memstore.flush.size</span><br><span class="line">    MemStore刷新缓存的大小的4倍，开始中block该HRegion的请求，进行flush</span><br><span class="line">    释放内存，后台会有服务线程在周期内hbase.server.thread.wakefrequency</span><br><span class="line">    定时检查--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.hregion.memstore.block.multiplier&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;4&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- service工作的sleep间隔 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.server.thread.wakefrequency&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;500&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--ZK并发连接的限制--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hbase.zookeeper.property.maxClientCnxns&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;300&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--RegionServer进程block进行flush触发条件：该节点上所有region的memstore之和达到upperLimit*heapsize--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.regionserver.global.memstore.size&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;0.4&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--RegionServer进程触发flush的一个条件：该节点上所有region的memstore之和达到lowerLimit*heapsize--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.regionserver.global.memstore.size.lower.limit&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;0.3&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;hfile.block.cache.size&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;0.4&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--HRegionserver处理IO请求的线程数--&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.regionserver.handler.count&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;100&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 客户端最大重试次数 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.client.retries.number&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;5&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 客户端重试的休眠时间 --&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">       &lt;name&gt;hbase.client.pause&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;100&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="3-发送安装包到其他机器"><a href="#3-发送安装包到其他机器" class="headerlink" title="3. 发送安装包到其他机器"></a>3. 发送安装包到其他机器</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scp -r hbase-1.2.0 root@BR-TEST-02:/opt/modules</span><br><span class="line">scp -r hbase-1.2.0 root@BR-TEST-03:/opt/modules</span><br><span class="line">scp -r hbase-1.2.0 root@BR-TEST-04:/opt/modules</span><br></pre></td></tr></table></figure>
+<h4 id="4-启停"><a href="#4-启停" class="headerlink" title="4. 启停"></a>4. 启停</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/opt/modules/hbase-1.2.0/bin/start-hbase.sh </span><br><span class="line">/opt/modules/hbase-1.2.0/bin/stop-hbase.sh</span><br></pre></td></tr></table></figure>
+<h3 id="三、Spark-HA集群"><a href="#三、Spark-HA集群" class="headerlink" title="三、Spark HA集群"></a>三、Spark HA集群</h3><h4 id="1-下载并解压-1"><a href="#1-下载并解压-1" class="headerlink" title="1. 下载并解压"></a>1. 下载并解压</h4><p>地址：&lt;<a href="https://archive.apache.org/dist/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz" target="_blank" rel="noopener">https://archive.apache.org/dist/spark/spark-2.2.1/spark-2.2.1-bin-hadoop2.7.tgz</a> &gt;</p>
+<h4 id="2-配置文件修改-1"><a href="#2-配置文件修改-1" class="headerlink" title="2. 配置文件修改"></a>2. 配置文件修改</h4><p><strong>spark-env.sh</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/opt/env/jdk1.8.0_181</span><br><span class="line">export SPARK_MASTER_HOST=BR-TEST-01</span><br><span class="line">export SPARK_MASTER_PORT=7077</span><br><span class="line">export HADOOP_CONF_DIR=/opt/modules/hadoop-2.7.3/etc/hadoop</span><br><span class="line">export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=BR-TEST-01:2181,BR-TEST-02:2181,BR-TEST-03:2181 -Dspark.deploy.zookeeper.dir=/sparkOnline  -Djava.io.tmpdir=/opt/modules/spark-2.2.1/Tachyon"</span><br><span class="line">export SCALA_HOME=/opt/env/scala-2.11.8</span><br><span class="line">export SPARK_LIBRARY_PATH=/opt/modules/spark-2.2.1/jars</span><br><span class="line">export SPARK_WORK_DIR=/opt/modules/spark-2.2.1/worker</span><br><span class="line">export SPARK_LOCAL_DIRS=/opt/modules/spark-2.2.1/local</span><br><span class="line">export SPARK_PID_DIR=/opt/modules/spark-2.2.1/pid</span><br><span class="line">export SPARK_WORKER_MEMORY=1g</span><br><span class="line">export SPARK_WORKER_CORES=2</span><br><span class="line">export SPARK_MASTER_WEBUI_PORT=8080</span><br><span class="line">export SPARK_WORKER_WEBUI_PORT=9191</span><br><span class="line">export SPARK_DAEMON_CLASSPATH=/opt/modules/spark-2.2.1/jars</span><br></pre></td></tr></table></figure>
+<p><strong>slaves</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BR-TEST-01</span><br><span class="line">BR-TEST-02</span><br><span class="line">BR-TEST-03</span><br><span class="line">BR-TEST-04</span><br></pre></td></tr></table></figure>
+<h4 id="3-启停"><a href="#3-启停" class="headerlink" title="3. 启停"></a>3. 启停</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/opt/modules/spark-2.2.1/sbin/start-all.sh</span><br><span class="line">/opt/modules/spark-2.2.1/sbin/stop-all.sh</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/环境搭建/" rel="tag"># 环境搭建</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/27/spark-env/" rel="next" title="Spark配置文件参数详解之 - spark-env.sh">
+                <i class="fa fa-chevron-left"></i> Spark配置文件参数详解之 - spark-env.sh
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、-Elasticsearch集群"><span class="nav-number">1.</span> <span class="nav-text">一、 Elasticsearch集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载安装包并解压"><span class="nav-number">2.</span> <span class="nav-text">1. 下载安装包并解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-配置文件"><span class="nav-number">3.</span> <span class="nav-text">2. 配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-其它机器的配置修改"><span class="nav-number">4.</span> <span class="nav-text">3. 其它机器的配置修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-创建用户用以启动ES集群"><span class="nav-number">5.</span> <span class="nav-text">4. 创建用户用以启动ES集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、-HBase-HA集群"><span class="nav-number">6.</span> <span class="nav-text">二、 HBase HA集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载并解压"><span class="nav-number">7.</span> <span class="nav-text">1. 下载并解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-配置文件修改"><span class="nav-number">8.</span> <span class="nav-text">2. 配置文件修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-发送安装包到其他机器"><span class="nav-number">9.</span> <span class="nav-text">3. 发送安装包到其他机器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-启停"><span class="nav-number">10.</span> <span class="nav-text">4. 启停</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#三、Spark-HA集群"><span class="nav-number"></span> <span class="nav-text">三、Spark HA集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载并解压-1"><span class="nav-number">1.</span> <span class="nav-text">1. 下载并解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-配置文件修改-1"><span class="nav-number">2.</span> <span class="nav-text">2. 配置文件修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-启停"><span class="nav-number">3.</span> <span class="nav-text">3. 启停</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

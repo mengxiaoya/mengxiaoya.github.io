@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="环境搭建是从事大数据相关专业工作必不可少的一步，本文记录ZK、Kafka、Hadoop HA搭建的全过程，需要注意的是本文默认基础环境已就绪。比如主机名修改、hosts文件映射、SSH免密登录、JDK的安装等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-02T15:20:46.691Z">
+<meta property="og:updated_time" content="2019-11-10T14:19:18.744Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="大数据环境搭建之 - ZK、Kafka、Hadoop HA">
 <meta name="twitter:description" content="环境搭建是从事大数据相关专业工作必不可少的一步，本文记录ZK、Kafka、Hadoop HA搭建的全过程，需要注意的是本文默认基础环境已就绪。比如主机名修改、hosts文件映射、SSH免密登录、JDK的安装等。">
@@ -407,7 +407,7 @@
 <h4 id="4-7-启动yarn"><a href="#4-7-启动yarn" class="headerlink" title="4.7 启动yarn"></a>4.7 启动yarn</h4><p>bonree-zq-1节点执行：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sbin/start-yarn.sh</span></span><br></pre></td></tr></table></figure>
 <p>从节点的NN上的RM需要单独启动，因此bonree-zq-2节点执行：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sbin/yarn-daemaon.sh start resourcemanager</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sbin/yarn-daemon.sh start resourcemanager</span></span><br></pre></td></tr></table></figure>
 <h4 id="5-相关进程查看"><a href="#5-相关进程查看" class="headerlink" title="5. 相关进程查看"></a>5. 相关进程查看</h4><p>如果配置准确无误，三个节点对应的进程应该是如下这样：</p>
 <p>bonree-zq-1</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@bonree-zq-1 hadoop]# jps</span><br><span class="line">12498 DataNode</span><br><span class="line">12691 JournalNode</span><br><span class="line">1720 QuorumPeerMain</span><br><span class="line">13033 ResourceManager</span><br><span class="line">12395 NameNode</span><br><span class="line">12875 DFSZKFailoverController</span><br><span class="line">14253 Jps</span><br><span class="line">13135 NodeManager</span><br></pre></td></tr></table></figure>
@@ -587,7 +587,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
