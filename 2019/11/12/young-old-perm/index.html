@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2019/11/12/young-old-perm/3.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/12/young-old-perm/4.png">
-<meta property="og:updated_time" content="2019-11-12T15:56:34.136Z">
+<meta property="og:updated_time" content="2019-11-13T12:17:16.141Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM之年轻代、老年代及永久代详解">
 <meta name="twitter:description" content="在 Java 中，堆被划分成两个不同的区域：年轻代，也叫新生代 ( Young )和老年代 ( OldGen )。而方法区中对应的则是永久代（PermPen），本文详解JVM内存中这三块区域。">
@@ -414,7 +414,7 @@
 <p>3.永久代（方法区的实现） : PermGen—–&gt;替换为Metaspace(本地内存中)</p>
 </blockquote>
 <p><strong>2.为什么要废除永久代？</strong></p>
-<p>参照JEP122：<a href="http://openjdk.java.net/jeps/122，原文截取：" target="_blank" rel="noopener">http://openjdk.java.net/jeps/122，原文截取：</a></p>
+<p>参照JEP122：<a href="http://openjdk.java.net/jeps/122" target="_blank" rel="noopener">http://openjdk.java.net/jeps/122</a> ，原文截取：</p>
 <blockquote>
 <p>This is part of the JRockit and Hotspot convergence effort. JRockit customers do not need to configure the permanent generation (since JRockit does not have a permanent generation) and are accustomed to not configuring the permanent generation.</p>
 </blockquote>
@@ -423,11 +423,11 @@
 <p>由于永久代内存经常不够用或发生内存泄露，爆出异常<strong>java.lang.OutOfMemoryError: PermGen</strong>。</p>
 <p><strong>4.理解元空间</strong></p>
 <p>元空间是方法区的在HotSpot jvm 中的实现，方法区主要用于存储类的信息、常量池、方法数据、方法代码等。方法区逻辑上属于堆的一部分，但是为了与堆进行区分，通常又叫“非堆”。</p>
-<p>元空间的本质和永久代类似，都是对JVM规范中方法区的实现。不过<strong>元空间与永久代之间最大的区别在于：元空间并不在虚拟机中，而是使用本地内存。</strong>，理论上取决于32位/64位系统可虚拟的内存大小。可见也不是无限制的，需要配置参数。</p>
+<p>元空间的本质和永久代类似，都是对JVM规范中方法区的实现。不过<strong>元空间与永久代之间最大的区别在于：元空间并不在虚拟机中，而是使用本地内存。</strong>理论上取决于32位/64位系统可虚拟的内存大小。可见也不是无限制的，需要配置参数。</p>
 <p>常用配置参数如下，<strong>配置形式都是通过-XX:MetaspaceSize=8m这种形式</strong>：</p>
 <blockquote>
 <p>1.MetaspaceSize</p>
-<p>初始化的Metaspace大小，控制元空间发生GC的阈值。GC后，动态增加或降低MetaspaceSize。在默认情况下，这个值大小根据不同的平台在12M到20M浮动。使用<a href="http://lib.csdn.net/base/javase" target="_blank" rel="noopener">Java</a> -XX:+PrintFlagsInitial命令查看本机的初始化参数。</p>
+<p>初始化的Metaspace大小，控制元空间发生GC的阈值。GC后，动态增加或降低MetaspaceSize。在默认情况下，这个值大小根据不同的平台在12M到20M浮动。使用 -XX:+PrintFlagsInitial命令查看本机的初始化参数。</p>
 <p>2.MaxMetaspaceSize</p>
 <p>限制Metaspace增长的上限，防止因为某些情况导致Metaspace无限的使用本地内存，影响到其他程序。在本机上该参数的默认值为4294967295B（大约4096MB）。</p>
 <p>3.MinMetaspaceFreeRatio</p>
