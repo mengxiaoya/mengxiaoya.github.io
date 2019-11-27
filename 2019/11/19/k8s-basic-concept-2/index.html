@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Kubernetes,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。">
+<meta name="keywords" content="Kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes的基本概念和术语（二）">
+<meta property="og:url" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-20T15:29:18.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes的基本概念和术语（二）">
+<meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/11/19/k8s-basic-concept-2/">
+
+
+
+
+
+  <title>Kubernetes的基本概念和术语（二） | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/19/k8s-basic-concept-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes的基本概念和术语（二）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-19T21:38:21+08:00">
+                2019-11-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index">
+                    <span itemprop="name">Kubernetes</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/19/k8s-basic-concept-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/19/k8s-basic-concept-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。</p>
+<a id="more"></a>
+<h4 id="1-RC"><a href="#1-RC" class="headerlink" title="1. RC"></a>1. RC</h4><p>RC是K8s系统中的核心概念之一，简单来说，它其实定义了一个期望的场景。即声明某种Pod的副本数量在任意时刻都符合某个预期值。RC包括以下几个部分：</p>
+<blockquote>
+<ul>
+<li>Pod期待的副本数</li>
+<li>用于筛选目标Pod的Label Selector。</li>
+<li>当Pod的副本数量小于预期数量时，用于创建新的Pod模板（template）</li>
+</ul>
+</blockquote>
+<p>一个完整的RC定义的例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr"> name:</span> <span class="string">lykops-rc</span></span><br><span class="line"><span class="attr"> labels:</span></span><br><span class="line"><span class="attr">   app:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">   version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr"> replicas:</span> <span class="number">5</span></span><br><span class="line"><span class="attr"> selector:</span></span><br><span class="line"><span class="attr">   app:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">   version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr"> template:</span></span><br><span class="line"><span class="attr">   metadata:</span></span><br><span class="line"><span class="attr">     labels:</span></span><br><span class="line"><span class="attr">       app:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">       version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">   spec:</span></span><br><span class="line"><span class="attr">     containers:</span></span><br><span class="line"><span class="attr">     - name:</span> <span class="string">apache-rc</span></span><br><span class="line"><span class="attr">       image:</span> <span class="attr">web:apache</span></span><br><span class="line"><span class="attr">       command:</span> <span class="string">[</span> <span class="string">"sh"</span><span class="string">,</span> <span class="string">"/etc/run.sh"</span> <span class="string">]</span></span><br><span class="line"><span class="attr">       ports:</span></span><br><span class="line"><span class="attr">       - containerPort:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">         name:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">         protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+<p>在k8s 1.2中，RC升级为另外一个新的概念 — Replica Set （RS），RS也是用于保证与label selector匹配的pod数量维持在期望状态。两者的<strong>区别</strong>如下：</p>
+<blockquote>
+<ol>
+<li><p>RC只支持基于等式的selector（env=dev或environment!=qa），但RS还支持新的<strong>基于集合</strong>的selector（version in (v1.0, v2.0)或env not in (dev, qa)），这对复杂的运维管理很方便。</p>
+</li>
+<li><p>升级方式</p>
+<pre><code>RS不能使用kubectl rolling-update进行升级。
+kubectl rolling-update专用于rc。
+RS升级使用deployment或者kubectl replace命令。
+</code></pre></li>
+</ol>
+</blockquote>
+<p>一个完整的RS定义的例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">extensions/v1beta1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicaSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    software:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">    project:</span> <span class="string">lykops</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">    version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    matchLabels:</span></span><br><span class="line"><span class="attr">      name:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">      software:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">      project:</span> <span class="string">lykops</span></span><br><span class="line"><span class="attr">      app:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">      version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        name:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">        software:</span> <span class="string">apache</span></span><br><span class="line"><span class="attr">        project:</span> <span class="string">lykops</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">        version:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">lykops-rs</span></span><br><span class="line"><span class="attr">        image:</span> <span class="attr">web:apache</span></span><br><span class="line"><span class="attr">        command:</span> <span class="string">[</span> <span class="string">"sh"</span><span class="string">,</span> <span class="string">"/etc/run.sh"</span> <span class="string">]</span></span><br><span class="line"><span class="attr">        ports:</span></span><br><span class="line"><span class="attr">        - containerPort:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">          name:</span> <span class="string">http</span></span><br><span class="line">          <span class="string">proto</span></span><br></pre></td></tr></table></figure>
+<p>RC相关命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl scale rc rc_name --replicas=3   <span class="comment"># 修改RC的副本数量为3</span></span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，<strong>删除RC并不会影响通过该RC已创建好的Pod。为了删除所有Pod，可以设置replicas的数量为0，然后更新该RC。另外，kubectl提供了stop和delete命令来一次性删除RC和RC控制的全部Pod。</strong></p>
+<p><strong>总结一下RC的特性和作用：</strong></p>
+<blockquote>
+<ol>
+<li>在大多数情况下，我们通过定义一个RC实现pod的创建过程及副本数量的自动控制。</li>
+<li>RC里包括完整的Pod定义模板。</li>
+<li>RC通过label selector机制实现对pod副本的自动控制。</li>
+<li>通过改变RC的pod副本数量，可以实现pod的扩容或缩容。</li>
+<li>通过改变RC中Pod模板的镜像版本，可以实现Pod的滚动升级功能。</li>
+</ol>
+</blockquote>
+<h4 id="2-Deployment"><a href="#2-Deployment" class="headerlink" title="2. Deployment"></a>2. Deployment</h4><p>Deployment同样为k8s的一个核心内容，主要职责同样是为了保证pod的数量和健康，90%的功能与Replication Controller完全一样，可以看做新一代的Replication Controller。但是，它又具备了Replication Controller之外的新特性：</p>
+<blockquote>
+<ul>
+<li><strong>Replication Controller全部功能</strong>：Deployment继承了上面描述的Replication Controller全部功能。</li>
+<li><strong>事件和状态查看</strong>：可以查看Deployment的升级详细进度和状态。</li>
+<li><strong>回滚</strong>：当升级pod镜像或者相关参数的时候发现问题，可以使用回滚操作回滚到上一个稳定的版本或者指定的版本。</li>
+<li><strong>版本记录</strong>: 每一次对Deployment的操作，都能保存下来，给予后续可能的回滚使用。</li>
+<li><strong>暂停和启动</strong>：对于每一次升级，都能够随时暂停和启动。</li>
+<li><strong>多种升级方案</strong>：Recreate：删除所有已存在的pod,重新创建新的; RollingUpdate：滚动升级，逐步替换的策略，同时滚动升级时，支持更多的附加参数，例如设置最大不可用pod数量，最小升级间隔时间等等。</li>
+</ul>
+</blockquote>
+<p>一个完整的Deployment定义：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">extensions/v1beta1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">review-demo</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">scm</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">review-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">3</span></span><br><span class="line"><span class="comment">#  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪</span></span><br><span class="line"><span class="attr">  strategy:</span></span><br><span class="line"><span class="attr">    rollingUpdate:</span>  <span class="comment">#由于replicas为3,则整个升级完成后,pod个数在2-4个之间</span></span><br><span class="line"><span class="attr">      maxSurge:</span> <span class="number">1</span>      <span class="comment">#滚动升级时会先启动1个pod</span></span><br><span class="line"><span class="attr">      maxUnavailable:</span> <span class="number">1</span> <span class="comment">#滚动升级时允许的最大Unavailable的pod个数</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">review-demo</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      terminationGracePeriodSeconds:</span> <span class="number">60</span> <span class="comment">##k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">review-demo</span></span><br><span class="line"><span class="attr">        image:</span> <span class="string">library/review-demo:0.0.1-SNAPSHOT</span></span><br><span class="line"><span class="attr">        imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br><span class="line"><span class="attr">        livenessProbe:</span> <span class="comment">#kubernetes认为该pod是存活的,不存活则需要重启</span></span><br><span class="line"><span class="attr">          httpGet:</span></span><br><span class="line"><span class="attr">            path:</span> <span class="string">/health</span></span><br><span class="line"><span class="attr">            port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">            scheme:</span> <span class="string">HTTP</span></span><br><span class="line"><span class="attr">          initialDelaySeconds:</span> <span class="number">60</span> <span class="comment">## equals to the maximum startup time of the application + couple of seconds</span></span><br><span class="line"><span class="attr">          timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">          successThreshold:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">          failureThreshold:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">        readinessProbe:</span> <span class="comment">#kubernetes认为该pod是启动成功的</span></span><br><span class="line"><span class="attr">          httpGet:</span></span><br><span class="line"><span class="attr">            path:</span> <span class="string">/health</span></span><br><span class="line"><span class="attr">            port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">            scheme:</span> <span class="string">HTTP</span></span><br><span class="line"><span class="attr">          initialDelaySeconds:</span> <span class="number">30</span> <span class="comment">## equals to minimum startup time of the application</span></span><br><span class="line"><span class="attr">          timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">          successThreshold:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">          failureThreshold:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">        resources:</span></span><br><span class="line">          <span class="comment"># keep request = limit to keep this container in guaranteed class</span></span><br><span class="line"><span class="attr">          requests:</span></span><br><span class="line"><span class="attr">            cpu:</span> <span class="number">50</span><span class="string">m</span></span><br><span class="line"><span class="attr">            memory:</span> <span class="number">200</span><span class="string">Mi</span></span><br><span class="line"><span class="attr">          limits:</span></span><br><span class="line"><span class="attr">            cpu:</span> <span class="number">500</span><span class="string">m</span></span><br><span class="line"><span class="attr">            memory:</span> <span class="number">500</span><span class="string">Mi</span></span><br><span class="line"><span class="attr">        env:</span></span><br><span class="line"><span class="attr">          - name:</span> <span class="string">PROFILE</span></span><br><span class="line"><span class="attr">            value:</span> <span class="string">"test"</span></span><br><span class="line"><span class="attr">        ports:</span></span><br><span class="line"><span class="attr">          - name:</span> <span class="string">http</span></span><br><span class="line"><span class="attr">            containerPort:</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+<p><strong>几个重要参数的说明：</strong></p>
+<blockquote>
+<p><strong>maxSurge与maxUnavailable</strong></p>
+<p>maxSurge: 1 表示滚动升级时会先启动1个pod<br>maxUnavailable: 1 表示滚动升级时允许的最大Unavailable的pod个数<br>由于replicas为3,则整个升级完成后,pod个数在2-4个之间</p>
+<p><strong>terminationGracePeriodSeconds</strong></p>
+<p>k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒。</p>
+<p>如果需要更优雅地关闭，则可以使用k8s提供的pre-stop lifecycle hook 的配置声明，将会在发送SIGTERM之前执行。</p>
+<p><strong>livenessProbe与readinessProbe</strong></p>
+<p>livenessProbe是kubernetes认为该pod是存活的，不存在则需要kill掉，然后再新启动一个，以达到replicas指定的个数。</p>
+<p>readinessProbe是kubernetes认为该pod是启动成功的，这里根据每个应用的特性，自己去判断，可以执行command，也可以进行httpGet。比如对于使用java web服务的应用来说，并不是简单地说tomcat启动成功就可以对外提供服务的，还需要等待spring容器初始化，数据库连接连接上等等。对于spring boot应用，默认的actuator带有/health接口，可以用来进行启动成功的判断。</p>
+<p>其中readinessProbe.initialDelaySeconds可以设置为系统完全启动起来所需的最少时间，livenessProbe.initialDelaySeconds可以设置为系统完全启动起来所需的最大时间+若干秒。</p>
+</blockquote>
+<p><strong>Deployment相关命令</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl create -f review-demo.yaml  <span class="comment"># 通过yaml文件创建Deployment</span></span></span><br><span class="line"> deployment "review-demo" created</span><br><span class="line"> </span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get deployments  <span class="comment"># 查看所有deployment信息</span></span></span><br><span class="line"> NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">review-demo         1         1         1            1           12h</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get rs <span class="comment"># 查看Deployment对应的RS，可以看到它的命名是和Deployment的名称有关系的</span></span></span><br><span class="line"> NAME              			DESIRED   CURRENT    AGE</span><br><span class="line">review-demo-1640611518         1         1       12h</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pods <span class="comment"># 查看Deployment创建的Pod，可以看到它的命名是以Deployment对应的RS为前缀的</span></span></span><br><span class="line"> NAME              				    READY   STATUS     RESTARTS   AGE</span><br><span class="line">review-demo-1640611518-zhrsc         1/1    Running       0       12h</span><br></pre></td></tr></table></figure>
+<p><strong>说明</strong></p>
+<p>在新版本的Kubernetes中建议使用ReplicaSet来取代ReplicationCtronller。ReplicaSet跟ReplicationCtronller没有本质的不同，只是名字不一样，并且ReplicaSet支持集合式的selector。</p>
+<p>虽然ReplicaSet可以独立使用，但<strong>一般还是建议使用 Deployment 来自动管理ReplicaSet</strong>，这样就无需担心跟其他机制的不兼容问题（比如ReplicaSet不支持rolling-update但Deployment支持）。</p>
+<p><strong>附</strong></p>
+<p><strong>Pod的管理对象，除了RC和Deloyment之外，还包括ReplicaSet、DaemonSet、StatefulSet和Job等。</strong></p>
+<h4 id="3-HPA（Horizontal-Pod-Autoscaler）"><a href="#3-HPA（Horizontal-Pod-Autoscaler）" class="headerlink" title="3. HPA（Horizontal Pod Autoscaler）"></a>3. HPA（Horizontal Pod Autoscaler）</h4><p>通过手动执行kubectl scale命令，可以通过RC实现pod扩容。但并不满足谷歌对k8s的定位模板-自动化。</p>
+<p>HPA，<strong>pod横向自动扩容</strong>，实现原理是通过追踪分析RC控制的所有目标Pod的负载变化情况，来确定是否需要针对性地调整目标pod的副本数。</p>
+<p>有两种方式作为<strong>pod负载的度量指标</strong>。</p>
+<blockquote>
+<ol>
+<li>CPU utilization percentage</li>
+<li>应用程序自定义的度量指标，比如服务在每秒内的相应的请求数。</li>
+</ol>
+</blockquote>
+<p>CPU utilization percentage是一个算术平均值，目标pod所有副本自身的CPU利用率的平均值。一个Pod自身的CPU利用率是该Pod当前CPU使用量除以它的Pod request的值。比如当我们定义一个Pod的pod request为0.4，而当前pod的cpu使用量为0.2，则使用率为50%。如此可以得出一个平均值，如果某一个时刻CPU utilization percentage超过80%，则表示当前副本数不够，需要进行扩容。</p>
+<p>CPU utilization percentage计算过程使用到的Pod的CPU使用量通常是1分钟的平均值。</p>
+<p>一个完整的HPA定义例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">autoscaling/v2beta1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">HorizontalPodAutoscaler</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">tomcat-shopxx-hpa</span></span><br><span class="line"><span class="attr">  namespace:</span> <span class="string">default</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  scaleTargetRef:</span></span><br><span class="line"><span class="attr">    apiVersion:</span> <span class="string">apps/v1beta1</span></span><br><span class="line"><span class="attr">    kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">tomcat-shopxx</span></span><br><span class="line"><span class="attr">  minReplicas:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">  maxReplicas:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">  targetCPUUtilizationPercentage:</span> <span class="number">90</span></span><br></pre></td></tr></table></figure>
+<p>根据如上定义，我们可知这个HPA控制的目标对象为一个名为tomcat-shopxx的Deployment里的Pod副本，当这些Pod副本的CPUUtilizationPercentage超过90%时，会触发自动动态扩容行为，在扩容时必须满足的一个约束条件是Pod的副本数为1~10。</p>
+<p>关于HPA的apiVersion说明：</p>
+<blockquote>
+<p>k8s 1.2 中HPA被升级为稳定版本：apiVersion: autoscaling/v1</p>
+<p>但仍然保留了旧版本：apiVersion: extensions/v1beta1</p>
+<p>k8s 1.6 版本以后，API版本为：apiVersion: autoscaling/v2alpha1</p>
+</blockquote>
+<p><strong>注意：</strong></p>
+<p>除了通过直接定义yaml文件并且调用kubectl create 的命令来创建一个HPA资源对象的方式外，还可以通过如下简单的命令直接创建等价的HPA对象：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl autoscale deployment tomcat-shopxx --cpu-percent=90 --min=1 --max =10</span></span><br></pre></td></tr></table></figure>
+<h4 id="4-StatefulSet"><a href="#4-StatefulSet" class="headerlink" title="4. StatefulSet"></a>4. StatefulSet</h4><p>在k8s系统中，Pod的管理对象RC、Deployment、DaemonSet和Job都是面向<strong>无状态</strong>的服务，它们所管理的<strong>Pod的IP、名字，启停顺序等都是随机的</strong>。而StatefulSet，顾名思义，有状态的集合，管理所有有状态的服务，比如MySQL、MongoDB集群等。</p>
+<p><strong>StatefulSet本质</strong></p>
+<blockquote>
+<p>StatefulSet本质上是Deployment的一种变体，在v1.9版本中已成为<strong>GA</strong>版本，它为了解决有状态服务的问题，它所管理的Pod拥有固定的Pod名称，启停顺序，在StatefulSet中，Pod名字称为网络标识(hostname)，还必须要用到共享存储。</p>
+<p>在Deployment中，与之对应的服务是service，而在StatefulSet中与之对应的headless service，headless service，即无头服务，与普通service的区别就是它<strong>没有Cluster IP</strong>，解析它的名称时将返回该Headless Service对应的全部Pod的Endpoint列表。</p>
+</blockquote>
+<p>除此之外，StatefulSet在Headless Service的基础上又<strong>为StatefulSet控制的每个Pod副本创建了一个DNS域名</strong>，这个域名的格式为：</p>
+<blockquote>
+<p>$(podname).(headless server name) </p>
+</blockquote>
+<p>比如一个三个节点的Kafka的StatefulSet集群对应的Headless Service的名称为kafka，StatefulSet的名称为kafka，则StatefulSet中创建的3个Pod的DNS名称分别为：kafka-0.kafka，kafka-1.kafka，kafka-2.kafka。这些DNS名称可以直接在集群的配置文件中固定下来。</p>
+<p>如下是一个完整的StatefulSet的定义：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  ports:</span></span><br><span class="line"><span class="attr">  - port:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">web</span></span><br><span class="line"><span class="attr">  clusterIP:</span> <span class="string">None</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">StatefulSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">web</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  selector:</span></span><br><span class="line"><span class="attr">    matchLabels:</span></span><br><span class="line"><span class="attr">      app:</span> <span class="string">nginx</span> <span class="comment"># has to match .spec.template.metadata.labels</span></span><br><span class="line"><span class="attr">  serviceName:</span> <span class="string">"nginx"</span>  <span class="comment">#声明它属于哪个Headless Service.</span></span><br><span class="line"><span class="attr">  replicas:</span> <span class="number">3</span> <span class="comment"># by default is 1</span></span><br><span class="line"><span class="attr">  template:</span></span><br><span class="line"><span class="attr">    metadata:</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">nginx</span> <span class="comment"># has to match .spec.selector.matchLabels</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      terminationGracePeriodSeconds:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">      containers:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">        image:</span> <span class="string">k8s.gcr.io/nginx-slim:0.8</span></span><br><span class="line"><span class="attr">        ports:</span></span><br><span class="line"><span class="attr">        - containerPort:</span> <span class="number">80</span></span><br><span class="line"><span class="attr">          name:</span> <span class="string">web</span></span><br><span class="line"><span class="attr">        volumeMounts:</span></span><br><span class="line"><span class="attr">        - name:</span> <span class="string">www</span></span><br><span class="line"><span class="attr">          mountPath:</span> <span class="string">/usr/share/nginx/html</span></span><br><span class="line"><span class="attr">  volumeClaimTemplates:</span>   <span class="comment">#可看作pvc的模板</span></span><br><span class="line"><span class="attr">  - metadata:</span></span><br><span class="line"><span class="attr">      name:</span> <span class="string">www</span></span><br><span class="line"><span class="attr">    spec:</span></span><br><span class="line"><span class="attr">      accessModes:</span> <span class="string">[</span> <span class="string">"ReadWriteOnce"</span> <span class="string">]</span></span><br><span class="line"><span class="attr">      storageClassName:</span> <span class="string">"gluster-heketi"</span>  <span class="comment">#存储类名，改为集群中已存在的</span></span><br><span class="line"><span class="attr">      resources:</span></span><br><span class="line"><span class="attr">        requests:</span></span><br><span class="line"><span class="attr">          storage:</span> <span class="number">1</span><span class="string">Gi</span></span><br></pre></td></tr></table></figure>
+<p>通过该配置文件，可看出StatefulSet的三个组成部分：</p>
+<blockquote>
+<ul>
+<li>Headless Service：名为nginx，用来定义Pod网络标识( DNS domain)。</li>
+<li>StatefulSet：定义具体应用，名为Nginx，有三个Pod副本，并为每个Pod定义了一个域名。</li>
+<li>volumeClaimTemplates： 存储卷申请模板，创建PVC，指定pvc名称大小，将自动创建pvc，且pvc必须由存储类供应。</li>
+</ul>
+</blockquote>
+<p><strong>附录：PV和PVC</strong></p>
+<blockquote>
+<p>PersistentVolume（<strong>PV</strong>）是集群中由管理员配置的<strong>一段网络存储</strong>。 它是集群中的资源，就像节点是集群资源一样。 PV是容量插件，如Volumes，但其生命周期独立于使用PV的任何单个pod。 此API对象捕获存储实现的详细信息，包括NFS，iSCSI或特定于云提供程序的存储系统。</p>
+<p>PersistentVolumeClaim（<strong>PVC</strong>）是由<strong>用户进行存储的请求</strong>。 它类似于pod。 Pod消耗节点资源，PVC消耗PV资源。Pod可以请求特定级别的资源（CPU和内存）。声明可以请求特定的大小和访问模式（例如，可以一次读/写或多次只读）。</p>
+</blockquote>
+<p><strong>两个问题</strong></p>
+<blockquote>
+<p><strong>为什么需要 headless service 无头服务？</strong><br>在用Deployment时，每一个Pod名称是没有顺序的，是随机字符串，因此是Pod名称是无序的，但是在statefulset中要求必须是有序 ，每一个pod不能被随意取代，pod重建后pod名称还是一样的。而pod IP是变化的，所以是以Pod名称来识别。pod名称是pod唯一性的标识符，必须持久稳定有效。这时候要用到无头服务，它可以给每个Pod一个唯一的名称 。<br><strong>为什么需要volumeClaimTemplate？</strong><br>对于有状态的副本集都会用到持久存储，对于分布式系统来讲，它的最大特点是数据是不一样的，所以各个节点不能使用同一存储卷，每个节点有自已的专用存储，但是如果在Deployment中的Pod template里定义的存储卷，是所有副本集共用一个存储卷，数据是相同的，因为是基于模板来的 ，而statefulset中每个Pod都要自已的专有存储卷，所以statefulset的存储卷就不能再用Pod模板来创建了，于是statefulSet使用volumeClaimTemplate，称为卷申请模板，它会为每个Pod生成不同的pvc，并绑定pv， 从而实现各pod有专用存储。这就是为什么要用volumeClaimTemplate的原因。</p>
+</blockquote>
+<p>创建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl create -f nginx.yaml </span></span><br><span class="line">service "nginx" created</span><br><span class="line">statefulset "web" created</span><br></pre></td></tr></table></figure>
+<p>看下这三个Pod创建过程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">第一个是创建web-0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pod</span></span><br><span class="line">web-0                     1/1       ContainerCreating   0          51s</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">待web-0 running且ready时，创建web-1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pod</span></span><br><span class="line">web-0                     1/1       Running             0          51s</span><br><span class="line">web-1                     0/1       ContainerCreating   0          42s</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">待web-1 running且ready时，创建web-2</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pod</span></span><br><span class="line">web-0                     1/1       Running             0          1m</span><br><span class="line">web-1                     1/1       Running             0          45s</span><br><span class="line">web-2                     1/1       ContainerCreating   0          36s</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">最后三个Pod全部running且ready</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pod</span></span><br><span class="line">NAME                      READY     STATUS    RESTARTS   AGE</span><br><span class="line">web-0                     1/1       Running   0          4m</span><br><span class="line">web-1                     1/1       Running   0          3m</span><br><span class="line">web-2                     1/1       Running   0          1m</span><br></pre></td></tr></table></figure>
+<p>根据volumeClaimTemplates自动创建的PVC</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pvc</span></span><br><span class="line">NAME              STATUS    VOLUME                                  CAPACITY   ACCESS MODES   STORAGECLASS     AGE</span><br><span class="line">www-web-0         Bound     pvc-ecf003f3-828d-11e8-8815-000c29774d39   2G        RWO          gluster-heketi   7m</span><br><span class="line">www-web-1         Bound     pvc-0615e33e-828e-11e8-8815-000c29774d39   2G        RWO          gluster-heketi   6m</span><br><span class="line">www-web-2         Bound     pvc-43a97acf-828e-11e8-8815-000c29774d39   2G        RWO          gluster-heketi   4m</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果集群中没有StorageClass的动态供应PVC的机制，也可以提前手动创建多个PV、PVC，手动创建的PVC名称必须符合之后创建的StatefulSet命名规则：<strong>(volumeClaimTemplates.name)-(pod_name)</strong></p>
+</blockquote>
+<p>Statefulset名称为web 三个Pod副本: web-0，web-1,web-2，volumeClaimTemplates名称为：www，那么自动创建出来的PVC名称为www-web[0-2]，为每个Pod创建一个PVC。</p>
+<p><strong>规律总结</strong></p>
+<blockquote>
+<ul>
+<li>匹配Pod name(网络标识)的模式为：<strong>$(statefulset名称)-$(序号)</strong>，比如上面的示例：web-0，web-1，web-2。</li>
+<li>StatefulSet为每个Pod副本创建了一个DNS域名，这个域名的格式为： <strong>$(podname).(headless server name)</strong>，也就意味着<strong>服务间是通过Pod域名来通信而非Pod IP</strong>，因为当Pod所在Node发生故障时，Pod会被飘移到其它Node上，Pod IP会发生变化，但是Pod域名不会有变化。</li>
+<li>StatefulSet使用Headless服务来控制Pod的域名，这个域名的FQDN为：<strong>$(service name).$(namespace).svc.cluster.local</strong>，其中，“cluster.local”指的是集群的域名。</li>
+<li>根据volumeClaimTemplates，为每个Pod创建一个pvc，pvc的命名规则匹配模式：<strong>(volumeClaimTemplates.name)-(pod_name)</strong>，比如上面的volumeMounts.name=www， Pod name=web-[0-2]，因此创建出来的PVC是www-web-0、www-web-1、www-web-2。</li>
+<li>删除Pod不会删除其pvc，手动删除pvc将自动释放pv。</li>
+</ul>
+</blockquote>
+<p><strong>Statefulset的启停顺序：</strong></p>
+<blockquote>
+<ul>
+<li>有序部署：部署StatefulSet时，如果有多个Pod副本，它们会被顺序地创建（从0到N-1）并且，在下一个Pod运行之前所有之前的Pod必须都是Running和Ready状态。</li>
+<li>有序删除：当Pod被删除时，它们被终止的顺序是从N-1到0。</li>
+<li>有序扩展：当对Pod执行扩展操作时，与部署一样，它前面的Pod必须都处于Running和Ready状态。　</li>
+</ul>
+</blockquote>
+<p><strong>Statefulset Pod管理策略：</strong></p>
+<blockquote>
+<p>在v1.7以后，通过允许修改Pod排序策略，同时通过.spec.podManagementPolicy字段确保其身份的唯一性。</p>
+<ul>
+<li>OrderedReady：上述的启停顺序，默认设置。</li>
+<li>Parallel：告诉StatefulSet控制器并行启动或终止所有Pod，并且在启动或终止另一个Pod之前不等待前一个Pod变为Running and Ready或完全终止。</li>
+</ul>
+</blockquote>
+<p><strong>StatefulSet使用场景：</strong></p>
+<blockquote>
+<ul>
+<li>稳定的持久化存储，即Pod重新调度后还是能访问到相同的持久化数据，基于PVC来实现。</li>
+<li>稳定的网络标识符，即Pod重新调度后其PodName和HostName不变。</li>
+<li>有序部署，有序扩展，基于init containers来实现。</li>
+<li>有序收缩。</li>
+</ul>
+</blockquote>
+<p><strong>更新策略：</strong></p>
+<blockquote>
+<p>在Kubernetes 1.7及更高版本中，通过.spec.updateStrategy字段允许配置或禁用Pod、labels、source request/limits、annotations自动滚动更新功能。</p>
+<ol>
+<li><strong>OnDelete：</strong>通过.spec.updateStrategy.type 字段设置为OnDelete，StatefulSet控制器不会自动更新StatefulSet中的Pod。用户必须手动删除Pod，以使控制器创建新的Pod。</li>
+<li><strong>RollingUpdate：</strong>通过.spec.updateStrategy.type 字段设置为RollingUpdate，实现了Pod的自动滚动更新，如果.spec.updateStrategy未指定，则此为默认策略。<br>StatefulSet控制器将删除并重新创建StatefulSet中的每个Pod。它将以Pod终止（从最大序数到最小序数）的顺序进行，一次更新每个Pod。在更新下一个Pod之前，必须等待这个Pod Running and Ready。</li>
+<li><strong>Partitions：</strong>通过指定 .spec.updateStrategy.rollingUpdate.partition 来对 RollingUpdate 更新策略进行分区，如果指定了分区，则当 StatefulSet 的 .spec.template 更新时，具有大于或等于分区序数的所有 Pod 将被更新。<br>具有小于分区的序数的所有 Pod 将不会被更新，即使删除它们也将被重新创建。如果 StatefulSet 的 .spec.updateStrategy.rollingUpdate.partition 大于其 .spec.replicas，则其 .spec.template 的更新将不会传播到 Pod。在大多数情况下，不需要使用分区。</li>
+</ol>
+</blockquote>
+<h4 id="5-Service"><a href="#5-Service" class="headerlink" title="5. Service"></a>5. Service</h4><h4 id="6-Job"><a href="#6-Job" class="headerlink" title="6. Job"></a>6. Job</h4>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/19/shell-command-if/" rel="next" title="shell-if表达式中的参数含义">
+                <i class="fa fa-chevron-left"></i> shell-if表达式中的参数含义
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/27/kafka-earliest-latest/" rel="prev" title="kafka auto.offset.reset earliest latest详解">
+                kafka auto.offset.reset earliest latest详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-RC"><span class="nav-number">1.</span> <span class="nav-text">1. RC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Deployment"><span class="nav-number">2.</span> <span class="nav-text">2. Deployment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-HPA（Horizontal-Pod-Autoscaler）"><span class="nav-number">3.</span> <span class="nav-text">3. HPA（Horizontal Pod Autoscaler）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-StatefulSet"><span class="nav-number">4.</span> <span class="nav-text">4. StatefulSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Service"><span class="nav-number">5.</span> <span class="nav-text">5. Service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Job"><span class="nav-number">6.</span> <span class="nav-text">6. Job</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
