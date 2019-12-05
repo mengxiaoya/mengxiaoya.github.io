@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/3.png">
-<meta property="og:updated_time" content="2019-11-18T15:16:27.650Z">
+<meta property="og:updated_time" content="2019-12-05T15:41:22.748Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes的基本概念和术语（一）">
 <meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — Master、Node、Pod、Label。">
@@ -427,7 +427,7 @@
 <p>kind为Pod表明这是一个Pod的定义；matadata的name属性为Pod的名字，还能定义资源对象的标签Label，这里声明myweb拥有一个<code>name=myweb</code>的标签。Pod里面所包含的容器组的定义则在spec中声明，这里定义一个名字为myweb，镜像为<code>kubeguide/tomcat-app:v1</code>的容器，该容器注入了名为<code>MYSQL_SERVICE_HOST=&#39;mysql&#39;</code>和<code>MYSQL_SERVICE_PORT=&#39;3306&#39;</code>的环境变量（env关键字）。Pod的IP加上这里的容器端口（containerPort）就组成了一个新的概念Endpoint（端口），它代表Pod的一个服务进程对外的通信地址。一个Pod也存在着具有多个Endpoint的情况，比如tomcat定义pod时候，可以暴露管理端口和服务端口两个Endpoint。</p>
 <p><strong>Pod计算资源限额设置</strong></p>
 <p>每个Pod都可以对其能使用的服务器上的计算资源设置限额，当前可以设置的限额的计算资源有CPU和Memory两种，其中CPU的资源单位为CPU（core）核数，一个绝对值。</p>
-<p>一个cpu的配额对绝大多数容器去是一个相当大的资源配额，所以在k8s中，<strong>通常以千分之一的cpu配额为最小单位，用m来表示，即一个容器的限额为100-300m，即占用0.1-0.3个cpu限额。</strong>由于它是绝对值，所以无论在1个cpu的机器还是多个cpu的机器，这个100m的配额都是一样的。类似的Memory配额也是一个绝对值，单位是内存字节数。</p>
+<p>一个cpu的配额对绝大多数容器来说是一个相当大的资源配额，所以在k8s中，<strong>通常以千分之一的cpu配额为最小单位，用m来表示，即一个容器的限额为100-300m，即占用0.1-0.3个cpu限额。</strong>由于它是绝对值，所以无论在1个cpu的机器还是多个cpu的机器，这个100m的配额都是一样的。类似的Memory配额也是一个绝对值，单位是内存字节数。</p>
 <p>在k8s中，一个计算资源进行配额限定需要设定下面两个参数：</p>
 <blockquote>
 <ul>
@@ -638,7 +638,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
