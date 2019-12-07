@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/3.png">
-<meta property="og:updated_time" content="2019-12-05T15:37:05.814Z">
+<meta property="og:updated_time" content="2019-12-07T01:30:31.641Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes的基本概念和术语（二）">
 <meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。">
@@ -546,23 +546,23 @@ RS升级使用deployment或者kubectl replace命令。
 </blockquote>
 <h4 id="5-Service"><a href="#5-Service" class="headerlink" title="5. Service"></a>5. Service</h4><p>Service也是k8s里面最核心的资源对象之一，k8s里面的每个service其实就是我们经常提起的微服务架构中的一个“微服务”。下图是Pod、RC和Service之间的关系：</p>
 <p><img src="/2019/11/19/k8s-basic-concept-2/../k8s-basic-concept-2\1.png" alt="avatar"></p>
-<p>从图中可以看到， Kubernetes Service 定义了一个服务的访问入口地址，前端的应用 ( Pod ) 通过这个入口地址访问其背后的一组由 Pod 副本组成的集群实例， Service 与其后端 Pod 副本集群之间则是通过 Label Selector 来实现“无缝对接”的。而 RC 的作用实际上是保证 Service 的服务能力和服务质量始终处于预期的标准。</p>
+<p>从图中可以看到， Kubernetes 的 Service 定义了一个服务的访问入口地址，前端的应用 ( Pod ) 通过这个入口地址访问其背后的一组由 Pod 副本组成的集群实例， Service 与其后端 Pod 副本集群之间则是通过 Label Selector 来实现“无缝对接”的。而 RC 的作用实际上是保证 Service 的服务能力和服务质量始终处于预期的标准。</p>
 <p><strong>Service 一旦被创建， Kubernetes 就会自动为它分配个可用的 Cluster IP ，而且在 Service 的整个生命周期 内，它的 Cluster IP 不会发生改变。</strong></p>
 <p>如下是一个Service的定义示例：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">tomcat-service</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">	<span class="attr">ports:</span> </span><br><span class="line">		<span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span> </span><br><span class="line">	<span class="attr">selector:</span></span><br><span class="line">		<span class="attr">tier:</span> <span class="string">frontend</span></span><br></pre></td></tr></table></figure>
 <p>上述定义了一个名为“tomcat-service”的Service，它的服务端口为8080，拥有”tier=frontend”这个Label的所有Pod实例都属于它，运行如下命令进行Service的创建：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl create -f tomcat-server.yml</span></span><br><span class="line">service ” tomcat-service ” created</span><br></pre></td></tr></table></figure>
-<p>查看Service的Endpoints列表：</p>
+<p>查看Service的Endpoint列表：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get endpoints</span></span><br><span class="line">NAME 		        ENDPOINTS      		AGE </span><br><span class="line">kubernetes       192.168.18.131:6443    15d </span><br><span class="line">tomcat-service   172.17.1.3:8080 		1m</span><br></pre></td></tr></table></figure>
 <p>查看Service对应的Cluster IP及更多的信息：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get svc tomcat-service -o yaml</span></span><br></pre></td></tr></table></figure>
 <p>在spec.ports 的定义中， targetPort 属性用来确定提供该服务的容器所暴露（ EXPOSE ）的端 口号，即具体业务进程在容器内的 targetPort 上提供 TCP/IP 接入，而 port 属性则定义了 Service 的虚端口。前面我们定义 tomcat 服务时，没有指定 targetPort ，则默认 targetPort 与port相同。</p>
 <p><strong>Service的多端口问题</strong></p>
-<p>很多服务都存在多个端口的问题，通常一个端口提供业务服务，另外一个端口提供管理服 务， 比如 Mycat Codis 等常见中间件。 Kubernetes Service 支持多个 Endpoint ，在存在多个 ndpoint 的情况下，要求每个 Endpoint 定义一个名字来区分。 下面是 Tomcat 多端口的 Service 定义样例：</p>
+<p>很多服务都存在多个端口的问题，通常一个端口提供业务服务，另外一个端口提供管理服 务， 比如 Mycat 、Codis 等常见中间件。 Kubernetes Service 支持多个 Endpoint ，在存在多个 Endpoint 的情况下，要求每个 Endpoint 定义一个名字来区分。 下面是 Tomcat 多端口的 Service 定义样例：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">apiVersion</span> <span class="string">:</span> <span class="string">v1</span></span><br><span class="line"><span class="string">kind</span> <span class="string">:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">tomcat-service</span> </span><br><span class="line"><span class="string">spec</span> <span class="string">:</span> </span><br><span class="line">	<span class="attr">ports:</span> </span><br><span class="line">		<span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">service-port</span> </span><br><span class="line">		<span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8005</span> </span><br><span class="line">		<span class="attr">name:</span> <span class="string">shutdown-port</span></span><br><span class="line">	<span class="attr">selector:</span> </span><br><span class="line">		<span class="attr">tier:</span> <span class="string">frontend</span></span><br></pre></td></tr></table></figure>
 <p>从上述定义可以看出，多端口时需要给每个端口都定义一个名称，为什么要这样做？原因和k8s的服务发现机制有关。</p>
 <p><strong>k8s的服务发现机制</strong></p>
-<p>最早时 Kubernetes 采用了 Linux 环境变量的方式解决这个问题，即每个 Service 生成 些对 应的 Linux 环境变量 （ENV ），并在每个 Pod 的容器在启动时，自动注入这些环境变量。这样就可以通过代码访问系统环境变量的方 式得到所需的信息，实现服务调用。</p>
+<p>最早时 Kubernetes 采用了 Linux 环境变量的方式解决这个问题，即每个 Service 生成一些对应的 Linux 环境变量 （ENV ），并在每个 Pod 的容器在启动时，自动注入这些环境变量。这样就可以通过代码访问系统环境变量的方 式得到所需的信息，实现服务调用。</p>
 <p>后来 Kubernetes 通过 Add-On 增值包的方式引入了 DNS 系统，把服务名作为 DNS 域名，这样一来， 程序就可以直接使用服务名来建立通信连接了。目前 Kubernetes 上的大部分应用都己经采用了 DNS 这些新兴的服务发现机制。</p>
 <p><strong>外部系统访问Service的问题</strong></p>
 <p>Kubernetes的 “三种IP”：</p>
@@ -577,15 +577,15 @@ RS升级使用deployment或者kubectl replace命令。
 </blockquote>
 <p>Pod IP</p>
 <blockquote>
-<p>Pod IP 是每个 Pod IP 地址，它是 Docker Engine 根据 docker0 网桥的地址段进行分配的，通常是一个虚拟的二层网络，前面我们说过， Kubemetes 要求位于不同 Node 上的Pod 能够彼此直接通信，所以 Kubernetes 里一 Pod 里的容器访问另外一 Pod 里的容器，就是通过 Pod IP所在的虚拟二层网络进行通信的，而真实的 TCP/IP 流量则是通过 Node IP所在的物理网卡流出的。</p>
+<p>Pod IP 是每个 Pod IP 地址，它是 Docker Engine 根据 docker0 网桥的地址段进行分配的，通常是一个虚拟的二层网络，前面我们说过， Kubernetes 要求位于不同 Node 上的Pod 能够彼此直接通信，所以 Kubernetes 里一个 Pod 里的容器访问另外一个 Pod 里的容器，就是通过 Pod IP所在的虚拟二层网络进行通信的，而真实的 TCP/IP 流量则是通过 Node IP所在的物理网卡流出的。</p>
 </blockquote>
 <p>Cluster IP</p>
 <p>它也是个虚拟的 IP ，但更像是一个 “伪造”的 IP 网络。</p>
 <blockquote>
 <ol>
 <li>Cluster 仅仅作用 Kubernetes Service 这个对象，并由 Kubernetes 管理和分配 IP 地址（来源于 Cluster 地址池）。 </li>
-<li>Cluster 无法被 Ping 因为没有一个“实体网络对象”来响应 。</li>
-<li>Cluster IP只能结合 Service Port 组成 个具体的通信端口，单独的 Cluster IP不具备 TCP IP 通信的基础 并且它们属于 Kubernetes 集群这样 个封闭的 间， 集群之外的节点如果要访 问这个通信端口 ，则需要 一些额外的工作 。</li>
+<li>Cluster 无法被 Ping ，因为没有一个“实体网络对象”来响应 。</li>
+<li>Cluster IP只能结合 Service Port 组成一个具体的通信端口，单独的 Cluster IP不具备 TCP/IP 通信的基础 ，并且它们属于 Kubernetes 集群这样一个封闭的空间， 集群之外的节点如果要访问这个通信端口 ，则需要做一些额外的工作 。</li>
 <li>在Kubernetes 集群之内， Node IP网、 Pod IP 网与 Cluster IP网之间的通信采用的是 Kubernetes 自己设计的一种编程方式的特殊的路由规则，与我们所熟知的路由有很大的不同。</li>
 </ol>
 </blockquote>
@@ -594,13 +594,13 @@ RS升级使用deployment或者kubectl replace命令。
 <p>那么矛盾来了：实际上我们开发的业务系统中肯定多少有一部分服务是要提供给 Kubernetes 集群外部的应用或者用户来使用的，典型的例子就是Web 端的服务模块，比如上面 tomcat-service ，那么用户怎么访问它？</p>
 <p>采用 NodePort 是解决上述问题的最直接、最有效、最常用的做法。具体做法如下，以 tomcat-service 为例，我们在 Service 的定义里做如下扩展即可：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">tomcat-service</span>   </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">	<span class="attr">type:</span> <span class="string">NodePort</span>   <span class="comment"># 扩展1</span></span><br><span class="line">	<span class="attr">ports:</span> </span><br><span class="line">		<span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">        nodePort:</span> <span class="number">31002</span>  <span class="comment"># 扩展2</span></span><br><span class="line">	<span class="attr">selector:</span></span><br><span class="line">		<span class="attr">tier:</span> <span class="string">frontend</span></span><br></pre></td></tr></table></figure>
-<p>nodePort:31002 这个属性表明我们手动指定 tomcat-service NodePort 31002 ，否 则Kubernetes 会自动分配 个可用的端口 。接下来 ，我们在浏览器里访问 http://＜nodePort IP&gt; :31002/，就可以 看到Tomcat 的欢迎界面了。</p>
+<p>nodePort:31002 这个属性表明我们手动指定 tomcat-service 的 NodePort 为 31002 ，否 则Kubernetes 会自动分配 个可用的端口 。接下来 ，我们在浏览器里访问 http://＜nodePort IP&gt; :31002/，就可以 看到Tomcat 的欢迎界面了。</p>
 <p><strong>NodePort</strong></p>
-<p>NodePort 实现方式是在 Kubernetes 集群里的每个 Node 上为需要外部访问的 Service 开启一个对应的 TCP 监听端口，外部系统只要用任意 Node IP 地址＋具体的 nodePort 端口号 即可访问此服务，在任意一个Node 上运行 netstat 命令，我们就可以看到有 NodePort 端口被监听：</p>
+<p>NodePort 实现方式是在 Kubernetes 集群里的每个 Node 上为需要外部访问的 Service 开启一个对应的 TCP 监听端口，外部系统只要用任意 Node IP 地址＋具体的 NodePort 端口号 即可访问此服务，在任意一个Node 上运行 netstat 命令，我们就可以看到有 NodePort 端口被监听：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> netstat -tlp | grep 31002</span></span><br><span class="line">tcp6 	0	 0 [: :]: 31002 	[::]:* 		LISTEN 						1125/kube- proxy</span><br></pre></td></tr></table></figure>
 <p>但是NodePort 还没有完全解决外部访问 Service 的所有问题，比如负载均衡问题，假如我们的集群中有 10 个Node ，则此时最好有一个负载均衡器，外部的请求只需访问此负载均衡器的 IP 地址，由负载均衡器负责转发流量到后面某个 Node 的 NodePort 上。如下图所示：</p>
 <p><img src="/2019/11/19/k8s-basic-concept-2/../k8s-basic-concept-2\2.png" alt="avatar"></p>
-<p>图中的 Load balancer 组件独立于 Kubernetes 集群之外，通常是个<strong>硬件的负载均衡器</strong>， 或者是以<strong>软件方式实现</strong>的，例如 HAProxy 或者 Nginx 。对于每个 Service ，我们通常需要配置一个对应的 Load balancer 实例来转发流量到后端的 Node 上，这的确增加了工作量及出错的概率。 于是 Kubernetes 提供了自动化的解决方案，如果我们的集群运行在谷歌的 GCE 公有云上，那么 只要我们把 Service <strong>type=NodePort 改为 type=LoadBalancer</strong> ，此时 Kubernetes 会自动创建一个 对应的 Load balancer 实例并返回它的 IP 地址供外部客户端使用。</p>
+<p>图中的 Load balancer 组件独立于 Kubernetes 集群之外，通常是个<strong>硬件的负载均衡器</strong>， 或者是以<strong>软件方式实现</strong>的，例如 HAProxy 或者 Nginx 。对于每个 Service ，我们通常需要配置一个对应的 Load balancer 实例来转发流量到后端的 Node 上，这的确增加了工作量及出错的概率。 于是 Kubernetes 提供了自动化的解决方案，如果我们的集群运行在谷歌的 GCE 公有云上，那么 只要我们把 Service 的 <strong>type=NodePort 改为 type=LoadBalancer</strong> ，此时 Kubernetes 会自动创建一个对应的 Load balancer 实例并返回它的 IP 地址供外部客户端使用。</p>
 <h4 id="6-Job"><a href="#6-Job" class="headerlink" title="6. Job"></a>6. Job</h4><p>Job负责批量处理短暂的一次性任务 (short lived one-off tasks)，即仅执行一次的任务，它保证批处理任务的一个或多个Pod成功结束。Kubernetes支持以下几种Job：</p>
 <blockquote>
 <ul>

@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="本文介绍Kubernetes中的基本概念和术语  — Volume、Persistent Volume（PV）、Namespace、Annotation。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-05T15:40:07.254Z">
+<meta property="og:updated_time" content="2019-12-07T01:17:15.461Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes的基本概念和术语（三）">
 <meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — Volume、Persistent Volume（PV）、Namespace、Annotation。">
@@ -364,7 +364,7 @@
       
         <p>本文介绍Kubernetes中的基本概念和术语  — Volume、Persistent Volume（PV）、Namespace、Annotation。</p>
 <a id="more"></a>
-<h4 id="1-Volume"><a href="#1-Volume" class="headerlink" title="1. Volume"></a>1. Volume</h4><p>Volume Pod 中能够被多个容器访问的共享目录。 Kubernetes 的 Volume 概念、用途和目的与 Docker Volume 比较类似，但两者不能等价，区别如下：</p>
+<h4 id="1-Volume"><a href="#1-Volume" class="headerlink" title="1. Volume"></a>1. Volume</h4><p>Volume 是 Pod 中能够被多个容器访问的共享目录。 Kubernetes 的 Volume 概念、用途和目的与 Docker Volume 比较类似，但两者不能等价，区别如下：</p>
 <blockquote>
 <ol>
 <li>Kubernetes 中的 Volume 定义在 Pod 上，然后被 一个Pod 里的多个容器挂载到具体的文件目录下。</li>
@@ -376,19 +376,19 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">template:</span> </span><br><span class="line">	<span class="attr">metadata:</span> </span><br><span class="line">		<span class="attr">labels:</span> </span><br><span class="line">			<span class="attr">app:</span> <span class="string">app-demo</span> </span><br><span class="line">			<span class="attr">tier:</span> <span class="string">frontend</span> </span><br><span class="line">	<span class="attr">spec:</span> </span><br><span class="line">		<span class="attr">volumes:</span> </span><br><span class="line">			<span class="bullet">-</span> <span class="attr">name:</span> <span class="string">datavol</span> </span><br><span class="line">			<span class="attr">emptyDir:</span> <span class="string">&#123;</span> <span class="string">&#125;</span> </span><br><span class="line">		<span class="attr">containers:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">name</span> <span class="string">:</span> <span class="string">tomcat-demo</span> </span><br><span class="line">		<span class="string">image</span> <span class="string">:</span> <span class="string">tomcat</span> </span><br><span class="line">		<span class="attr">volumeMounts:</span> </span><br><span class="line">			<span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/mydata-data</span> </span><br><span class="line">			<span class="attr">name:</span> <span class="string">datavol</span> </span><br><span class="line">		<span class="attr">imagePullPolicy:</span> <span class="string">IfNotPresent</span></span><br></pre></td></tr></table></figure>
 <p><strong>Volume的类型</strong></p>
 <p>1.emptyDir</p>
-<p>一个emptyDir Volume 是在 Pod 分配到 Node 时创建的。从它的名称就可以看出，它的初始内容为空，并且无须指定宿主机上对应的目录文件，因为这是 Kubernetes 自动分配的 个目录，Pod Node 上移除时， emptyDir 中的数据也会被永久删除。 emptyDir 的一些用途如下：</p>
+<p>一个emptyDir Volume 是在 Pod 分配到 Node 时创建的。从它的名称就可以看出，它的初始内容为空，并且无须指定宿主机上对应的目录文件，因为这是 Kubernetes 自动分配的一个目录，当Pod 从 Node 上移除时， emptyDir 中的数据也会被永久删除。 emptyDir 的一些用途如下：</p>
 <blockquote>
 <p>临时空间，例如用于某些应用程序运行时所需的临时目录，且无须永久保留 。</p>
-<p>长时间任务的中间过程 Check:Point 的临时保存目录 。</p>
+<p>长时间任务的中间过程 CheckPoint 的临时保存目录 。</p>
 <p>一个容器需要从另一个容器中获取数据的目录（多容器共享目录）。</p>
 </blockquote>
-<p>目前，用户无法控制 emptyD 使用的介质种类。如果 kubelet 的配置是使用硬盘，那么所有emptyDir让都将创建在该硬盘上。 Pod 在将来可以设置 emptyDir让是位于硬盘、固态硬盘上还是 基于内存的tmpfs 上，上面的例子便采用了 emptyDir 类的 Volume 。</p>
+<p>目前，用户无法控制 emptyDir 使用的介质种类。如果 kubelet 的配置是使用硬盘，那么所有emptyDir让都将创建在该硬盘上。 Pod 在将来可以设置 emptyDir 是位于硬盘、固态硬盘上还是基于内存的tmpfs 上，上面的例子便采用了 emptyDir 类的 Volume 。</p>
 <p>2.hostPath</p>
 <p>hostPath 为在 Pod 上挂载宿主机上的文件或目录，它通常可以用于以下几方面：</p>
 <blockquote>
 <ol>
-<li>容器应用程序生成的日志文件需要永久保存时，可以使用宿主机的 速文件系统进行存储。 </li>
-<li>需要访问宿主机上 Docker 擎内部数据结构 容器应用 时，可以通过定义 hostPath 为宿主机/var/lib/docker 目录，使容器内部应用可以直接访问 Docker 的文件系统 。</li>
+<li>容器应用程序生成的日志文件需要永久保存时，可以使用宿主机的高速文件系统进行存储。 </li>
+<li>需要访问宿主机上 Docker 引擎内部数据结构的容器应用时，可以通过定义 hostPath 为宿主机/var/lib/docker 目录，使容器内部应用可以直接访问 Docker 的文件系统 。</li>
 </ol>
 </blockquote>
 <p>在使用这种类型的 Volume 时， 需要注意以下几点 :</p>
@@ -401,22 +401,22 @@
 <p>在下面的例子中使用宿主机的/data 录定义了一个hostPath 类型的 Volume:</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span> </span><br><span class="line"><span class="bullet">-</span> <span class="string">name</span> <span class="string">:</span> <span class="string">"persistent-storage” </span></span><br><span class="line"><span class="string">	hostPath : </span></span><br><span class="line"><span class="string">		path : "</span><span class="string">/data"</span></span><br></pre></td></tr></table></figure>
 <p>3.gcePersistentDisk</p>
-<p>使用这种类型的 Volume 表示使用谷歌公有云提供的永久磁盘（ Persistent Disk, PD ）存放 Volume 的数据，它与emptyDir 不同， PD 上的内容会被永久保存， 当Pod 被删除时， PD 只是 被卸载（Unmount ），但不会被删除。需要注意的是，你需要先创建一个永久磁盘(PD)，才能 使用 gcePersistentDisk。</p>
+<p>使用这种类型的 Volume 表示使用谷歌公有云提供的永久磁盘（ Persistent Disk, PD ）存放 Volume 的数据，它与emptyDir 不同， PD 上的内容会被永久保存， 当Pod 被删除时， PD 只是被卸载（Unmount ），但不会被删除。需要注意的是，你需要先创建一个永久磁盘(PD)，才能 使用 gcePersistentDisk。</p>
 <p>使用 gcePersistentDisk 有以下一些限制条件：</p>
 <blockquote>
 <p>Node （运行 kubelet 节点〉需要是 GCE 虚拟机 。</p>
 <p>这些虚拟机需要与 PD 存在于相同的 GCE 项目和 Zone 中。</p>
 </blockquote>
 <p>通过 gcloud 命令即可创建一个PD：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gcloud compute disks create --size=5OOGB -- zone=us- centrall<span class="_">-a</span> my-data-disk</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gcloud compute disks create --size=5OOGB -- zone=us-centrall<span class="_">-a</span> my-data-disk</span></span><br></pre></td></tr></table></figure>
 <p>定义 gcePersistentDisk 类型的 Volume 的示例如下：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">volumes</span> <span class="string">:</span> </span><br><span class="line"><span class="attr">- name:</span> <span class="string">test-volume</span> </span><br><span class="line">	<span class="comment"># This GCE PD must already exist . </span></span><br><span class="line">	<span class="string">gcePersistentDisk</span> <span class="string">:</span> </span><br><span class="line">		<span class="attr">pdName:</span> <span class="string">my-data-disk</span> </span><br><span class="line">		<span class="attr">fsType:</span> <span class="string">ext4</span></span><br></pre></td></tr></table></figure>
 <p>4.awsElasticBlockStore </p>
-<p>与GCE 类似 该类型的 Volume 使用亚马逊公有云提供的 EBSVolume 存储数据， 需要先创建一个 BS Volume 才能使用 awsElasticBlockStore。</p>
+<p>与GCE 类似该类型的 Volume 使用亚马逊公有云提供的 EBS Volume 存储数据， 需要先创建一个 EBS Volume 才能使用 awsElasticBlockStore。</p>
 <p>使用 awsElasticBlockStore 一些限制条件如下：</p>
 <blockquote>
 <p>Node （运行 kubelet 节点）需要是 AWS EC2 实例。 </p>
-<p>这些 AWS EC2 实例需要与 BS volume 存在于相同的 region availability-zone 中。</p>
+<p>这些 AWS EC2 实例需要与 EBS volume 存在于相同的 region 和 availability-zone 中。</p>
 <p>EBS 只支持单个 EC2 实例 mount 一个 volume。</p>
 </blockquote>
 <p>通过 aws ec2 create-volume 命令可以创建一个 EBS volume</p>
@@ -424,14 +424,14 @@
 <p>定义 awsElasticBlockStore 类型的 Volume的示例如下：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span> </span><br><span class="line"><span class="attr">- name:</span> <span class="string">test-volume</span> </span><br><span class="line">	<span class="comment"># This AWS EBS volume must already exist. </span></span><br><span class="line">	<span class="string">awsElasticBlockStore</span> <span class="string">:</span> </span><br><span class="line">		<span class="attr">volumeID:</span> <span class="attr">aws://&lt;availability-zone&gt;/&lt;volume-id&gt;</span></span><br><span class="line">		<span class="attr">fsType:</span> <span class="string">ext4</span></span><br></pre></td></tr></table></figure>
 <p>5.NFS</p>
-<p>使用 NFS 网络文件系统提供的共享目录存储数据时，我们需要在系统中部署一个 NFS Server 定义 NFS 类型的 Volume 示例如下：</p>
+<p>使用 NFS 网络文件系统提供的共享目录存储数据时，我们需要在系统中部署一个 NFS Server。 定义 NFS 类型的 Volume 示例如下：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">volumes</span> <span class="string">:</span> </span><br><span class="line"><span class="attr">- name:</span> <span class="string">nfs</span> </span><br><span class="line">	<span class="attr">nfs:</span> </span><br><span class="line">	<span class="string">＃</span> <span class="string">改为你的</span> <span class="string">NFS</span> <span class="string">服务器地址</span></span><br><span class="line">	<span class="attr">server:</span> <span class="string">nfs-server.localhost</span> </span><br><span class="line">	<span class="attr">path:</span> <span class="string">"/"</span></span><br></pre></td></tr></table></figure>
 <p>6.其他类型</p>
 <blockquote>
 <p>iscsi ：使用 iSCSI 存储设备上的目录挂载到 Pod 中。</p>
 <p>flocker ：使用 Flocker 来管理存储卷。 </p>
 <p>glusterfs ：使用开源 GlusterFS 网络文件系统的目录挂载到 Pod 中</p>
-<p>rbd ：使用 Ceph 块设备共享存储（ Rados Block evice ）挂载到 Pod 中。</p>
+<p>rbd ：使用 Ceph 块设备共享存储（ Rados Block Device ）挂载到 Pod 中。</p>
 <p>gitRepo ：通过挂载一个空目录，并从 GIT库clone一个git repository 以供 Pod 使用 。</p>
 <p>secret：一个secret volume 用于为 Pod 提供加密的信息，你可以将定义在 Kubernetes 中的secret 直接挂载为文件让 Pod 访问。 secret volume 是通过tmfs（内存文件系统）实现的，所以这种类型的 volume 总是不会持久化的。</p>
 </blockquote>
@@ -445,13 +445,13 @@
 </blockquote>
 <p>下面给出了 NFS 类型 PV 的一个 yaml定义文件，声明了需要 5Gi 的存储空间：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="string">kind</span> <span class="string">:</span> <span class="string">PersistentVolume</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">pv0003</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">	<span class="string">capacity</span> <span class="string">:</span> </span><br><span class="line">		<span class="string">storage</span> <span class="string">:</span> <span class="number">5</span><span class="string">Gi</span> </span><br><span class="line">	<span class="attr">accessModes:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="string">ReadWriteOnce</span> </span><br><span class="line">	<span class="attr">nfs:</span> </span><br><span class="line">		<span class="attr">path:</span> <span class="string">/somepath</span> </span><br><span class="line">		<span class="attr">server:</span> <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span></span><br></pre></td></tr></table></figure>
-<p>比较重要的是 PY 的 accessModes 属性，目前有以下类型：</p>
+<p>比较重要的是 PV 的 accessModes 属性，目前有以下类型：</p>
 <blockquote>
 <p>ReadWriteOnce 读写权限、并且只 能被单个 Node 挂载 </p>
 <p>ReadOnlyMany 只读权限、允许被多 Node 挂载 </p>
 <p>ReadWriteMany 读写权限、允许被多个 Node 挂载</p>
 </blockquote>
-<p>如果某个 Pod 想申请某种类型的 PY ，则首先需要定义一个 PersistentVolurneClaim (PVC )  对象：</p>
+<p>如果某个 Pod 想申请某种类型的 PV ，则首先需要定义一个 PersistentVolurneClaim (PVC )  对象：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolumeClaim</span> </span><br><span class="line"><span class="string">apiVersion</span> <span class="string">:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">myclaim</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">	<span class="string">accessModes</span> <span class="string">:</span> </span><br><span class="line">		<span class="bullet">-</span> <span class="string">ReadWriteOnce</span> </span><br><span class="line">	<span class="string">resources</span> <span class="string">:</span> </span><br><span class="line">		<span class="attr">requests:</span> </span><br><span class="line">			<span class="attr">storage:</span> <span class="number">8</span><span class="string">Gi</span></span><br></pre></td></tr></table></figure>
 <p>然后，在 Pod Volume 定义中引用上述 PVC 即可：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mypd</span> </span><br><span class="line">		<span class="attr">persistentVolumeClaim:</span></span><br><span class="line">			<span class="string">claimName</span> <span class="string">:</span> <span class="string">myclaim</span></span><br></pre></td></tr></table></figure>
@@ -465,9 +465,9 @@
 <h4 id="3-Namespace"><a href="#3-Namespace" class="headerlink" title="3. Namespace"></a>3. Namespace</h4><p>Namespace （命名空间）是 Kubernetes 系统中的另 个非常重要的概念， Namespace 在很多 情况下用于实现多租户的资源隔离。 Namespace 通过将集群内部的资源对象“分配”到不同的 Namespace 中，形成逻辑上分组的不同项目、小组或用户组，便于不同的分组在共享使用整个 集群的资源的同时还能被分别管理。</p>
 <p>Kubernetes 集群在启动后，会创建一个名为“default ”的 Namespace ，通过kubectl 可以查看到：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get namespaces</span></span><br><span class="line">NAME 			LABELS		 STATUS </span><br><span class="line">default 		&lt;none&gt;		 Active</span><br></pre></td></tr></table></figure>
-<p>接下来，如果不特别指明 Namespace ，则用户创建的 Pod RC Service 都将被系统创建到这个默认的名为 default Namespace 中。Names pace 的定义很简单。如下所示的 yaml 定义了名为 development Namespace：</p>
+<p>接下来，如果不特别指明 Namespace ，则用户创建的 Pod 、RC 和 Service 都将被系统创建到这个默认的名为 default 的 Namespace 中。Namespace 的定义很简单。如下所示的 yaml 定义了名为 development Namespace：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">development</span></span><br></pre></td></tr></table></figure>
-<p>一旦创建了 Namespace ，我们在创建资源对象时就可以指定这个资源对象属于哪个 Namespace 。比如在下面的例子中，我们定义了一个名为 busybox Pod ，放入 development 这个Namespace 里：</p>
+<p>一旦创建了 Namespace ，我们在创建资源对象时就可以指定这个资源对象属于哪个 Namespace 。比如在下面的例子中，我们定义了一个名为 busybox 的 Pod ，放入 development 这个Namespace 里：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span> </span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">busybox</span> </span><br><span class="line">	<span class="attr">namespace:</span> <span class="string">development</span> </span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">	<span class="attr">containers:</span> </span><br><span class="line">	<span class="bullet">-</span> <span class="string">image</span> <span class="string">:</span> <span class="string">busybox</span> </span><br><span class="line">		<span class="attr">command:</span> </span><br><span class="line">			<span class="bullet">-</span> <span class="string">sleep</span> </span><br><span class="line">			<span class="bullet">-</span> <span class="string">"3600"</span></span><br><span class="line">	    <span class="attr">name:</span> <span class="string">busybox</span></span><br></pre></td></tr></table></figure>
 <p>此时，使用 kubectl get 命令查看将无法显示。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pods </span></span><br><span class="line">NAME  		 READY		 STATUS		 RESTARTS 		AGE</span><br></pre></td></tr></table></figure>
