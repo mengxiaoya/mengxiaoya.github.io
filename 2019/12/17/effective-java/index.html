@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是Effective Java的读书笔记。">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java 读书笔记">
+<meta property="og:url" content="http://yoursite.com/2019/12/17/effective-java/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="本文是Effective Java的读书笔记。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-17T13:03:09.713Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java 读书笔记">
+<meta name="twitter:description" content="本文是Effective Java的读书笔记。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/17/effective-java/">
+
+
+
+
+
+  <title>Effective Java 读书笔记 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/17/effective-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Effective Java 读书笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-17T21:00:09+08:00">
+                2019-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/17/effective-java/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/12/17/effective-java/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是Effective Java的读书笔记。</p>
+<a id="more"></a>
+<h4 id="1-考虑用静态工厂方法代替构造方法"><a href="#1-考虑用静态工厂方法代替构造方法" class="headerlink" title="1. 考虑用静态工厂方法代替构造方法"></a>1. 考虑用静态工厂方法代替构造方法</h4><p>静态工厂方法优点：</p>
+<blockquote>
+<p>1.不像构造方法，它们是有名字的</p>
+<p>2.与构造方法不同，它们不需要每次调用时都创建一个新对象</p>
+<p>3.与构造方法不同，它们可以返回其返回类型的任何子类型的对象</p>
+<p>4.返回对象的类可以根据输入参数的不同而不同</p>
+<p>5.在编写包含该方法的类时，返回的对象的类不需要存在</p>
+</blockquote>
+<p>静态工厂方法缺点：</p>
+<blockquote>
+<p>1.没有公共或受保护构造方法的类不能被子类化</p>
+<p>2.不像构造方法那样在 API 文档中突出</p>
+</blockquote>
+<h4 id="2-当构造方法参数过多时使用-builder-模式"><a href="#2-当构造方法参数过多时使用-builder-模式" class="headerlink" title="2. 当构造方法参数过多时使用 builder 模式"></a>2. <strong>当构造方法参数过多时使用</strong> builder 模式</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NutritionFacts</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> servingSize;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> servings;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> calories;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> fat;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> sodium;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> carbohydrate;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> servingSize;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> servings;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> calories = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> fat = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> sodium = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> carbohydrate = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">(<span class="keyword">int</span> servingSize, <span class="keyword">int</span> servings)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.servingSize = servingSize;</span><br><span class="line">            <span class="keyword">this</span>.servings = servings;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">calories</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">            calories = val;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">fat</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">            fat = val;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">sodium</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">            sodium = val;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">carbohydrate</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">            carbohydrate = val;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> NutritionFacts <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> NutritionFacts(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">NutritionFacts</span><span class="params">(Builder builder)</span> </span>&#123;</span><br><span class="line">        servingSize = builder.servingSize;</span><br><span class="line">        servings = builder.servings;</span><br><span class="line">        calories = builder.calories;</span><br><span class="line">        fat = builder.fat;</span><br><span class="line">        sodium = builder.sodium;</span><br><span class="line">        carbohydrate = builder.carbohydrate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端代码使用示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NutritionFacts cocaCola = <span class="keyword">new</span> NutritionFacts.Builder(<span class="number">240</span>, <span class="number">8</span>) .calories(<span class="number">100</span>).sodium(<span class="number">35</span>).carbohydrate(<span class="number">27</span>).build();</span><br></pre></td></tr></table></figure>
+<h4 id="3-使用私有构造方法或枚举类实现-Singleton-属性"><a href="#3-使用私有构造方法或枚举类实现-Singleton-属性" class="headerlink" title="3. 使用私有构造方法或枚举类实现 Singleton 属性"></a>3. <strong>使用私有构造方法或枚举类实现</strong> Singleton <strong>属性</strong></h4><h4 id="4-通过私有构造器强化类不可实例化的能力"><a href="#4-通过私有构造器强化类不可实例化的能力" class="headerlink" title="4. 通过私有构造器强化类不可实例化的能力"></a>4. 通过私有构造器强化类不可实例化的能力</h4><h4 id="5-依赖注入优于硬连接资源"><a href="#5-依赖注入优于硬连接资源" class="headerlink" title="5. 依赖注入优于硬连接资源"></a>5. <strong>依赖注入优于硬连接资源</strong></h4><p>通俗解释：就在创建新实例时将资源传递到构造方法中。</p>
+<h4 id="6-避免创建不必要的对象"><a href="#6-避免创建不必要的对象" class="headerlink" title="6. 避免创建不必要的对象"></a>6. 避免创建不必要的对象</h4><p>案例一：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="keyword">new</span> String(<span class="string">"bikini"</span>); <span class="comment">// DON'T DO THIS!</span></span><br><span class="line">String s = <span class="string">"bikini"</span>;</span><br></pre></td></tr></table></figure>
+<p>案例二：</p>
+<p>错误做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RomanNumerals</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isRomanNumeral</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.matches(<span class="string">"^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)"</span> + <span class="string">"(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正确做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RomanNumerals</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Pattern ROMAN = Pattern.compile(<span class="string">"^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)"</span> + <span class="string">"(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isRomanNumeral</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ROMAN.matcher(s).matches();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​        案例二实现的问题在于它依赖于 String.matches 方法。 虽然 String.matches 是检查字符串是否与正则表<br>达式匹配的最简单方法，但它不适合在性能临界的情况下重复使用。 问题是它在内部为正则表达式创建一个<br>Pattern 实例，并且只使用它一次，之后它就有资格进行垃圾收集。 创建 Pattern 实例是昂贵的，因为它需要<br><strong>将正则表达式编译成有限状态机</strong>（finite state machine）。<br>​        为了提高性能，作为类初始化的一部分，将正则表达式显式编译为一个 Pattern 实例（不可变），缓存它，<br>并在 isRomanNumeral 方法的每个调用中重复使用相同的实例。</p>
+<blockquote>
+<p>如果对象是不可变的，它就始终可以被重用</p>
+<p>优先使用基本类型而不是装箱基本类型，要当心无意识的自动装箱</p>
+<p>小对象的创建和回收动作是十分廉价的</p>
+<p>真正正确使用对象池的典型对象示例就是数据库连接池</p>
+</blockquote>
+<h4 id="7-消除过期的对象引用"><a href="#7-消除过期的对象引用" class="headerlink" title="7. 消除过期的对象引用"></a>7. <strong>消除过期的对象引用</strong></h4><p>所谓的过期引用，是指永远也不会再被解除的引用。</p>
+<p>如果一个对象引用被无意识地保留起来了， 那么，垃圾回收机制不仅不会处理这个对象，而且也不会处理被这个对象所引用的所有其他对象。</p>
+<p>一旦对象引用已经过期，只需清空引用即可。即赋值为null。</p>
+<p><strong>只要类是自己管理内存，就应该警惕内存泄露问题</strong>。</p>
+<p><strong>内存泄露的另一个常见来源是缓存</strong>。</p>
+<p><strong>内存泄露的第三个来源是监听器和回调</strong>。确保回调是垃圾收集的一种方法是只存储弱引用（weak references），例如，仅将它们保存在 WeakHashMap 的键（key）中。</p>
+<h4 id="8-应该避免使用终结方法-–-finalizer-和-cleaner-机制"><a href="#8-应该避免使用终结方法-–-finalizer-和-cleaner-机制" class="headerlink" title="8. 应该避免使用终结方法 –  finalizer 和 cleaner 机制"></a>8. 应该避免使用终结方法 –  finalizer 和 cleaner 机制</h4><p>终结方法的缺点是不能保证会被及时执行。</p>
+<h4 id="9-使用-try-with-resources-语句替代-try-finally-语句"><a href="#9-使用-try-with-resources-语句替代-try-finally-语句" class="headerlink" title="9. 使用 try-with-resources 语句替代 try-finally 语句"></a>9. <strong>使用</strong> try-with-resources <strong>语句替代</strong> try-finally <strong>语句</strong></h4><p>从以往来看，try-finally 语句是保证资源正确关闭的最佳方式，即使是在程序抛出异常或返回的情况下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> String <span class="title">firstLineOfFile</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(path));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> br.readLine();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        br.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当 Java 7 引入了 try-with-resources 语句后：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> String <span class="title">firstLineOfFile</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> (BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(path))) &#123;</span><br><span class="line">        <span class="keyword">return</span> br.readLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="10-重写-equals-方法时遵守通用约定"><a href="#10-重写-equals-方法时遵守通用约定" class="headerlink" title="10.  重写 equals 方法时遵守通用约定"></a>10.  <strong>重写</strong> equals <strong>方法时遵守通用约定</strong></h4><p><strong>覆盖equals时总要覆盖hashcode</strong></p>
+<p>自反性 对称性 传递性 一致性 如果俩个对象相等，它们必须始终保证相等。</p>
+<blockquote>
+<ol>
+<li>用 == 操作符 检查 参数是否是这个对象的引用；</li>
+<li>使用 <code>instanceof</code> 操作符 检查 参数是否为正确的类型；</li>
+<li>把参数转换为正确的类型；</li>
+<li>对于参数中的关键域，检查参数中的域是否与该对象中对应的域相匹配；</li>
+<li>当编写完 equal方法时。应该检查它是否是对称的，传递的，一致的。</li>
+</ol>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 判断obj是否和this相等，保证自反性 </span></span><br><span class="line">    <span class="keyword">if</span> (obj == <span class="keyword">this</span>) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">// 判断obj是否为null，保证最后一条准则 </span></span><br><span class="line">    <span class="keyword">if</span> (obj == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">// 判断两个对象的实际类型是否相等， </span></span><br><span class="line">    <span class="comment">// 如果不相等，则说明比较的是两个不同种类的对象，应当返回false </span></span><br><span class="line">    <span class="keyword">if</span> (obj.getClass() != <span class="keyword">this</span>.getClass()) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="comment">// 强制类型转换 </span></span><br><span class="line">    <span class="comment">// 由于之前已经使用getClass判断过实际类型，因此这里强转是安全的 </span></span><br><span class="line">    Student stu = (Student) obj;</span><br><span class="line">    <span class="comment">// 判断每个属性是否相等 </span></span><br><span class="line">    <span class="comment">// 对于基本类型的属性用“ == ”比较，对象类型的属性用 equals 比较  </span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.age == stu.age &amp;&amp; <span class="keyword">this</span>.name.equals(stu.name))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="11-始终重写-toString-方法"><a href="#11-始终重写-toString-方法" class="headerlink" title="11. 始终重写 toString 方法"></a>11. <strong>始终重写</strong> toString <strong>方法</strong></h4><h4 id="12-谨慎覆盖-clone"><a href="#12-谨慎覆盖-clone" class="headerlink" title="12. 谨慎覆盖 clone"></a>12. 谨慎覆盖 clone</h4><p>永远不要让客户去做任何类库可以替客户完成的事情。</p>
+<h4 id="13-考虑实现-Comparable-接口"><a href="#13-考虑实现-Comparable-接口" class="headerlink" title="13. 考虑实现 Comparable 接口"></a>13. <strong>考虑实现</strong> Comparable <strong>接口</strong></h4><p>​        无论何时实现具有合理排序的值类，都应该让该类实现 Comparable 接口，以便在基于比较的集 合中轻松对其实例进行排序，搜索和使用。 比较 compareTo 方法的实现中的字段值时，请避免使用 “&lt;” 和 “&gt;” 运算符。 相反，使用包装类中的静态 compare 方法或 Comparator 接口中的构建方法。</p>
+<h4 id="14-使类和成员的可访问性最小化"><a href="#14-使类和成员的可访问性最小化" class="headerlink" title="14. 使类和成员的可访问性最小化"></a>14. 使类和成员的可访问性最小化</h4><p>使用尽可能低的访问级别，与你正在编写的软件的对应功能保持一致。 </p>
+<p>如果一个包级私有顶级类或接口只被一个类使用，那么可以考虑这个类作为使用它的唯一类的私有静态嵌套类。这将它的可访问性从包级的所有类减少到使用它的一个类。</p>
+<p>设计良好的模块会隐藏所有的实现细节，把它的API和实现清晰地隔离开来。然后，模块之间只通过API进行通信。</p>
+<p>包含共有可变域的类并不是线程安全的。一个典型的示例如下，非零长度的数组总是可变的，所以类具有公共静态 final 数组属性，或返回这样一个属性的访问器是错误的。 这是安全漏洞的常见来源：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Thing[] VALUES = &#123; ... &#125;;</span><br></pre></td></tr></table></figure>
+<p>要小心这样的事实，一些 IDE 生成的访问方法返回对私有数组属性的引用，导致了这个问题。 有两种方法可以解 决这个问题。 你可以使公共数组私有并添加一个公共的不可变列表： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Thing[] PRIVATE_VALUES = &#123; ... &#125;; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> List&lt;Thing&gt; VALUES = 		 Collections.unmodifiableList(Arrays.asList(PRIVATE_VALUES));</span><br></pre></td></tr></table></figure>
+<p>或者，可以将数组设置为 private，并添加一个返回私有数组拷贝的公共方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Thing[] PRIVATE_VALUES = &#123; ... &#125;; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Thing[] values() &#123; </span><br><span class="line">    <span class="keyword">return</span> PRIVATE_VALUES.clone(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总之：要确保 public static final 属性引用的对象是不可变的。</p>
+<h4 id="15-在共有类中使用访问方法而非共有域"><a href="#15-在共有类中使用访问方法而非共有域" class="headerlink" title="15. 在共有类中使用访问方法而非共有域"></a>15. 在共有类中使用访问方法而非共有域</h4><h4 id="16-使可变性最小化"><a href="#16-使可变性最小化" class="headerlink" title="16. 使可变性最小化"></a>16. 使可变性最小化</h4><p>不可变类只是实例不能被修改的类。</p>
+<blockquote>
+<p>1 不要提供任何修改对象的方法。</p>
+<p>2 保证类不会被扩展。</p>
+<p>3 使得所有域都是 final 和私有的。</p>
+<p>4 确保对于任何可变组件的互斥访问。</p>
+</blockquote>
+<p>不可变对象本质上是线程安全的，不要求同步，可以自由共享。</p>
+<p>不可变类的真正唯一缺点，对于每个不同的值都需要一个单独的对象。</p>
+<h4 id="17-组合优于继承"><a href="#17-组合优于继承" class="headerlink" title="17. 组合优于继承"></a>17. 组合优于继承</h4><p>不要继承一个现有的类，而应该给你的新类增加一个私有属性，该属性是现有类的实例引用，这种设计被称为<strong>组合</strong>（composition），因为现有的类成为新类的组成部分。新类中的每个实例方法调用现有类的包含实例上的相应方法并返回结果，这被称为<strong>转发</strong>。</p>
+<p>下面用一个示例来说明组合优于继承，假设有一个使用 HashSet 的程序。 为了调整程序的性能，需要查询 HashSet ，从创建它之后已经添加了多少个元素。</p>
+<p>继承做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InstrumentedHashSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">HashSet</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> addCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InstrumentedHashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InstrumentedHashSet</span><span class="params">(<span class="keyword">int</span> initCap, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(initCap, loadFactor);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        addCount++;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.add(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">        addCount += c.size();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.addAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAddCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>组合做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForwardingSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Set</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;E&gt; s;   <span class="comment">// 给你的新类增加一个私有属性，该属性是现有类的实例引用</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ForwardingSet</span><span class="params">(Set&lt;E&gt; s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.s = s;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 类中的每个实例方法调用现有类的包含实例上的相应方法并返回结果</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        s.clear();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.contains(o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.iterator();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.add(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.remove(o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.containsAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.addAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.removeAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">retainAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.retainAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object[] toArray() &#123;</span><br><span class="line">        <span class="keyword">return</span> s.toArray();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">        <span class="keyword">return</span> s.toArray(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.equals(o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.hashCode();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InstrumentedSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">ForwardingSet</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> addCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InstrumentedSet</span><span class="params">(Set&lt;E&gt; s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(s);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        addCount++;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.add(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">        addCount += c.size();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.addAll(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAddCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一种继承做法看起来很合理，但是不能正常工作。我们期望 getAddCount 方法返回的结果是 3，但实际上返回了 6。哪里出现了问题呢？ 这是因为在 HashSet 内部， addAll 方法是基于它的 add 方法来实现的。InstrumentedHashSet 中的 addAll 方法首先给 addCount 属性设置为 3，然后使用 super.addAll 方法调用了 HashSet 的 addAll 实现。然后反过来又调用在 InstrumentedHashSet 类中重写的 add 方法，每个元素调用一次。这三次调用又分别给 addCount 加 1，所以一共增加了 6：通过 addAll 方法每个增加的元素都被计算了两次。</p>
+<p>第二种组合做法InstrumentedSet 类被称为<strong>包装类</strong>，因为每个 InstrumentedSet 实例都包含（“包装”）另一个 Set 实例。 这也被称为装饰器模式[Gamma95]，因为 InstrumentedSet 类通过添加计数功能来“装饰”一个集合。 有时组合和转发的结合被不精确地地称为委托。</p>
+<p><strong>继承是强大的，但它是有问题的，因为它违反封装。 只有在子类和父类之间存在真正的子类型关系时才适用。 即使如此，如果子类与父类不在同一个包中，并且父类不是为继承而设计的，继承可能会导致脆弱性。 为了避免这种脆弱性，使用合成和转发代替继承，特别是如果存在一个合适的接口来实现包装类。 包装类不仅比子类更健壮，而且更强大。</strong></p>
+<h4 id="18-要么为继承而设计并提供文档说明，要么就禁止继承"><a href="#18-要么为继承而设计并提供文档说明，要么就禁止继承" class="headerlink" title="18. 要么为继承而设计并提供文档说明，要么就禁止继承"></a>18. 要么为继承而设计并提供文档说明，要么就禁止继承</h4><p>好的API文档应该描述了一个给定的方法做了什么工作，而不是如何做到的。</p>
+<h4 id="19-接口优于抽象类"><a href="#19-接口优于抽象类" class="headerlink" title="19. 接口优于抽象类"></a>19. 接口优于抽象类</h4><p>抽象类允许包含某些方法的实现，但是接口不可以。</p>
+<p>为了实现由抽象类定义的类型，类必须成为抽象类的一个子类。</p>
+<p>接口的优点：</p>
+<blockquote>
+<ol>
+<li>现有的类可以很容易被更新，以实现新的接口。</li>
+<li>接口是定义mixin（混合类型的）理想选择。</li>
+<li>接口允许我们构造非层次结构的类型框架。</li>
+</ol>
+</blockquote>
+<p>抽象类的演变比接口的演变要容易得多。</p>
+<p>如果你导出一个重要的接口，应该强烈考虑提供一个骨架的实现类。 </p>
+<h4 id="20-接口仅用来定义类型"><a href="#20-接口仅用来定义类型" class="headerlink" title="20. 接口仅用来定义类型"></a>20. 接口仅用来定义类型</h4><p>一般不定义常量。</p>
+<p>常量的定义可以放在本身类，枚举类，工具类中。</p>
+<h4 id="21-类层次优于标签类"><a href="#21-类层次优于标签类" class="headerlink" title="21. 类层次优于标签类"></a>21. 类层次优于标签类</h4><p>标签类很少有适用的情况。 当遇到一个带有标签属性的现有类时，可以考虑将其重构为一个类层次中。</p>
+<h4 id="22-优点考虑静态成员类"><a href="#22-优点考虑静态成员类" class="headerlink" title="22. 优点考虑静态成员类"></a>22. 优点考虑静态成员类</h4><p>嵌套类存在的目的只是为了它的外围类服务。</p>
+<p><strong>静态成员类：</strong>它看作是一个普通的类，恰好在另一个类中声明，并且可以访问所有宿主类的成员，甚至是那些被声明为私有类的成员。一个常见用途是作为公共帮助类，仅在与其外部类一起使用时才有用。 </p>
+<p><strong>非静态成员类：</strong>每个实例都与一个外部类的外部实例相关联 。</p>
+<p><strong>匿名类</strong>：是创建小函数对象和处理对象的首选方法(lambda表达式现在是首选)，实现静态工厂方法。</p>
+<p><strong>局部类：</strong>在任何“可以声明局部变量的地方” 都可以声明局部类。</p>
+<p>如果你声明了一个不需要访问宿主实例的成员类，总是把static 修饰符放在它的声明中，使它成为一个静态成员类，而不是非静态的成员类。因为非静态成员类的每个实例都与外部类的实例进行关联，浪费时间和空间。</p>
+<p>后三个成为内部类。</p>
+<p><strong>总结</strong></p>
+<p>如果一个嵌套的类需要在一个方法之外可见，或者太长而不能很好地适应一个方法，使用一个成员类。 如果一个成员类的每个实例都需要一个对其宿主实例的引用，使其成为非静态的; 否则，使其静态。 假设这个类属于一个方法内部，如果你只需要从一个地方创建实例，并且存在一个预置类型来说明这个类的特征，那么把它作为一个匿名类；否则，把它变成局部类。</p>
+<h4 id="23-永远不要将多个顶级类或接口放在一个源文件中"><a href="#23-永远不要将多个顶级类或接口放在一个源文件中" class="headerlink" title="23. 永远不要将多个顶级类或接口放在一个源文件中"></a>23. 永远不要将多个顶级类或接口放在一个源文件中</h4><h4 id="24-新代码中要使用泛型而不是原生态类型"><a href="#24-新代码中要使用泛型而不是原生态类型" class="headerlink" title="24. 新代码中要使用泛型而不是原生态类型"></a>24. 新代码中要使用泛型而不是原生态类型</h4><p>无限制的通配符类型</p>
+<h4 id="25-消除非受检警告"><a href="#25-消除非受检警告" class="headerlink" title="25. 消除非受检警告"></a>25. 消除非受检警告</h4><p>如果无法消除未经检查的警告，并且可以证明引发该警告的代码是安全类型的，则可以在尽可能小的范围内使用 @SuppressWarnings(“unchecked”) 注解来禁止警告。 并且在注释中说明抑制此警告的理由。</p>
+<h4 id="26-列表优先于数组"><a href="#26-列表优先于数组" class="headerlink" title="26. 列表优先于数组"></a>26. 列表优先于数组</h4><p>数组是协变和具体化的; 泛型是不变的，类型擦除的。 因此，数组提供运行时类型的安全性，但不提供编译时类型的安全性。</p>
+<h4 id="27-优先考虑泛型方法"><a href="#27-优先考虑泛型方法" class="headerlink" title="27. 优先考虑泛型方法"></a>27. 优先考虑泛型方法</h4><h4 id="28-利用有限通配符来提升API灵活性"><a href="#28-利用有限通配符来提升API灵活性" class="headerlink" title="28. 利用有限通配符来提升API灵活性"></a>28. 利用有限通配符来提升API灵活性</h4><p> PECS <strong>代表：</strong> producer-extends<strong>，</strong>consumer-super</p>
+<p>producer：比如向集合中put值，入栈等操作。consumer：比如从集合中取值，出栈等操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;? extend E&gt;</span><br><span class="line">Collection&lt;? <span class="keyword">super</span> E&gt;</span><br></pre></td></tr></table></figure>
+<p>记住基本规则： producer-extends, consumer-super（PECS）。 还要记住，<strong>所有 Comparable 和 Comparator 都是消费者</strong>。</p>
+<h4 id="29-合理地结合泛型和可变参数"><a href="#29-合理地结合泛型和可变参数" class="headerlink" title="29. 合理地结合泛型和可变参数"></a>29. 合理地结合泛型和可变参数</h4><h4 id="30-优先考虑类型安全的异构容器"><a href="#30-优先考虑类型安全的异构容器" class="headerlink" title="30. 优先考虑类型安全的异构容器"></a>30. 优先考虑类型安全的异构容器</h4><p>cast方法的使用，下面的Favorites 称为类型安全异构容器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Favorites</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Class&lt;?&gt;, Object&gt; favorites = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">putFavorite</span><span class="params">(Class&lt;T&gt; type, T instance)</span> </span>&#123;</span><br><span class="line">        favorites.put(Objects.requireNonNull(type), instance);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getFavorite</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> type.cast(favorites.get(type));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="31-用枚举代替int常量"><a href="#31-用枚举代替int常量" class="headerlink" title="31. 用枚举代替int常量"></a>31. 用枚举代替int常量</h4><p>枚举类特点：单例、实现了 Comparable 和 Serializable 接口。</p>
+<p>如下是一个进行四则运算的枚举类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">    PLUS, MINUS, TIMES, DIVIDE;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">case</span> PLUS:</span><br><span class="line">                <span class="keyword">return</span> x + y;</span><br><span class="line">            <span class="keyword">case</span> MINUS:</span><br><span class="line">                <span class="keyword">return</span> x - y;</span><br><span class="line">            <span class="keyword">case</span> TIMES:</span><br><span class="line">                <span class="keyword">return</span> x * y;</span><br><span class="line">            <span class="keyword">case</span> DIVIDE:</span><br><span class="line">                <span class="keyword">return</span> x / y;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"Unknown op: "</span> + <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此代码有效，但不是很漂亮。 如果没有 throw 语句，就不能编译，因为该方法的结束在技术上是可达到的， 尽管它永远不会被达到。</p>
+<p>改进：有一种更好的方法可以<strong>将不同的行为与每个枚举常量关联起来</strong>：在枚举类型中声明一个抽象的 apply 方法，并用常量特定的类主体中的每个常量的具体方法重写它。 这种方法被称为特定于常量（constant-specific）的方法实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">    PLUS &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x + y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, MINUS &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x - y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, TIMES &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x * y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, DIVIDE &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x / y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下是与操作符关联的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Operation &#123;</span><br><span class="line">    PLUS(<span class="string">"+"</span>) &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x + y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    MINUS(<span class="string">"-"</span>) &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x - y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    TIMES(<span class="string">"*"</span>) &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x * y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    DIVIDE(<span class="string">"/"</span>) &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x / y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String symbol;</span><br><span class="line"></span><br><span class="line">    Operation(String symbol) &#123;</span><br><span class="line">        <span class="keyword">this</span>.symbol = symbol;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> symbol;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">apply</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">double</span> y)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="32-禁止使用枚举类默认的-ordinal-方法"><a href="#32-禁止使用枚举类默认的-ordinal-方法" class="headerlink" title="32. 禁止使用枚举类默认的 ordinal 方法"></a>32. 禁止使用枚举类默认的 ordinal 方法</h4><p>oridinal方法它返回每个枚举常量类型的数值位置。</p>
+<p>反例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Ensemble &#123;</span><br><span class="line">    SOLO, DUET, TRIO, QUARTET, QUINTET, SEXTET, SEPTET, OCTET, NONET, DECTET;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfMusicians</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ordinal() + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Ensemble &#123;</span><br><span class="line">    SOLO(<span class="number">1</span>), DUET(<span class="number">2</span>), TRIO(<span class="number">3</span>), QUARTET(<span class="number">4</span>), QUINTET(<span class="number">5</span>), SEXTET(<span class="number">6</span>), SEPTET(<span class="number">7</span>), OCTET(<span class="number">8</span>), DOUBLE_QUARTET(<span class="number">8</span>), NONET(<span class="number">9</span>), DECTET(<span class="number">10</span>), TRIPLE_QUARTET(<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> numberOfMusicians;</span><br><span class="line"></span><br><span class="line">    Ensemble(<span class="keyword">int</span> size) &#123;</span><br><span class="line">        <span class="keyword">this</span>.numberOfMusicians = size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfMusicians</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> numberOfMusicians;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>枚举规范对此 ordinal 方法说道：大多数程序员对这种方法没有用处。 它被设计用于基于枚举的通用数据结构，如 EnumSet 和 EnumMap 。“除非你在编写这样数据结构的代码，否则最好避免使用 ordinal 方法。</p>
+<h4 id="33-使用EnumSet代替位属性"><a href="#33-使用EnumSet代替位属性" class="headerlink" title="33. 使用EnumSet代替位属性"></a>33. 使用EnumSet代替位属性</h4><p><strong>EnumSet 是一个专为枚举设计的集合类，EnumSet中的所有元素都必须是指定枚举类型的枚举值，该枚举类型在创建EnumSet时显式或隐式地指定。</strong></p>
+<p>EnumSet特点：</p>
+<blockquote>
+<ol>
+<li>EnumSet的集合元素也是有序的，EnumSet以枚举值在Enum类内的定义顺序来决定集合元素的顺序。</li>
+<li>EnumSet在内部以位向量的形式存储，这种存储形式非常紧凑、高效,因此EnumSet对象占用内存很小，而且运行效率很好。尤其是进行批量操作（如调用containsAll()和retainAll()方法）时，如果其参数也是EnumSet集合，则该批量操作的执行速度也非常快。</li>
+<li>EnumSet集合不允许加入null元素，如果试图插入null元素，EnumSet将抛出NullPointerException异常。</li>
+<li>EnumSet类没有暴露任何构造器来创建该类的实例，程序应该通过它提供的类方法来创建EnumSet对象。</li>
+<li>如果只是想判断EnumSet是否包含null元素或试图删除null元素都不会抛出异常，只是删除操作将返回false，因为没有任何null元素被删除。</li>
+</ol>
+</blockquote>
+<p>方法介绍：</p>
+<blockquote>
+<ul>
+<li><strong>EnumSet allOf(Class elementType)</strong>: 创建一个包含指定枚举类里所有枚举值的EnumSet集合。</li>
+<li><strong>EnumSet complementOf(EnumSet e)</strong>: 创建一个其元素类型与指定EnumSet里元素类型相同的EnumSet集合，新EnumSet集合包含原EnumSet集合所不包含的、此类枚举类剩下的枚举值（即新EnumSet集合和原EnumSet集合的集合元素加起来是该枚举类的所有枚举值）。</li>
+<li><strong>EnumSet copyOf(Collection c)</strong>: 使用一个普通集合来创建EnumSet集合。</li>
+<li><strong>EnumSet copyOf(EnumSet e)</strong>: 创建一个指定EnumSet具有相同元素类型、相同集合元素的EnumSet集合。</li>
+<li><strong>EnumSet noneOf(Class elementType)</strong>: 创建一个元素类型为指定枚举类型的空EnumSet。</li>
+<li><strong>EnumSet of(E first,E…rest)</strong>: 创建一个包含一个或多个枚举值的EnumSet集合，传入的多个枚举值必须属于同一个枚举类。</li>
+<li><strong>EnumSet range(E from,E to)</strong>: 创建一个包含从from枚举值到to枚举值范围内所有枚举值的EnumSet集合。</li>
+</ul>
+</blockquote>
+<p>EnumSet 的一个真正缺点是，它不像 Java 9 那样创建一个不可变的 EnumSet ，但是在即将发布的版本中可能会得到补救。 同时，你可以用 Collections.unmodifiableSet 封装一个 EnumSet ，但是简洁性和性能会受到影响。</p>
+<h4 id="34-使用EnumMap代替序数索引"><a href="#34-使用EnumMap代替序数索引" class="headerlink" title="34. 使用EnumMap代替序数索引"></a>34. 使用EnumMap代替序数索引</h4><p><strong>EnumMap是维护枚举类的值和自定义值的映射关系的，所有的键必须是同一个枚举类的实例。</strong></p>
+<blockquote>
+<p>EnumMap是一个与枚举类一起使用的Map实现类<br>EnumMap在内部以数组的形式保存，所以这种实现形式非常紧凑、高效<br>EnumMap不允许使用null作为key，但允许使用null作为value</p>
+</blockquote>
+<h4 id="35-使用接口模拟可扩展的枚举"><a href="#35-使用接口模拟可扩展的枚举" class="headerlink" title="35. 使用接口模拟可扩展的枚举"></a>35. 使用接口模拟可扩展的枚举</h4><h4 id="36-注解优于命名模式"><a href="#36-注解优于命名模式" class="headerlink" title="36. 注解优于命名模式"></a>36. 注解优于命名模式</h4><h4 id="37-坚持使用Override注解"><a href="#37-坚持使用Override注解" class="headerlink" title="37. 坚持使用Override注解"></a>37. 坚持使用Override注解</h4><h4 id="38-使用标记接口定义类型"><a href="#38-使用标记接口定义类型" class="headerlink" title="38. 使用标记接口定义类型"></a>38. 使用标记接口定义类型</h4><p>本条目与条目 20 的的意思正好相反，条目 20 的意思是：“如果你不想定义一个类型，不要使用接口”。本条目的意思是：如果想定义一个类型，一定要使用接口。</p>
+<p>Java中常用的三个标记接口分别是:RandomAccess、Cloneable、Serializable。</p>
+<h4 id="39-lambda表达式优于匿名类"><a href="#39-lambda表达式优于匿名类" class="headerlink" title="39. lambda表达式优于匿名类"></a>39. lambda表达式优于匿名类</h4><p>lambda表达式优于匿名类的主要优点是它更简洁。</p>
+<h4 id="40-方法引用优于lambda表达式"><a href="#40-方法引用优于lambda表达式" class="headerlink" title="40. 方法引用优于lambda表达式"></a>40. 方法引用优于lambda表达式</h4><p>如果方法引用看起来更简短更清晰，请使用它们；否则，还是坚持lambda。</p>
+<h4 id="41-优先使用Collection而不是Stream作为方法的返回类型"><a href="#41-优先使用Collection而不是Stream作为方法的返回类型" class="headerlink" title="41. 优先使用Collection而不是Stream作为方法的返回类型"></a>41. 优先使用Collection而不是Stream作为方法的返回类型</h4><h4 id="42-检查参数的有效性"><a href="#42-检查参数的有效性" class="headerlink" title="42. 检查参数的有效性"></a>42. 检查参数的有效性</h4><p>保护性拷贝是在检查参数的有效性之前进行的，并且有效性检查是针对拷贝后的对象，而不是针对原始的对象。</p>
+<h4 id="43-仔细设计方法签名"><a href="#43-仔细设计方法签名" class="headerlink" title="43. 仔细设计方法签名"></a>43. 仔细设计方法签名</h4><p>1.谨慎地选择方法的名称。</p>
+<p>2.避免过长的参数列表：</p>
+<ul>
+<li>创建辅助类</li>
+<li>build模式</li>
+</ul>
+<p>3.对于参数类型， 优先使用接口而不是类。例如，没有理由在编写方法时使用 HashMap 作为输入参数，相反，而是使用 Map 作为参数。这允许传入 HashMap、TreeMap、ConcurrentHashMap、TreeMap 的子 Map（submap）或任何尚未编写的 Map 实现。</p>
+<p>4.与布尔类型参数相比，优先使用两个元素枚举类型。</p>
+<h4 id="44-慎用重载"><a href="#44-慎用重载" class="headerlink" title="44. 慎用重载"></a>44. 慎用重载</h4><p>覆盖方法 代码例子。</p>
+<h4 id="45-慎用可变参数"><a href="#45-慎用可变参数" class="headerlink" title="45. 慎用可变参数"></a>45. 慎用可变参数</h4><p>可变参数的每次调用都会导致进行一次数组分配和初始化。</p>
+<h4 id="46-返回零长度的数组或者空的集合，而不是null"><a href="#46-返回零长度的数组或者空的集合，而不是null" class="headerlink" title="46. 返回零长度的数组或者空的集合，而不是null"></a>46. 返回零长度的数组或者空的集合，而不是null</h4><p>有时有人认为，null 返回值比空集合或数组更可取，因为它避免了分配空容器的开销。这个论点有两点是不成立<br>的。首先，除非测量结果表明所讨论的分配是性能问题的真正原因，否则不宜担心此级别的性能。第二，可以在不分配空集合和数组的情况下返回它们。</p>
+<p>如果有证据表明分配空集合会损害性能，可以通过重复返回相同的不可变空集合来避免分配，因为不可变对象可 以自由共享 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Collections.EMPTY_SET;</span><br><span class="line">Collections.EMPTY_LIST;</span><br><span class="line">Collections.EMPTY_MAP;</span><br></pre></td></tr></table></figure>
+<h4 id="47-为所有导出的API元素编写文档注释"><a href="#47-为所有导出的API元素编写文档注释" class="headerlink" title="47. 为所有导出的API元素编写文档注释"></a>47. 为所有导出的API元素编写文档注释</h4><p>Javadoc</p>
+<p>方法的文档注释应该简洁地描述出它和客户端之间的约定</p>
+<p>说明方法做了什么</p>
+<p>列举出方法的前置条件 @throws @param</p>
+<p>后置条件</p>
+<p>类的线程安全性和可序列化性</p>
+<h4 id="48-将局部变量的作用域最小化"><a href="#48-将局部变量的作用域最小化" class="headerlink" title="48. 将局部变量的作用域最小化"></a>48. 将局部变量的作用域最小化</h4><p>第一次使用的地方声明。</p>
+<p>最小化局部变量作用域的最终技术是<strong>保持方法小而集中。</strong></p>
+<h4 id="49-for-each-优于-for-循环"><a href="#49-for-each-优于-for-循环" class="headerlink" title="49. for each 优于 for 循环"></a>49. for each 优于 for 循环</h4><p>有三种情况是不能使用for each的：</p>
+<p><strong>有损过滤（</strong>Destructive filtering<strong>）</strong>——如果需要遍历集合，并删除指定选元素，则需要使用显式迭代器，以便可 以调用其 remove 方法。 通常可以使用在 Java 8 中添加的 Collection 类中的 removeIf 方法，来避免显式遍历。 </p>
+<p><strong>转换</strong>——如果需要遍历一个列表或数组并替换其元素的部分或全部值，那么需要列表迭代器或数组索引来替换元 素的值。 </p>
+<p><strong>并行迭代</strong>——如果需要并行地遍历多个集合，那么需要显式地控制迭代器或索引变量，以便所有迭代器或索引变 量都可以同步进行 (正如上面错误的 card 和 dice 示例中无意中演示的那样)。 </p>
+<h4 id="50-了解和使用类库"><a href="#50-了解和使用类库" class="headerlink" title="50. 了解和使用类库"></a>50. 了解和使用类库</h4><p>可靠的算法库</p>
+<p>性能不断提升</p>
+<p>代码融入主流</p>
+<p>Random.nextInt(int)</p>
+<p>java.long java.util java.io</p>
+<p>集合相关的API</p>
+<p>java.util.concurrent</p>
+<h4 id="51-float-和-double-是非精确的"><a href="#51-float-和-double-是非精确的" class="headerlink" title="51. float 和 double 是非精确的"></a>51. float 和 double 是非精确的</h4><p>使用BigDecimal int long 进行货币计算</p>
+<h4 id="52-基本类型优先于包装类"><a href="#52-基本类型优先于包装类" class="headerlink" title="52. 基本类型优先于包装类"></a>52. 基本类型优先于包装类</h4><p>基本类型只有值</p>
+<p>装箱基本类型有null值</p>
+<p>基本类型更节省空间和时间</p>
+<p><strong>何时使用装箱基本类型</strong>：</p>
+<ol>
+<li>集合中的元素，键 和值</li>
+<li>类型参数</li>
+<li>反射调用</li>
+</ol>
+<h4 id="53-如果其他类型更合适，则尽量避免使用字符串"><a href="#53-如果其他类型更合适，则尽量避免使用字符串" class="headerlink" title="53. 如果其他类型更合适，则尽量避免使用字符串"></a>53. 如果其他类型更合适，则尽量避免使用字符串</h4><h4 id="54-当心字符串连接的性能"><a href="#54-当心字符串连接的性能" class="headerlink" title="54. 当心字符串连接的性能"></a>54. 当心字符串连接的性能</h4><p>使用StringBuilder</p>
+<h4 id="55-通过接口引用对象"><a href="#55-通过接口引用对象" class="headerlink" title="55. 通过接口引用对象"></a>55. 通过接口引用对象</h4><h4 id="56-接口优先于反射机制"><a href="#56-接口优先于反射机制" class="headerlink" title="56. 接口优先于反射机制"></a>56. 接口优先于反射机制</h4><h4 id="57-谨慎地使用本地方法"><a href="#57-谨慎地使用本地方法" class="headerlink" title="57. 谨慎地使用本地方法"></a>57. 谨慎地使用本地方法</h4><h4 id="58-谨慎地进行优化"><a href="#58-谨慎地进行优化" class="headerlink" title="58. 谨慎地进行优化"></a>58. 谨慎地进行优化</h4><p>要努力编写好的程序而不是快的程序</p>
+<p>要考虑API设计决策的性能后果</p>
+<p>在每次试图优化之前和之后，要对性能进行测量</p>
+<p>设计API</p>
+<p>线路层协议</p>
+<p>永久数据格式</p>
+<h4 id="59-遵守普遍接受的命名惯例"><a href="#59-遵守普遍接受的命名惯例" class="headerlink" title="59. 遵守普遍接受的命名惯例"></a>59. 遵守普遍接受的命名惯例</h4><p>多个缩略语时，首字母大写。HTTPURL 和 HttpUrl。</p>
+<p>枚举常量是常量字段，常量字段所有字母大写并且单词之间用 _ 隔开。</p>
+<h4 id="60-只针对异常的情况下才使用异常"><a href="#60-只针对异常的情况下才使用异常" class="headerlink" title="60. 只针对异常的情况下才使用异常"></a>60. 只针对异常的情况下才使用异常</h4><p>异常永远不应该用于正常的控制流</p>
+<p>设计良好的API不应该强迫它的客户端为了正常的控制流而使用异常</p>
+<p>如果类有状态相关的方法，则也应该有状态测试的方法或者可识别的返回值： next()方法 和 hasNext() 方法</p>
+<h4 id="61-可恢复的情况使用受检异常，编程错误使用运行时异常"><a href="#61-可恢复的情况使用受检异常，编程错误使用运行时异常" class="headerlink" title="61. 可恢复的情况使用受检异常，编程错误使用运行时异常"></a>61. 可恢复的情况使用受检异常，编程错误使用运行时异常</h4><p>三种Throwable：受检异常(checked exceptions)、运行时异常(runtime exceptions)、错误(errors)。后两个称为非受检异常。</p>
+<ol>
+<li><p>如果期望调用者能够合理的恢复程序进行，对于这种情况就应该使用受检异常。通过抛出受检异常，强迫调用者在一个catch子句中处理改异常，或者把它传播出去。</p>
+</li>
+<li><p>用运行时异常来表明编程错误，如果程序抛出非受检异常或者错误，往往属于不可恢复的情形，程序继续执行下去有害无益。</p>
+</li>
+<li><p>非受检异常是不需要也不应该被捕获的可抛出结构。</p>
+</li>
+<li><p>你实现的所有非受检的 throwable 都应该是 RuntimeExceptiond 子类。</p>
+</li>
+<li><p>对于可恢复的情况，要抛出受检异常；对于程序错误，就要抛出运行时异常。不确定是否可恢复，就 </p>
+<p>跑出为受检异常。</p>
+</li>
+</ol>
+<h4 id="62-避免不必要的使用受检异常"><a href="#62-避免不必要的使用受检异常" class="headerlink" title="62. 避免不必要的使用受检异常"></a>62. 避免不必要的使用受检异常</h4><h4 id="63-优先使用标准的异常"><a href="#63-优先使用标准的异常" class="headerlink" title="63. 优先使用标准的异常"></a>63. 优先使用标准的异常</h4><p>重用异常的好处：</p>
+<ol>
+<li>它使 API 更易于学习和使用，因为它与程序员已经熟悉的习惯用法一致。</li>
+<li>对于用到这些 API 程序而言，它们的可读性会更好，因为它们不会出现很多程序员不熟悉的异常。</li>
+<li>异常类越少，意味着内存占用（footprint）就越小，装载这些类的时间开销也越少。</li>
+</ol>
+<p>下表概括了最常见的可重用异常：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">异常</th>
+<th style="text-align:center">使用场合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">IllegalArgumentException</td>
+<td style="text-align:center">非null的参数值不正确</td>
+</tr>
+<tr>
+<td style="text-align:center">IllegalStateException</td>
+<td style="text-align:center">不适合方法调用的对象状态</td>
+</tr>
+<tr>
+<td style="text-align:center">NullPointerException</td>
+<td style="text-align:center">在禁止使用null的情况下参数值为null</td>
+</tr>
+<tr>
+<td style="text-align:center">IndexOutOfBoundsExecption</td>
+<td style="text-align:center">下标参数值越界</td>
+</tr>
+<tr>
+<td style="text-align:center">ConcurrentModificationException</td>
+<td style="text-align:center">在禁止并发修改的情况下，检测到对象的并发修改</td>
+</tr>
+<tr>
+<td style="text-align:center">UnsupportedOperationException</td>
+<td style="text-align:center">对象不支持用户请求的方法</td>
+</tr>
+</tbody>
+</table>
+<h4 id="64-抛出与抽象相对应的异常"><a href="#64-抛出与抽象相对应的异常" class="headerlink" title="64. 抛出与抽象相对应的异常"></a>64. 抛出与抽象相对应的异常</h4><p>更高层的实现应该捕获低层的异常，同时抛出可以按照高层抽象进行解释的异常。</p>
+<h4 id="65-每个方法抛出的异常都要有文档"><a href="#65-每个方法抛出的异常都要有文档" class="headerlink" title="65. 每个方法抛出的异常都要有文档"></a>65. 每个方法抛出的异常都要有文档</h4><p>Javadoc 的 ＠throws 标签</p>
+<h4 id="66-在细节信息中包含能捕获失败的信息"><a href="#66-在细节信息中包含能捕获失败的信息" class="headerlink" title="66. 在细节信息中包含能捕获失败的信息"></a>66. 在细节信息中包含能捕获失败的信息</h4><h4 id="67-努力使失败保持原子性"><a href="#67-努力使失败保持原子性" class="headerlink" title="67. 努力使失败保持原子性"></a>67. 努力使失败保持原子性</h4><p>原则：失败的方法调用应该使对象保持在被调用之前的状态。</p>
+<p>有几种途径可以实现这种效果：</p>
+<ol>
+<li>不可变对象。如果对象是不可变的，失败原子性就是必然的。对于可变对象，获得失败原子性最常见的做法就是在执行操作之前检查参数的有效性。例如如下代码：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EmptyStackException();</span><br><span class="line">    Object result = elements[--size];</span><br><span class="line">    elements[size] = <span class="keyword">null</span>; <span class="comment">/* Eliminate obsolete reference */</span></span><br><span class="line">    <span class="keyword">return</span> (result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果取消对初始大小（size）的检查，当这个方法企图从一个空栈中弹出元素时，它仍然会抛出异常。然而，这 将会导致 size 字段保持在不一致的状态（负数）之中，从而导致将来对该对象的任何方法调用都会失败。</p>
+<ol start="2">
+<li>调整计算处理过程的顺序，使得任何可能会失败的计算部分都在对象状态被修改之前发生。</li>
+<li>在对象的一份临时拷贝上执行操作，当操作完成之后再用临时拷贝中的结果代替对象的内容。</li>
+<li>编写一段恢复代码 （recovery code），由它来拦截操作过程中发生的失败，以及便对象回滚到操作开始之前的状态上。这种办法主要用于永久性的 (基于磁盘的) 数据结构。 </li>
+</ol>
+<h4 id="68-不要忽略异常"><a href="#68-不要忽略异常" class="headerlink" title="68. 不要忽略异常"></a>68. 不要忽略异常</h4><h4 id="69-同步访问共享的可变数据"><a href="#69-同步访问共享的可变数据" class="headerlink" title="69. 同步访问共享的可变数据"></a>69. 同步访问共享的可变数据</h4><p>long 或者 double 类型变量的读写都不是原子的。</p>
+<p><strong>当多个线程共享可变数据的时候，每个读或写的线程都必须执行同步。</strong></p>
+<p>增量操作符（++）不是原子的。它执行两项操作：首先它读取值，然后写回一个新值，相当于原来的值再加上 1。如果第二个线程在第一个线程读取旧值和写回新值期间读取这个字段第二个线程就会与第一个线程一起看到同一个值，并返回相同的序列号。这就是<strong>安全性失败</strong>。</p>
+<p>使用 AtomicLong 类，它是 java.util.concurrent.atomic 的组成部分。这个包为在 单个变量上进行免锁定、线程安全的编程提供了基本类型。 volatile 只提供了同步的通信效果，但这个包还提供了<strong>原子性</strong>。</p>
+<p>如下方法仍然无法正确地工作，就是因为++操作符不是原子性的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">int</span> nextSerialNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">generateSerialNumber</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> nextSerialNumber++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修正这个方法的方式如下：</p>
+<p>方式1：</p>
+<p>在generateSerialNumber方法声明添加 synchronized 修饰符，然后去掉volatile修饰符。</p>
+<p>方式2：</p>
+<p>使用 java.util.concurrent.atomic 包的类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Atomiclong nextSerialNum = <span class="keyword">new</span> Atomiclong();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">generateSerialNumber</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> nextSerialNum.getAndIncrement();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="70-避免过度同步"><a href="#70-避免过度同步" class="headerlink" title="70. 避免过度同步"></a>70. 避免过度同步</h4><p>不要在同步区域调用外来方法</p>
+<p>同步区做尽可能少的工作</p>
+<h4 id="71-executor-和-task-优先于线程"><a href="#71-executor-和-task-优先于线程" class="headerlink" title="71. executor 和 task 优先于线程"></a>71. executor 和 task 优先于线程</h4><h4 id="72-并发工具优于-wait-和-notify"><a href="#72-并发工具优于-wait-和-notify" class="headerlink" title="72. 并发工具优于 wait 和 notify"></a>72. 并发工具优于 wait 和 notify</h4><h4 id="73-线程安全性的文档化"><a href="#73-线程安全性的文档化" class="headerlink" title="73. 线程安全性的文档化"></a>73. 线程安全性的文档化</h4><p>线程安全有多种级别：</p>
+<p>1.不可变的String、Long、BigInteger等。</p>
+<p>2.无条件线程安全的AtomicLong和ConcurrentHashMap。</p>
+<p>3.有条件的线程安全，比如Collections.synchronized包装器返回的集合。</p>
+<p>4.非线程安全的普通集合，如ArrayList，HashMap。客户端必须使用外部同步来包围每个方法调用。</p>
+<h4 id="74-慎用延迟初始化"><a href="#74-慎用延迟初始化" class="headerlink" title="74. 慎用延迟初始化"></a>74. 慎用延迟初始化</h4><p><strong>在大多数情况下，常规初始化优于延迟初始化。</strong>延迟初始化的最佳建议是「除非需要，否则不要这样做」。</p>
+<p>静态域的延迟初始化示例：</p>
+<p><strong>如果需要在静态字段上使用延迟初始化来提高性能，使用</strong> lazy initialization holder class <strong>模式。</strong> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> FieldHolder.field;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实例域的延迟初始化示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    FieldType result = field;</span><br><span class="line">    <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123; <span class="comment">// First check (no locking) </span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (field == <span class="keyword">null</span>) <span class="comment">// Second check (with locking)</span></span><br><span class="line">                field = result = computeFieldValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码可能看起来有点复杂。特别是不清楚是否需要局部变量（result）。该变量的作用是<strong>确保 field 在已经初 始化的情况下只读取一次</strong>。 </p>
+<p>虽然不是严格必需的，但这可能会提高性能，而且与低级并发编程相比，这更优雅。在我的机器上，上述方法的 速度大约是没有局部变量版本的 1.4 倍。虽然您<strong>也可以将双重检查模式应用于静态字段</strong>，但是没有理由这样做：lazy initialization holder class idiom 是更好的选择。</p>
+<h4 id="75-不要依赖于线程调度器"><a href="#75-不要依赖于线程调度器" class="headerlink" title="75. 不要依赖于线程调度器"></a>75. 不要依赖于线程调度器</h4><p>编写健壮、响应快、可移植程序的最佳方法是<strong>确保可运行线程的平均数量不显著大于处理器的数量</strong>。</p>
+<p>Thread.yield 没有可预测的语义</p>
+<h4 id="76-序列化的实现"><a href="#76-序列化的实现" class="headerlink" title="76. 序列化的实现"></a>76. 序列化的实现</h4><p><strong>附录</strong></p>
+<ol>
+<li>何时使用静态代码块？</li>
+</ol>
+<p>一个类可以使用不包含在任何方法体中的静态代码块，当类被载入时，静态代码块被执行，且只被执行一次，静态块常用来执行类属性的初始化。</p>
+<ol start="2">
+<li>对象初始化顺序</li>
+</ol>
+<ul>
+<li>首先，初始化父类中的静态成员变量和静态代码块，按照在程序中出现的顺序初始化；</li>
+<li>然后，初始化子类中的静态成员变量和静态代码块，按照在程序中出现的顺序初始化；</li>
+<li>其次，初始化父类的普通成员变量和代码块，再执行父类的构造方法；</li>
+<li>最后，初始化子类的普通成员变量和代码块，再执行子类的构造方法；</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/10/k8s-bushu-1/" rel="next" title="使用kubeadm工具部署kubernetes集群">
+                <i class="fa fa-chevron-left"></i> 使用kubeadm工具部署kubernetes集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-考虑用静态工厂方法代替构造方法"><span class="nav-number">1.</span> <span class="nav-text">1. 考虑用静态工厂方法代替构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-当构造方法参数过多时使用-builder-模式"><span class="nav-number">2.</span> <span class="nav-text">2. 当构造方法参数过多时使用 builder 模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-使用私有构造方法或枚举类实现-Singleton-属性"><span class="nav-number">3.</span> <span class="nav-text">3. 使用私有构造方法或枚举类实现 Singleton 属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-通过私有构造器强化类不可实例化的能力"><span class="nav-number">4.</span> <span class="nav-text">4. 通过私有构造器强化类不可实例化的能力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-依赖注入优于硬连接资源"><span class="nav-number">5.</span> <span class="nav-text">5. 依赖注入优于硬连接资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-避免创建不必要的对象"><span class="nav-number">6.</span> <span class="nav-text">6. 避免创建不必要的对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-消除过期的对象引用"><span class="nav-number">7.</span> <span class="nav-text">7. 消除过期的对象引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-应该避免使用终结方法-–-finalizer-和-cleaner-机制"><span class="nav-number">8.</span> <span class="nav-text">8. 应该避免使用终结方法 –  finalizer 和 cleaner 机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-使用-try-with-resources-语句替代-try-finally-语句"><span class="nav-number">9.</span> <span class="nav-text">9. 使用 try-with-resources 语句替代 try-finally 语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-重写-equals-方法时遵守通用约定"><span class="nav-number">10.</span> <span class="nav-text">10.  重写 equals 方法时遵守通用约定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-始终重写-toString-方法"><span class="nav-number">11.</span> <span class="nav-text">11. 始终重写 toString 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-谨慎覆盖-clone"><span class="nav-number">12.</span> <span class="nav-text">12. 谨慎覆盖 clone</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-考虑实现-Comparable-接口"><span class="nav-number">13.</span> <span class="nav-text">13. 考虑实现 Comparable 接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-使类和成员的可访问性最小化"><span class="nav-number">14.</span> <span class="nav-text">14. 使类和成员的可访问性最小化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-在共有类中使用访问方法而非共有域"><span class="nav-number">15.</span> <span class="nav-text">15. 在共有类中使用访问方法而非共有域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-使可变性最小化"><span class="nav-number">16.</span> <span class="nav-text">16. 使可变性最小化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-组合优于继承"><span class="nav-number">17.</span> <span class="nav-text">17. 组合优于继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18-要么为继承而设计并提供文档说明，要么就禁止继承"><span class="nav-number">18.</span> <span class="nav-text">18. 要么为继承而设计并提供文档说明，要么就禁止继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19-接口优于抽象类"><span class="nav-number">19.</span> <span class="nav-text">19. 接口优于抽象类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#20-接口仅用来定义类型"><span class="nav-number">20.</span> <span class="nav-text">20. 接口仅用来定义类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#21-类层次优于标签类"><span class="nav-number">21.</span> <span class="nav-text">21. 类层次优于标签类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#22-优点考虑静态成员类"><span class="nav-number">22.</span> <span class="nav-text">22. 优点考虑静态成员类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#23-永远不要将多个顶级类或接口放在一个源文件中"><span class="nav-number">23.</span> <span class="nav-text">23. 永远不要将多个顶级类或接口放在一个源文件中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#24-新代码中要使用泛型而不是原生态类型"><span class="nav-number">24.</span> <span class="nav-text">24. 新代码中要使用泛型而不是原生态类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#25-消除非受检警告"><span class="nav-number">25.</span> <span class="nav-text">25. 消除非受检警告</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#26-列表优先于数组"><span class="nav-number">26.</span> <span class="nav-text">26. 列表优先于数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#27-优先考虑泛型方法"><span class="nav-number">27.</span> <span class="nav-text">27. 优先考虑泛型方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#28-利用有限通配符来提升API灵活性"><span class="nav-number">28.</span> <span class="nav-text">28. 利用有限通配符来提升API灵活性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#29-合理地结合泛型和可变参数"><span class="nav-number">29.</span> <span class="nav-text">29. 合理地结合泛型和可变参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#30-优先考虑类型安全的异构容器"><span class="nav-number">30.</span> <span class="nav-text">30. 优先考虑类型安全的异构容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#31-用枚举代替int常量"><span class="nav-number">31.</span> <span class="nav-text">31. 用枚举代替int常量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#32-禁止使用枚举类默认的-ordinal-方法"><span class="nav-number">32.</span> <span class="nav-text">32. 禁止使用枚举类默认的 ordinal 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#33-使用EnumSet代替位属性"><span class="nav-number">33.</span> <span class="nav-text">33. 使用EnumSet代替位属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#34-使用EnumMap代替序数索引"><span class="nav-number">34.</span> <span class="nav-text">34. 使用EnumMap代替序数索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#35-使用接口模拟可扩展的枚举"><span class="nav-number">35.</span> <span class="nav-text">35. 使用接口模拟可扩展的枚举</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#36-注解优于命名模式"><span class="nav-number">36.</span> <span class="nav-text">36. 注解优于命名模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#37-坚持使用Override注解"><span class="nav-number">37.</span> <span class="nav-text">37. 坚持使用Override注解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#38-使用标记接口定义类型"><span class="nav-number">38.</span> <span class="nav-text">38. 使用标记接口定义类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#39-lambda表达式优于匿名类"><span class="nav-number">39.</span> <span class="nav-text">39. lambda表达式优于匿名类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#40-方法引用优于lambda表达式"><span class="nav-number">40.</span> <span class="nav-text">40. 方法引用优于lambda表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#41-优先使用Collection而不是Stream作为方法的返回类型"><span class="nav-number">41.</span> <span class="nav-text">41. 优先使用Collection而不是Stream作为方法的返回类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#42-检查参数的有效性"><span class="nav-number">42.</span> <span class="nav-text">42. 检查参数的有效性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#43-仔细设计方法签名"><span class="nav-number">43.</span> <span class="nav-text">43. 仔细设计方法签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#44-慎用重载"><span class="nav-number">44.</span> <span class="nav-text">44. 慎用重载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#45-慎用可变参数"><span class="nav-number">45.</span> <span class="nav-text">45. 慎用可变参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#46-返回零长度的数组或者空的集合，而不是null"><span class="nav-number">46.</span> <span class="nav-text">46. 返回零长度的数组或者空的集合，而不是null</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#47-为所有导出的API元素编写文档注释"><span class="nav-number">47.</span> <span class="nav-text">47. 为所有导出的API元素编写文档注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#48-将局部变量的作用域最小化"><span class="nav-number">48.</span> <span class="nav-text">48. 将局部变量的作用域最小化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#49-for-each-优于-for-循环"><span class="nav-number">49.</span> <span class="nav-text">49. for each 优于 for 循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#50-了解和使用类库"><span class="nav-number">50.</span> <span class="nav-text">50. 了解和使用类库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#51-float-和-double-是非精确的"><span class="nav-number">51.</span> <span class="nav-text">51. float 和 double 是非精确的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#52-基本类型优先于包装类"><span class="nav-number">52.</span> <span class="nav-text">52. 基本类型优先于包装类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#53-如果其他类型更合适，则尽量避免使用字符串"><span class="nav-number">53.</span> <span class="nav-text">53. 如果其他类型更合适，则尽量避免使用字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#54-当心字符串连接的性能"><span class="nav-number">54.</span> <span class="nav-text">54. 当心字符串连接的性能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#55-通过接口引用对象"><span class="nav-number">55.</span> <span class="nav-text">55. 通过接口引用对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#56-接口优先于反射机制"><span class="nav-number">56.</span> <span class="nav-text">56. 接口优先于反射机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#57-谨慎地使用本地方法"><span class="nav-number">57.</span> <span class="nav-text">57. 谨慎地使用本地方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#58-谨慎地进行优化"><span class="nav-number">58.</span> <span class="nav-text">58. 谨慎地进行优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#59-遵守普遍接受的命名惯例"><span class="nav-number">59.</span> <span class="nav-text">59. 遵守普遍接受的命名惯例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#60-只针对异常的情况下才使用异常"><span class="nav-number">60.</span> <span class="nav-text">60. 只针对异常的情况下才使用异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#61-可恢复的情况使用受检异常，编程错误使用运行时异常"><span class="nav-number">61.</span> <span class="nav-text">61. 可恢复的情况使用受检异常，编程错误使用运行时异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#62-避免不必要的使用受检异常"><span class="nav-number">62.</span> <span class="nav-text">62. 避免不必要的使用受检异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#63-优先使用标准的异常"><span class="nav-number">63.</span> <span class="nav-text">63. 优先使用标准的异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#64-抛出与抽象相对应的异常"><span class="nav-number">64.</span> <span class="nav-text">64. 抛出与抽象相对应的异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#65-每个方法抛出的异常都要有文档"><span class="nav-number">65.</span> <span class="nav-text">65. 每个方法抛出的异常都要有文档</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#66-在细节信息中包含能捕获失败的信息"><span class="nav-number">66.</span> <span class="nav-text">66. 在细节信息中包含能捕获失败的信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#67-努力使失败保持原子性"><span class="nav-number">67.</span> <span class="nav-text">67. 努力使失败保持原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#68-不要忽略异常"><span class="nav-number">68.</span> <span class="nav-text">68. 不要忽略异常</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#69-同步访问共享的可变数据"><span class="nav-number">69.</span> <span class="nav-text">69. 同步访问共享的可变数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#70-避免过度同步"><span class="nav-number">70.</span> <span class="nav-text">70. 避免过度同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#71-executor-和-task-优先于线程"><span class="nav-number">71.</span> <span class="nav-text">71. executor 和 task 优先于线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#72-并发工具优于-wait-和-notify"><span class="nav-number">72.</span> <span class="nav-text">72. 并发工具优于 wait 和 notify</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#73-线程安全性的文档化"><span class="nav-number">73.</span> <span class="nav-text">73. 线程安全性的文档化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#74-慎用延迟初始化"><span class="nav-number">74.</span> <span class="nav-text">74. 慎用延迟初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#75-不要依赖于线程调度器"><span class="nav-number">75.</span> <span class="nav-text">75. 不要依赖于线程调度器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#76-序列化的实现"><span class="nav-number">76.</span> <span class="nav-text">76. 序列化的实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
