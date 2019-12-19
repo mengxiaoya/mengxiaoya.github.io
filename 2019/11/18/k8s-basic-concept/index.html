@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/18/k8s-basic-concept/3.png">
-<meta property="og:updated_time" content="2019-12-05T15:41:22.748Z">
+<meta property="og:updated_time" content="2019-12-19T16:04:53.529Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes的基本概念和术语（一）">
 <meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — Master、Node、Pod、Label。">
@@ -401,10 +401,10 @@
 <p>Node相关的Event信息。</p>
 </blockquote>
 <h4 id="3-Pod"><a href="#3-Pod" class="headerlink" title="3. Pod"></a>3. Pod</h4><p>此概念下还会引申出以下三个概念：<strong>Volume，Endpoint，Event</strong>。分别会做出相应的介绍。</p>
-<p>Pod是kubernets的最重要的也最基本的概念，每个Pod都有一个特殊的被称为“根容器”的<strong>pause容器</strong>。pause容器对应的镜像属于kubernetes平台的一部分，除了Pause容器，每个Pod还包含一个或多个紧密相关的用户业务容器。如下是Pod的组成示意图：</p>
+<p>Pod是kubernetes的最重要的也最基本的概念，每个Pod都有一个特殊的被称为“根容器”的<strong>pause容器</strong>。pause容器对应的镜像属于kubernetes平台的一部分，除了Pause容器，每个Pod还包含一个或多个紧密相关的用户业务容器。如下是Pod的组成示意图：</p>
 <p><img src="/2019/11/18/k8s-basic-concept/../k8s-basic-concept\1.png" alt="avatar"></p>
-<p>k8s为每个Pod都都分配了唯一的ip，称之为Pod IP，一个Pod里的多个容器共享Pod IP地址。<strong>k8s要求底层网络支持集群内任意两个Pod之间的TCP/IP直接通信，这通常采用虚拟二层网络技术来实现，如Flannel、Openswith等，牢记在k8s中，一个Pod容器与另外主机上的Pod容器能够直接通信。</strong></p>
-<p>Pod其实有两种类型：<strong>普通的Pod及静态的Pod</strong>（static Pod），后者比较特殊，并不存放在k8s的etcd里面存储，而是存放在某一个具体的Node上的一个文件中，并且只在此Node上启动运行。而普通的Pod一旦被创建，就会被放入到etcd中存储，随后会被k8s Master调度到某个具体的Node上面进行绑定（Binding），随后该Pod被对应的Node上的kubblet进程实例化成一组的Docker容器并启动起来。默认情况下，当Pod里的某个容器停止时，k8s会自动检测这个问题并重启启动这个Pod（Pod里面的所有容器），如果Pod所在的Node宕机，则会将这个Node上的所有Pod重新调度到其它节点上。Pod、容器与Node的关系如下：</p>
+<p>k8s为每个Pod都都分配了唯一的ip，称之为Pod IP，一个Pod里的多个容器共享Pod IP地址。<strong>k8s要求底层网络支持集群内任意两个Pod之间的TCP/IP直接通信，这通常采用虚拟二层网络技术来实现，如Flannel、Openswith等。牢记在k8s中，一个Pod容器与另外主机上的Pod容器能够直接通信。</strong></p>
+<p>Pod其实有两种类型：<strong>普通的Pod及静态的Pod</strong>（static Pod），后者比较特殊，并不存放在k8s的etcd里面存储，而是存放在某一个具体的Node上的一个文件中，并且只在此Node上启动运行。而普通的Pod一旦被创建，就会被放入到etcd中存储，随后会被k8s Master调度到某个具体的Node上面进行绑定（Binding），随后该Pod被对应的Node上的kubelet进程实例化成一组的Docker容器并启动起来。默认情况下，当Pod里的某个容器停止时，k8s会自动检测这个问题并重启启动这个Pod（Pod里面的所有容器），如果Pod所在的Node宕机，则会将这个Node上的所有Pod重新调度到其它节点上。Pod、容器与Node的关系如下：</p>
 <p><img src="/2019/11/18/k8s-basic-concept/../k8s-basic-concept\2.png" alt="avatar"></p>
 <p>由图可知：<strong>一个Node下可以拥有好多Pod，一个Pod下可以拥有好多Containner，Pod里面的业务容器共享Pause容器的IP，共享Pause容器挂载的Volume。</strong>以上共享这两点的好处是既简化了密切关联业务容器之间的通信问题，还很好地解决了它们之间文件共享的问题。</p>
 <p><strong>Volume</strong></p>
@@ -420,24 +420,24 @@
 </blockquote>
 <p><strong>Event</strong></p>
 <blockquote>
-<p>Event是一个事件的记录，记录了时间的最早产生时间、最后重现时间、重复次数、发起者、类型及导致此次事件的原因等总舵信息。Event通常会关联到某个具体的资源对象上，是排查故障的重要信息参考信息。Node描述信息包含Event，而Pod同样有Event记录。当我们发现某个Pod迟迟无法创建时，可以用<strong>kubectl describe pod name</strong>来查看它的信息，用来定位问题的原因。</p>
+<p>Event是一个事件的记录，记录了时间的最早产生时间、最后重现时间、重复次数、发起者、类型及导致此次事件的原因等总舵信息。Event通常会关联到某个具体的资源对象上，是排查故障的重要信息参考信息。Node描述信息包含Event，而Pod同样有Event记录。当我们发现某个Pod迟迟无法创建时，可以用<strong>kubectl describe pod pod_name</strong>来查看它的信息，用来定位问题的原因。</p>
 </blockquote>
 <p><strong>一个Pod定义示例</strong></p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiSerdion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">matadata:</span></span><br><span class="line"><span class="attr">  name:</span> <span class="string">myweb</span></span><br><span class="line"><span class="attr">  labels:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">myweb</span></span><br><span class="line"><span class="attr">  spec:</span></span><br><span class="line"><span class="attr">    containers:</span></span><br><span class="line"><span class="attr">    - name:</span> <span class="string">myweb</span></span><br><span class="line"><span class="attr">      image:</span> <span class="string">kubeguide/tomcat-app:v1</span></span><br><span class="line"><span class="attr">      ports:</span></span><br><span class="line"><span class="attr">      - containerPort:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">      env:</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">MYSQL_SERVICE_HOST</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">'mysql'</span></span><br><span class="line"><span class="attr">      - name:</span> <span class="string">MYSQL_SERVICE_PORT</span></span><br><span class="line"><span class="attr">        value:</span> <span class="string">'3306'</span></span><br></pre></td></tr></table></figure>
-<p>kind为Pod表明这是一个Pod的定义；matadata的name属性为Pod的名字，还能定义资源对象的标签Label，这里声明myweb拥有一个<code>name=myweb</code>的标签。Pod里面所包含的容器组的定义则在spec中声明，这里定义一个名字为myweb，镜像为<code>kubeguide/tomcat-app:v1</code>的容器，该容器注入了名为<code>MYSQL_SERVICE_HOST=&#39;mysql&#39;</code>和<code>MYSQL_SERVICE_PORT=&#39;3306&#39;</code>的环境变量（env关键字）。Pod的IP加上这里的容器端口（containerPort）就组成了一个新的概念Endpoint（端口），它代表Pod的一个服务进程对外的通信地址。一个Pod也存在着具有多个Endpoint的情况，比如tomcat定义pod时候，可以暴露管理端口和服务端口两个Endpoint。</p>
+<p>kind为Pod表明这是一个Pod的定义；matadata的name属性为Pod的名字，还能定义资源对象的标签Label，这里声明myweb拥有一个<code>name=myweb</code>的标签。Pod里面所包含的容器组的定义则在spec中声明，这里定义一个名字为myweb，镜像为<code>kubeguide/tomcat-app:v1</code>的容器，该容器注入了名为<code>MYSQL_SERVICE_HOST=&#39;mysql&#39;</code>和<code>MYSQL_SERVICE_PORT=&#39;3306&#39;</code>的环境变量（env关键字）。</p>
 <p><strong>Pod计算资源限额设置</strong></p>
 <p>每个Pod都可以对其能使用的服务器上的计算资源设置限额，当前可以设置的限额的计算资源有CPU和Memory两种，其中CPU的资源单位为CPU（core）核数，一个绝对值。</p>
 <p>一个cpu的配额对绝大多数容器来说是一个相当大的资源配额，所以在k8s中，<strong>通常以千分之一的cpu配额为最小单位，用m来表示，即一个容器的限额为100-300m，即占用0.1-0.3个cpu限额。</strong>由于它是绝对值，所以无论在1个cpu的机器还是多个cpu的机器，这个100m的配额都是一样的。类似的Memory配额也是一个绝对值，单位是内存字节数。</p>
 <p>在k8s中，一个计算资源进行配额限定需要设定下面两个参数：</p>
 <blockquote>
 <ul>
-<li>Request；该资源的最小申请量，系统必须满足要求。</li>
-<li>Limits：该资源允许最大的使用量，不能被突破，当容器视图使用超出这个量的资源时，可能会被k8s杀死并重启。</li>
+<li>Request：该资源的最小申请量，系统必须满足要求。</li>
+<li>Limits：该资源允许最大的使用量，不能被突破，当容器试图使用超出这个量的资源时，可能会被k8s杀死并重启。</li>
 </ul>
 </blockquote>
 <p>通常会把Request设置为一个比较小的数值，符合同期平时的工作负载情况下的资源要求，而把Limit设置为峰值负载情况下资源占用的最大量。如下面的设定：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">db</span></span><br><span class="line"><span class="attr">    image:</span> <span class="string">mysql</span></span><br><span class="line"><span class="attr">    resources:</span></span><br><span class="line"><span class="attr">      requests:</span></span><br><span class="line"><span class="attr">        memory:</span> <span class="string">"64Mi"</span></span><br><span class="line"><span class="attr">        cpu:</span> <span class="string">"250m"</span></span><br><span class="line"><span class="attr">      limits:</span></span><br><span class="line"><span class="attr">        memory:</span> <span class="string">"128Mi"</span></span><br><span class="line"><span class="attr">        cpu:</span> <span class="string">"500m"</span></span><br></pre></td></tr></table></figure>
-<p>即表明mysql容器在申请最少0.25个cpu及64Mib的内存，在运行过程中mysql容器所能使用的资源配额为0.5个cpu及128Mib的内存。</p>
+<p>即表明mysql容器在申请最少0.25个cpu及64Mib的内存，在运行过程中mysql容器所能使用的最大资源配额为0.5个cpu及128Mib的内存。</p>
 <p>以下是Pod及周边对象的示意图：</p>
 <p> <img src="/2019/11/18/k8s-basic-concept/../k8s-basic-concept\3.png" alt="avatar"></p>
 <h4 id="4-Label"><a href="#4-Label" class="headerlink" title="4. Label"></a>4. Label</h4><p>Label是k8s系统中另一个核心的概念。一个Label是一个key=value的键值对，其中key和value由用户自己指定。Label对象可以附加到各种资源对象上面，如Node、Pod、Service、RC等，一个资源对象可以定义任意数量的Label，同一个Label也可以被添加到任意资源对象上去，Label通常在资源对象定义时确定，也可以通过对象创建之后动态添加或删除。</p>
@@ -449,7 +449,7 @@
 <p>分区标签：”partition”: “customerA”</p>
 <p>质量管控标签：”track”: “daily”, “track”: “weekly”</p>
 </blockquote>
-<p>给某个资源对象定义一个Label，随后可以通过Label Selector（标签选择器）查询和筛选拥有某些Label的资源对象，k8s通过这种方式实现了类是SQL的简单通用的对象查询方式。</p>
+<p>给某个资源对象定义一个Label，随后可以通过Label Selector（标签选择器）查询和筛选拥有某些Label的资源对象，k8s通过这种方式实现了类似SQL的简单通用的对象查询方式。</p>
 <p><strong>当前有两种Label Selector的表达式：基于等式的（Equality-based）和基于集合（Set-based）。</strong></p>
 <p>基于等式的表达式匹配标签实例：</p>
 <ul>
@@ -471,9 +471,9 @@
 <ol>
 <li><p>kube-controller-manage进程通过资源对象RC上定义的Label Selector来筛选要监控的Pod副本的数量。</p>
 </li>
-<li><p>kube-proxy进程通过Service的Label Selector来选择对于那个的Pod，自动建立起Service对应每个Pod的请求转发路由表，从而实现Service的智能负载均衡机制。</p>
+<li><p>kube-proxy进程通过Service的Label Selector来选择对应的Pod，自动建立起每个Service到对应Pod的请求转发路由表，从而实现Service的智能负载均衡机制。</p>
 </li>
-<li><p>通过对某些Node定义特定的Label，并且Pod定义文件中使用NodeSelector这种标签调度策略，kube-schedule进程可以实现Pod“定向调度”的特性。</p>
+<li><p>通过对某些Node定义特定的Label，并且Pod定义文件中使用NodeSelector这种标签调度策略，kube-scheduler进程可以实现Pod“定向调度”的特性。</p>
 </li>
 </ol>
 </blockquote>
