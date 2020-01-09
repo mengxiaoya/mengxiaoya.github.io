@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Swarm 是 Docker 社区提供的唯一一个原生支持 Docker 集群管理的工具。它可以把多个 Docker 主机组成的系统转换为单一的虚拟 Docker 主机，使得容器可以组成跨主机的子网网络。">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Swarm介绍及集群部署">
+<meta property="og:url" content="http://yoursite.com/2020/01/09/docker-swarm/index.html">
+<meta property="og:site_name" content="Mxsenn">
+<meta property="og:description" content="Swarm 是 Docker 社区提供的唯一一个原生支持 Docker 集群管理的工具。它可以把多个 Docker 主机组成的系统转换为单一的虚拟 Docker 主机，使得容器可以组成跨主机的子网网络。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2020/01/09/docker-swarm/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/09/docker-swarm/2.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/09/docker-swarm/3.png">
+<meta property="og:image" content="http://yoursite.com/2020/01/09/docker-swarm/4.png">
+<meta property="og:updated_time" content="2020-01-09T13:44:49.608Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker Swarm介绍及集群部署">
+<meta name="twitter:description" content="Swarm 是 Docker 社区提供的唯一一个原生支持 Docker 集群管理的工具。它可以把多个 Docker 主机组成的系统转换为单一的虚拟 Docker 主机，使得容器可以组成跨主机的子网网络。">
+<meta name="twitter:image" content="http://yoursite.com/2020/01/09/docker-swarm/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/09/docker-swarm/">
+
+
+
+
+
+  <title>Docker Swarm介绍及集群部署 | Mxsenn</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mxsenn</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/09/docker-swarm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XYa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mxsenn">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker Swarm介绍及集群部署</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-09T21:26:26+08:00">
+                2020-01-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/09/docker-swarm/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/01/09/docker-swarm/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Swarm 是 Docker 社区提供的唯一一个原生支持 Docker 集群管理的工具。它可以把多个 Docker 主机组成的系统转换为单一的虚拟 Docker 主机，使得容器可以组成跨主机的子网网络。</p>
+<a id="more"></a>
+<h4 id="一-What-is-Docker-Swarm"><a href="#一-What-is-Docker-Swarm" class="headerlink" title="一 What is Docker Swarm"></a>一 What is Docker Swarm</h4><p>Docker Swarm 是一个为 IT 运维团队提供集群和调度能力的编排工具。用户可以把集群中所有 Docker Engine 整合进一个「虚拟 Engine」的资源池，通过执行命令与单一的主 Swarm 进行沟通，而不必分别和每个 Docker Engine 沟通。在灵活的调度策略下，IT 团队可以更好地管理可用的主机资源，保证应用容器的高效运行。</p>
+<p>Swarm的基本架构如下图所示：</p>
+<p><img src="/2020/01/09/docker-swarm/../docker-swarm\1.png" alt="avatar"></p>
+<h4 id="二-Docker-Swarm-Advantages"><a href="#二-Docker-Swarm-Advantages" class="headerlink" title="二 Docker Swarm Advantages"></a>二 Docker Swarm Advantages</h4><p><strong>任何规模都有高性能表现</strong></p>
+<p>对于企业级的 Docker Engine 集群和容器调度而言，可拓展性是关键。任何规模的公司——不论是拥有五个还是上千个服务器——都能在其环境下有效使用 Swarm。经过测试，Swarm 可拓展性的极限是在 1000 个节点上运行 50000 个部署容器，每个容器的启动时间为亚秒级，同时性能无减损。</p>
+<p><strong>灵活的容器调度</strong></p>
+<p>Swarm 帮助 IT 运维团队在有限条件下将性能表现和资源利用最优化。Swarm 的内置调度器（scheduler）支持多种过滤器，包括：节点标签，亲和性和多种容器部策略如 binpack、spread、random 等等。</p>
+<p><strong>服务的持续可用性</strong></p>
+<p>Docker Swarm 由 Swarm Manager 提供高可用性，通过创建多个 Swarm master 节点和制定主 master 节点宕机时的备选策略。如果一个 master 节点宕机，那么一个 slave 节点就会被升格为 master 节点，直到原来的 master 节点恢复正常。<br>此外，如果某个节点无法加入集群，Swarm 会继续尝试加入，并提供错误警报和日志。在节点出错时，Swarm 现在可以尝试把容器重新调度到正常的节点上去。</p>
+<p><strong>和 Docker API 及整合支持的兼容性</strong></p>
+<p>Swarm 对 Docker API 完全支持，这意味着它能为使用不同 Docker 工具（如 Docker CLI，Compose，Trusted Registry，Hub 和 UCP）的用户提供无缝衔接的使用体验。</p>
+<p><strong>Docker Swarm 为 Docker 化应用的核心功能（诸如多主机网络和存储卷管理）提供原生支持</strong></p>
+<p>开发的 Compose 文件能（通过 docker-compose up ）轻易地部署到测试服务器或 Swarm 集群上。Docker Swarm 还可以从 Docker Trusted Registry 或 Hub 里 pull 并 run 镜像。</p>
+<h4 id="三-Concept"><a href="#三-Concept" class="headerlink" title="三 Concept"></a>三 Concept</h4><h5 id="1-节点"><a href="#1-节点" class="headerlink" title="1. 节点"></a>1. 节点</h5><p>有两种类型的节点： <strong>managers</strong> 和 <strong>workers</strong>.</p>
+<p><strong>管理节点（managers）</strong></p>
+<blockquote>
+<p>管理节点用于 Swarm 集群的管理，docker swarm 命令基本只能在管理节点执行（节点退出集群命令 docker swarm leave 可以在工作节点执行）。一个 Swarm 集群可以有多个管理节点，但只有一个管理节点可以成为 leader，leader 通过 raft 协议实现。</p>
+<p>为了利用swarm模式的容错功能，Docker建议根据组织的高可用性要求实现奇数个节点。当您拥有多个管理器时，您可以从管理器节点的故障中恢复而无需停机。</p>
+<ul>
+<li>N个管理节点的集群容忍最多损失 (N-1)/2 个管理节点。</li>
+<li>Docker建议一个集群最多7个管理器节点。</li>
+</ul>
+<p><strong>重要说明：添加更多管理节点并不意味着可扩展性更高或性能更高。一般而言，情况正好相反。</strong></p>
+</blockquote>
+<p><strong>工作节点（workers）</strong></p>
+<blockquote>
+<p>工作节点是任务执行节点，管理节点将服务 (service) 下发至工作节点执行。管理节点默认也作为工作节点。你也可以通过配置让服务只运行在管理节点。下图展示了集群中管理节点与工作节点的关系。</p>
+</blockquote>
+<p><img src="/2020/01/09/docker-swarm/../docker-swarm\2.png" alt="avatar"></p>
+<h5 id="2-服务和任务"><a href="#2-服务和任务" class="headerlink" title="2. 服务和任务"></a>2. 服务和任务</h5><p>任务 （Task）是 Swarm 中的最小的调度单位，目前来说就是一个单一的容器。<br>服务 （Services） 是指一组任务的集合，服务定义了任务的属性。服务有两种模式：</p>
+<blockquote>
+<ul>
+<li>replicated services （复制服务）按照一定规则在各个工作节点上运行指定个数的任务。</li>
+<li>global services （全局服务）每个工作节点上运行一个任务。</li>
+</ul>
+</blockquote>
+<p>两种模式通过 docker service create 的 –mode 参数指定。下图展示了容器、任务、服务的关系：<br><img src="/2020/01/09/docker-swarm/../docker-swarm\3.png" alt="avatar"></p>
+<h4 id="四-Cluster"><a href="#四-Cluster" class="headerlink" title="四 Cluster"></a>四 Cluster</h4><h5 id="1-初始化swarm"><a href="#1-初始化swarm" class="headerlink" title="1. 初始化swarm"></a>1. 初始化swarm</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker swarm init --advertise-addr xx.xx.xx.xx</span></span><br><span class="line">Swarm initialized: current node (4a8mo8cekpe0vpk0ze963avw9) is now a manager.</span><br><span class="line"></span><br><span class="line">To add a worker to this swarm, run the following command:</span><br><span class="line"></span><br><span class="line">    docker swarm join --token SWMTKN-1-4lzr2216s61ecbyayyqynjwybmxy5y5th5ru8aal2a0d1t2vn3-ekdgf4swlz8fiq4nnzgnbhr5u xx.xx.xx.xx:2377</span><br><span class="line"></span><br><span class="line">To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.</span><br></pre></td></tr></table></figure>
+<p>上面输出的这一段就是工作节点加入集群的命令。<strong>执行 docker swarm init 命令的节点自动成为管理节点。</strong></p>
+<p>命令 <strong>docker info</strong> 可以查看 swarm 集群状态。</p>
+<p>命令 <strong>docker node ls</strong> 可以查看集群节点信息。</p>
+<h5 id="2-工作节点加入swarm集群"><a href="#2-工作节点加入swarm集群" class="headerlink" title="2. 工作节点加入swarm集群"></a>2. 工作节点加入swarm集群</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker swarm join --token SWMTKN-1-4lzr2216s61ecbyayyqynjwybmxy5y5th5ru8aal2a0d1t2vn3-ekdgf4swlz8fiq4nnzgnbhr5u xx.xx.xx.xx:2377</span></span><br></pre></td></tr></table></figure>
+<p>集群的大部分命令需要在管理节点中才能运行。</p>
+<p>查看节点状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker node ls </span></span><br><span class="line">ID                          HOSTNAME        STATUS      AVAILABILITY    MANAGER STATUS</span><br><span class="line">qn0w132bi64p9czd9zif13f5b    bonree-zq-1     Ready       Active              </span><br><span class="line">ab2nxwnshw1aju70gxip4vbf2    bonree-zq-2     Ready       Active              </span><br><span class="line">m9s8rydfvaceegds0pbcoj9b6 *  bonree-zq-3     Ready       Active          Leader</span><br></pre></td></tr></table></figure>
+<p>为了高可用，可以升级工作节点为管理节点：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker node promote node-2</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker node promote node-3</span></span><br></pre></td></tr></table></figure>
+<p>升级为管理节点后查看节点状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker node ls </span></span><br><span class="line">ID                          HOSTNAME        STATUS      AVAILABILITY    MANAGER STATUS</span><br><span class="line">qn0w132bi64p9czd9zif13f5b    bonree-zq-1     Ready       Active          Reachable       </span><br><span class="line">ab2nxwnshw1aju70gxip4vbf2    bonree-zq-2     Ready       Active          Reachable    </span><br><span class="line">m9s8rydfvaceegds0pbcoj9b6 *  bonree-zq-3     Ready       Active          Leader</span><br></pre></td></tr></table></figure>
+<p>可以看到2、3节点的集群状态变为 Reachable（选举者），因为集群中节点Leader只能有一个，这个类似zookeeper，只不过zookeepers用的算法是paxos，Swarm用的算法是raft。</p>
+<h5 id="3-退出swarm集群"><a href="#3-退出swarm集群" class="headerlink" title="3. 退出swarm集群"></a>3. 退出swarm集群</h5><p>如果 Manager 想要退出 Swarm 集群， 在 Manager Node 上执行如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker swarm leave</span></span><br></pre></td></tr></table></figure>
+<p>如果集群中还存在其它的 Worker Node，还希望 Manager 退出集群，则加上一个强制选项，命令行如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker swarm leave --force</span></span><br></pre></td></tr></table></figure>
+<p>工作节点进行退出集群，需要在工作节点上执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker swarm leave</span></span><br></pre></td></tr></table></figure>
+<p>退出后的节点，依然可以使用 上面的 docker swarm join –token 重新加入集群。</p>
+<h5 id="4-集群上部署应用"><a href="#4-集群上部署应用" class="headerlink" title="4. 集群上部署应用"></a>4. 集群上部署应用</h5><p>命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service create --replicas 1 --name 别名  镜像ID</span></span><br></pre></td></tr></table></figure>
+<p>replicas 指定运行服务的数量。</p>
+<p><strong>实例1</strong></p>
+<p>创建一个alpine服务（alpine是一个小型liunx系统）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 运行一个alpine镜像，并执行ping命令</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker service create --replicas 1 --name test1 alpine ping docker.com</span></span><br></pre></td></tr></table></figure>
+<p>查看集群上的服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">docker service ls</span></span><br><span class="line">ID              NAME         MODE        REPLICAS     IMAGE               PORTS</span><br><span class="line">rnu10rprrwzv   test1      replicated      1/1    alpine:latest</span><br></pre></td></tr></table></figure>
+<p><strong>实例2</strong></p>
+<p>以下命令将nginx容器中的端口80发布到群集中任何节点的端口8080：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service create \</span></span><br><span class="line">  --name my-web \</span><br><span class="line">  --publish published=8080,target=80 \</span><br><span class="line">  --replicas 2 \</span><br><span class="line">  nginx</span><br></pre></td></tr></table></figure>
+<p>查看集群上的服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service ls</span></span><br><span class="line">ID           NAME       MODE       REPLICAS     IMAGE       PORTS</span><br><span class="line">q6wfiizzosmd  nginx    replicated    3/3      nginx:latest  *:8080-&gt;80/tcp</span><br><span class="line">rnu10rprrwzv  test1    replicated    1/1      alpine:latest</span><br></pre></td></tr></table></figure>
+<p>service 通过 ingress load balancing 来发布服务，且 swarm 集群中所有 node 都参与到 ingress 路由网格（ingress routing mesh） 中，访问任意一个 node+PublishedPort 即可访问到服务。</p>
+<p>当访问任何节点上的端口8080时，Docker将您的请求路由到活动容器。在群节点本身，端口8080可能并不实际绑定，但路由网格知道如何路由流量，并防止任何端口冲突的发生。</p>
+<p>路由网格在发布的端口上监听分配给节点的任何IP地址。对于外部可路由的IP地址，该端口可从主机外部获得。对于所有其他IP地址，只能从主机内部访问。</p>
+<p><img src="/2020/01/09/docker-swarm/../docker-swarm\4.png" alt="avatar"></p>
+<p>所以访问 192.169.99.100:8080、192.169.99.101:8080、192.169.99.102:8080 ，都可以访问到nginx，这样就实现了负载均衡。因为我们指定–replicas 3 启动了3个运行nginx的容器 ，所以三个节点上都运行了一个 nginx 的容器，可以通过改其中一个节点上的nginx的欢迎页 ，然后再访问，来检查是否实现了负载均衡。</p>
+<p>可以通过scale 来指定运行容器的数量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service scale nginx=2</span></span><br></pre></td></tr></table></figure>
+<p>我通过docker service ls 可以看出 nginx 的副本变成了2个：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service ls</span></span><br><span class="line">ID            NAME        MODE        REPLICAS       IMAGE               PORTS</span><br><span class="line">q6wfiizzosmd  nginx    replicated     2/2       nginx:latest      *:8080-&gt;80/tcp</span><br></pre></td></tr></table></figure>
+<h4 id="五-Overlay-Network"><a href="#五-Overlay-Network" class="headerlink" title="五 Overlay Network"></a>五 Overlay Network</h4><h5 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h5><p>初始化swarm或将Docker主机加入现有swarm时，会在该Docker主机上创建两个新网络：</p>
+<ul>
+<li><strong>ingress</strong>：称为覆盖网络ingress，处理与群集服务相关的控制和数据流量。创建群组服务并且不将其连接到用户定义的覆盖网络时，ingress 是默认连接的网络。</li>
+<li><strong>docker_gwbridge</strong>：称为桥接网络docker_gwbridge，它将各个Docker守护程序连接到参与该群集的其他守护进程。</li>
+</ul>
+<p>在管理节点上查看网络</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br><span class="line">cb0ccb89a988        bridge              bridge              local</span><br><span class="line">0174fb113496        docker_gwbridge     bridge              local</span><br><span class="line">541b62778c0e        host                host                local</span><br><span class="line">8n7xppn5z4j2        ingress             overlay             swarm</span><br><span class="line">369d459f340d        none                null                local</span><br></pre></td></tr></table></figure>
+<p>overlay网络驱动程序会创建多个Docker守护主机之间的分布式网络。该网络位于（覆盖）特定于主机的网络之上，允许连接到它的容器（包括群集服务容器）安全地进行通信。Docker透明地处理每个数据包与正确的Docker守护程序主机和正确的目标容器的路由。</p>
+<h5 id="2-自定义-overlay-网络"><a href="#2-自定义-overlay-网络" class="headerlink" title="2. 自定义 overlay 网络"></a>2. 自定义 overlay 网络</h5><p>创建用于swarm服务的overlay网络，使用如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network create -d overlay my-overlay</span></span><br></pre></td></tr></table></figure>
+<p>我们再次查看网络，发现可以看到自定义 overlay了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br><span class="line">cb0ccb89a988        bridge              bridge              local</span><br><span class="line">0174fb113496        docker_gwbridge     bridge              local</span><br><span class="line">541b62778c0e        host                host                local</span><br><span class="line">8n7xppn5z4j2        ingress             overlay             swarm</span><br><span class="line">a23htz7n0pvp        my-overlay          overlay             swarm</span><br><span class="line">369d459f340d        none                null                local</span><br></pre></td></tr></table></figure>
+<p>集群中部署了两个服务 nginx、alpine，现在我们进入alpine，去访问nginx。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it test1.1.oonwl8c5g4u3p17x8anifeubi bash</span></span><br><span class="line">/ # ping nginx</span><br><span class="line">ping: bad address 'nginx'</span><br><span class="line">wget 192.168.99.100:8080</span><br><span class="line">Connecting to 192.168.99.100:8080 (192.168.99.100:8080)</span><br><span class="line">index.html           100% |*************************************************************************************************************|   612   0:00:00 ETA</span><br></pre></td></tr></table></figure>
+<p>我们发现集群中的各个服务不能用名称访问的，只能用集群服务发现的路由网络访问，那么集群中的服务怎么能通过名称进行访问呢，这就需要用到上面自定义的 overlay 网络。</p>
+<p>删除我们启动的服务，重新创建指定使用自定义网络的服务。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker service rm nginx test1</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker service create --name nginx -p 8080:80 --network my-overlay --replicas 3 nginx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker service create --name test1 --network my-overlay alpine ping www.baidu.com</span></span><br></pre></td></tr></table></figure>
+<p>进入test1容器中，重新测试下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/ # ping nginx</span><br><span class="line">PING nginx (10.0.0.2): 56 data bytes</span><br><span class="line">64 bytes from 10.0.0.2: seq=0 ttl=64 time=0.120 ms</span><br><span class="line">64 bytes from 10.0.0.2: seq=1 ttl=64 time=0.094 ms</span><br><span class="line">64 bytes from 10.0.0.2: seq=2 ttl=64 time=0.108 ms</span><br><span class="line">/ # wget nginx</span><br><span class="line">Connecting to nginx (10.0.0.2:80)</span><br><span class="line">index.html           100% |*************************************************************************************************************|   612   0:00:00 ETA</span><br></pre></td></tr></table></figure>
+<p>发现可以通过名称进行集群中的容器间的访问了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="XYa 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="XYa 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/09/docker-command/" rel="next" title="Docker常用命令介绍">
+                <i class="fa fa-chevron-left"></i> Docker常用命令介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/09/docker-portainer/" rel="prev" title="Portainer -- Docker可视化工具">
+                Portainer -- Docker可视化工具 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  <div>
+    
+    ﻿<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------本文结束 感谢您的阅读------</div>
+    
+</div>
+    
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">XYa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5834471410/home?leftnav=1" target="_blank" title="Weibo">
+                      
+                        <i class="fa fa-fw fa-globe"></i>Weibo</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zhangqi@bonree.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一-What-is-Docker-Swarm"><span class="nav-number">1.</span> <span class="nav-text">一 What is Docker Swarm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二-Docker-Swarm-Advantages"><span class="nav-number">2.</span> <span class="nav-text">二 Docker Swarm Advantages</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三-Concept"><span class="nav-number">3.</span> <span class="nav-text">三 Concept</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-节点"><span class="nav-number">3.1.</span> <span class="nav-text">1. 节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-服务和任务"><span class="nav-number">3.2.</span> <span class="nav-text">2. 服务和任务</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四-Cluster"><span class="nav-number">4.</span> <span class="nav-text">四 Cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-初始化swarm"><span class="nav-number">4.1.</span> <span class="nav-text">1. 初始化swarm</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-工作节点加入swarm集群"><span class="nav-number">4.2.</span> <span class="nav-text">2. 工作节点加入swarm集群</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-退出swarm集群"><span class="nav-number">4.3.</span> <span class="nav-text">3. 退出swarm集群</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-集群上部署应用"><span class="nav-number">4.4.</span> <span class="nav-text">4. 集群上部署应用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五-Overlay-Network"><span class="nav-number">5.</span> <span class="nav-text">五 Overlay Network</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-概述"><span class="nav-number">5.1.</span> <span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-自定义-overlay-网络"><span class="nav-number">5.2.</span> <span class="nav-text">2. 自定义 overlay 网络</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XYa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://mengxiaoya.github.io/">XYa</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rE7gfWCMUvlTFBrVr6SUjmBU-gzGzoHsz',
+        appKey: 'gTnDI7iJeAMFzajrD7wrdH70',
+        placeholder: 'Thanks for reading and leave your comments.',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
