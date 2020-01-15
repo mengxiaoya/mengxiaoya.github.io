@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/11/19/k8s-basic-concept-2/3.png">
-<meta property="og:updated_time" content="2019-12-07T01:30:31.641Z">
+<meta property="og:updated_time" content="2020-01-15T12:02:11.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes的基本概念和术语（二）">
 <meta name="twitter:description" content="本文介绍Kubernetes中的基本概念和术语  — RC、Deployment、HPA、StatefulSet、Service、Job。">
@@ -433,7 +433,7 @@ RS升级使用deployment或者kubectl replace命令。
 <p><strong>Deployment相关命令</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl create -f review-demo.yaml  <span class="comment"># 通过yaml文件创建Deployment</span></span></span><br><span class="line"> deployment "review-demo" created</span><br><span class="line"> </span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get deployments  <span class="comment"># 查看所有deployment信息</span></span></span><br><span class="line"> NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">review-demo         1         1         1            1           12h</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get rs <span class="comment"># 查看Deployment对应的RS，可以看到它的命名是和Deployment的名称有关系的</span></span></span><br><span class="line"> NAME              			DESIRED   CURRENT    AGE</span><br><span class="line">review-demo-1640611518         1         1       12h</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pods <span class="comment"># 查看Deployment创建的Pod，可以看到它的命名是以Deployment对应的RS为前缀的</span></span></span><br><span class="line"> NAME              				    READY   STATUS     RESTARTS   AGE</span><br><span class="line">review-demo-1640611518-zhrsc         1/1    Running       0       12h</span><br></pre></td></tr></table></figure>
 <p><strong>说明</strong></p>
-<p>在新版本的Kubernetes中建议使用ReplicaSet来取代ReplicationCtronller。ReplicaSet跟ReplicationCtronller没有本质的不同，只是名字不一样，并且ReplicaSet支持集合式的selector。</p>
+<p>在新版本的Kubernetes中建议使用ReplicaSet来取代ReplicationController。ReplicaSet跟ReplicationController没有本质的不同，只是名字不一样，并且ReplicaSet支持集合式的selector。</p>
 <p>虽然ReplicaSet可以独立使用，但<strong>一般还是建议使用 Deployment 来自动管理ReplicaSet</strong>，这样就无需担心跟其他机制的不兼容问题（比如ReplicaSet不支持rolling-update但Deployment支持）。</p>
 <p><strong>附</strong></p>
 <p><strong>Pod的管理对象，除了RC和Deloyment之外，还包括ReplicaSet、DaemonSet、StatefulSet和Job等。</strong></p>
