@@ -365,16 +365,16 @@
         <p>Portainer是Docker的图形化管理工具，提供状态显示面板、应用模板快速部署、容器镜像网络数据卷的基本操作（包括上传下载镜像，创建容器等操作）、事件日志显示、容器控制台操作、Swarm集群和服务等集中管理和操作、登录用户管理和控制等功能。功能十分全面，基本能满足中小型单位对容器管理的全部需求。</p>
 <a id="more"></a>
 <h4 id="一-下载镜像"><a href="#一-下载镜像" class="headerlink" title="一 下载镜像"></a>一 下载镜像</h4><p>查询当前有哪些Portainer镜像：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> docker search portainer</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker search portainer</span></span><br></pre></td></tr></table></figure>
 <p>下载镜像（这里我们选择第一个镜像进行下载）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> docker pull portainer/portainer</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker pull portainer/portainer</span></span><br></pre></td></tr></table></figure>
 <h4 id="二-运行Portainer"><a href="#二-运行Portainer" class="headerlink" title="二 运行Portainer"></a>二 运行Portainer</h4><p>Portainer运行方式有以下两种方式：</p>
 <h5 id="1-单机版运行"><a href="#1-单机版运行" class="headerlink" title="1. 单机版运行"></a>1. 单机版运行</h5><p>如果仅有一个docker宿主机，则可使用单机版运行，运行以下命令就可以启动了：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> docker run -d -p 9000:9000 \</span><br><span class="line">	--restart=always \</span><br><span class="line">	-v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">	--name portainer_20200109 \</span><br><span class="line">	portainer/portainer</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -p 9000:9000 \</span></span><br><span class="line">	--restart=always \</span><br><span class="line">	-v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">	--name portainer_20200109 \</span><br><span class="line">	portainer/portainer</span><br></pre></td></tr></table></figure>
 <p>该语句用宿主机9000端口关联容器中的9000端口，并给容器起名为portainer_20200109。启动成功后，使用该机器IP:PORT即可访问Portainer。</p>
 <p>首次登陆需要注册用户，给admin用户设置密码。单机版在页面上选择local即可。</p>
 <h5 id="2-集群版运行"><a href="#2-集群版运行" class="headerlink" title="2. 集群版运行"></a>2. 集群版运行</h5><p>在有多台Docker的情况下，进行集群管理就十分重要了，Portainer可以和Swarm一起来进行集群管理操作，通过以下命令启动：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> docker run -d -p 9000:9000 --restart=always --name portainer_20200109 portainer/portainer</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -p 9000:9000 --restart=always --name portainer_20200109 portainer/portainer</span></span><br></pre></td></tr></table></figure>
 <p>然后进入页面后，集群版的选择Remote，配置一个Name，Endpoint URL填写集群中manager节点的URL，注意端口对应 (<strong>端口号就是执行docker swarm init命令时生成的join信息的端口</strong>)，然后点击Connect。进入成功后还可以在Endpoints中新增其他的Docker节点。</p>
 
       
