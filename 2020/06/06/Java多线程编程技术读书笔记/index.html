@@ -87,12 +87,12 @@
 <meta property="og:site_name" content="Mxsenn">
 <meta property="og:description" content="Chapter 1 Java多线程技能1. 线程和进程进程是受操作系统管理的基本运行单元。 线程是在进程中独立运行的子任务。 多线程的意义：在同一时间内运行更多不同种类的任务。CPU在这些任务之间不停的切换，由于切换的速度飞快，所以给使用者的感觉就是这些任务在同时运行。 多线程是异步的，使用多线程就是在使用异步。所以在使用多线程技术时，代码的运行结果与代码执行顺序或调用顺序是无关的。 Thread">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2020/06/06/Java多线程编程核心技术/1.png">
-<meta property="og:updated_time" content="2020-06-06T10:13:38.204Z">
+<meta property="og:image" content="http://yoursite.com/2020/06/06/Java多线程编程技术读书笔记/1.png">
+<meta property="og:updated_time" content="2020-06-06T10:17:22.225Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程编程核心技术读书笔记">
 <meta name="twitter:description" content="Chapter 1 Java多线程技能1. 线程和进程进程是受操作系统管理的基本运行单元。 线程是在进程中独立运行的子任务。 多线程的意义：在同一时间内运行更多不同种类的任务。CPU在这些任务之间不停的切换，由于切换的速度飞快，所以给使用者的感觉就是这些任务在同时运行。 多线程是异步的，使用多线程就是在使用异步。所以在使用多线程技术时，代码的运行结果与代码执行顺序或调用顺序是无关的。 Thread">
-<meta name="twitter:image" content="http://yoursite.com/2020/06/06/Java多线程编程核心技术/1.png">
+<meta name="twitter:image" content="http://yoursite.com/2020/06/06/Java多线程编程技术读书笔记/1.png">
 
 
 
@@ -510,7 +510,7 @@
 <h5 id="3-wait-notify-notifyAll方法说明"><a href="#3-wait-notify-notifyAll方法说明" class="headerlink" title="3. wait notify notifyAll方法说明"></a>3. wait notify notifyAll方法说明</h5><p>wait()方法可以使调用该方法的线程释放共享资源的锁，然后从运行状态退出，进入等待队列，直到被再次唤醒。</p>
 <p>notify()方法可以随机唤醒等待队列中等待同一个共享资源的“一个”线程，并使该线程退出等待队列，进入可运行状态，也就是notify仅通知“一个”线程。可以在代码中多次调用notify唤醒多个，调用几次就唤醒几个。</p>
 <p>notifyAll()方法可以使所有正在等待队列中等待同一共享资源的“全部”线程从等待状态退出，进入可运行状态。此时，线程优先级最高的那个线程最先执行，但也有可能是随机执行，这取决于JVM的状态。</p>
-<h5 id="4-线程状态切换示意图"><a href="#4-线程状态切换示意图" class="headerlink" title="4. 线程状态切换示意图"></a>4. 线程状态切换示意图</h5><p><img src="/2020/06/06/Java多线程编程技术读书笔记/../Java多线程编程核心技术\1.png" alt="avatar"></p>
+<h5 id="4-线程状态切换示意图"><a href="#4-线程状态切换示意图" class="headerlink" title="4. 线程状态切换示意图"></a>4. 线程状态切换示意图</h5><p><img src="/2020/06/06/Java多线程编程技术读书笔记/../Java多线程编程技术读书笔记\1.png" alt="avatar"></p>
 <p>每个锁对象都有两个队列，一个是<strong>就绪队列</strong>，一个是<strong>阻塞队列</strong>。就绪队列存储了将要获得锁的线程，阻塞队列存储了将要获得锁的线程，阻塞队列存储了被阻塞的线程。一个线程被唤醒后，才会进入就绪队列，等到CPU的调度；反之，一个线程被wait后，就会进入阻塞队列，等待下一次被唤醒。</p>
 <h5 id="5-当interrupt方法遇到wait方法"><a href="#5-当interrupt方法遇到wait方法" class="headerlink" title="5. 当interrupt方法遇到wait方法"></a>5. 当interrupt方法遇到wait方法</h5><p>线程呈wait状态时，调用线程对象的interrupt方法会出现InterruptedException异常。</p>
 <h5 id="6-wait-long"><a href="#6-wait-long" class="headerlink" title="6. wait(long)"></a>6. wait(long)</h5><p>wait(long)方法的功能是等待某一段时间内是否有线程对锁进行唤醒，如果没有则超过这个时间自动唤醒。</p>
